@@ -1,0 +1,16 @@
+# Font style metadata
+name = "al-obrien"
+
+# Optional Google font URL
+google_fonts = "Ubuntu:400,700|Noto+Sans:400,400i,700|Roboto+Mono"
+
+# Font families
+heading_font = "Ubuntu"
+body_font = "Noto Sans"
+nav_font = "Noto Sans"
+mono_font = "Roboto Mono"
+
+
+# Font size
+#font_size = "18"
+#font_size_small = "16"

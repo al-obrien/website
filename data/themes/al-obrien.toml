@@ -1,0 +1,19 @@
+# Theme metadata
+name = "al-obrien"
+
+# Is theme light or dark?
+light = true
+
+# Primary
+primary = "#369cc2"
+
+# Menu
+menu_primary = "#369cc2"
+menu_text = "#1d2b2e"
+menu_text_active = "#cdf9fa"
+menu_title = "#1d2b2e"
+
+# Backgrounds
+background = "#ebfaff"
+home_section_odd = "#ebfaff"
+home_section_even = "#ebfaff"
