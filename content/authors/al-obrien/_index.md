@@ -1,7 +1,7 @@
 ---
 authors:
 - Allen
-bio: I am an epidemiologist with expeinterested in all things data!
+bio: I am an epidemiologist with a passion for teaching and all things data.
 education:
   courses:
   - course: MSc in Control of Infectious Disease
@@ -24,10 +24,7 @@ role: Infectious Disease Epidemiologist
 social:
 - icon: envelope
   icon_pack: fas
-  link: '/contact'
-- icon: twitter
-  icon_pack: fab
-  link: https://twitter.com/GeorgeCushen
+  link: '/contact/#contact'
 - icon: linkedin-in
   icon_pack: fab
   link: https://www.linkedin.com/in/allen-o-brien-25763382/?originalSubdomain=ca
@@ -46,4 +43,5 @@ user_groups:
 - Visitors
 ---
 
-Allen O'Brien is an infectious disease epidemiologist at Alberta Health. He has specifics interest in all things data, ranging from data engineering to data visualizations.
+I am an infectious disease epidemiologist working at the Ministry of Health in Alberta, Canada. I have a background in infectious disease and have long nurtured an interest in statistics, programming, and data science. I am using this site to catalog topics of interest to me and hopefully others too!
+

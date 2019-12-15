@@ -1,0 +1,7 @@
+public/
+blogdown/
+.Rhistory
+.RData
+.Ruserdata
+Thumbs.db
+.Renviron

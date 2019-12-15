@@ -8,15 +8,16 @@
   url = "/post"
   weight = 10
 
-#[[main]]
-#  name = "Projects"
-#  url = "#projects"
-#  weight = 30
 
 [[main]]
   name = "About & Contact"
   url = "/contact"
   weight = 20
+  
+#[[main]]
+#  name = "Projects"
+#  url = "#projects"
+#  weight = 30
 
 # Link to a PDF of your resume/CV from the menu.
 # To enable, copy your resume/CV to `static/files/cv.pdf` and uncomment the lines below.

@@ -8,8 +8,8 @@ headless = true  # This file represents a page section.
 active = true  # Activate this widget? true/false
 weight = 10  # Order that this section will appear.
 
-title = "everythingData"
-subtitle = "...with some tangents"
+title = "<h1 style='font-weight: bold;'> everythingData</h1>"
+subtitle = "<h3 style='font-weight: normal;'> ...with some tangents</h3>"
 
 [design]
   # Choose how many columns the section has. Valid values: 1 or 2.
@@ -44,13 +44,15 @@ subtitle = "...with some tangents"
 
 [advanced]
  # Custom CSS. 
- css_style = ""
+ css_style = "h1= {font-size: 1px;}"
  
  # CSS class.
  css_class = ""
 +++
 
-A blog on all things data plus a bit more!
+<br>
+
+A collection of articles covering many topics for data science.
 
 <br>
 <br>
