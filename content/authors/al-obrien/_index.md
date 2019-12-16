@@ -43,5 +43,5 @@ user_groups:
 - Visitors
 ---
 
-I am an infectious disease epidemiologist working at the Ministry of Health in Alberta, Canada. I have a background in infectious disease and have long nurtured an interest in statistics, programming, and data science. I am using this site to catalog topics of interest to me and hopefully others too!
+I am an epidemiologist working at the Ministry of Health in Alberta, Canada. I have a background in infectious disease and have long nurtured an interest in statistics, programming, and data science. I am using this site to catalog topics of interest to me and hopefully others too!
 

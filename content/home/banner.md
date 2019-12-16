@@ -52,7 +52,7 @@ subtitle = "<h3 style='font-weight: normal;'> ...with some tangents</h3>"
 
 <br>
 
-A collection of articles covering many topics for data science.
+A collection of articles primarily covering a variety of data topics, with a few minor diversions.
 
 <br>
 <br>
