@@ -1,0 +1,26 @@
+---
+title: Welcome to everythingData
+author: Allen O'Brien
+date: '2019-12-15'
+slug: welcome-to-everythingdata
+categories: []
+tags: [general]
+subtitle: ''
+summary: 'A test page'
+authors: []
+lastmod: '2019-12-15T23:06:40-07:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+**This is a test page**
+
+```{r}
+print('test')
+```
+
+
