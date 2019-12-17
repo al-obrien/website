@@ -8,7 +8,7 @@ headless = true  # This file represents a page section.
 active = true  # Activate this widget? true/false
 weight = 10  # Order that this section will appear.
 
-title = "<h1 style='font-weight: bold;'> everythingData</h1>"
+title = "<p style='font-weight: bold;'> everythingData</p>"
 subtitle = "<h3 style='font-weight: normal;'> ...with some tangents</h3>"
 
 [design]
@@ -29,7 +29,7 @@ subtitle = "<h3 style='font-weight: normal;'> ...with some tangents</h3>"
   # gradient_end = "SkyBlue"
   
   # Background image.
-  image = "headers/dataCentre2.jpg"  # Name of image in `static/img/`.
+  image = "headers/mountains.jpg"  # Name of image in `static/img/`.
   image_darken = 0.5  # Darken the image? Range 0-1 where 0 is transparent and 1 is opaque.
   image_size = "cover"  #  Options are `cover` (default), `contain`, or `actual` size.
   image_position = "left"  # Options include `left`, `center` (default), or `right`.
@@ -44,19 +44,16 @@ subtitle = "<h3 style='font-weight: normal;'> ...with some tangents</h3>"
 
 [advanced]
  # Custom CSS. 
- css_style = "h1= {font-size: 1px;}"
+ css_style = ""
  
  # CSS class.
  css_class = ""
 +++
-
-<br>
-
+<br/>
 A collection of articles primarily covering a variety of data topics, with a few minor diversions.
-
-<br>
-<br>
-
+<br/>
+<br/>
+<br/>
 
 
  
