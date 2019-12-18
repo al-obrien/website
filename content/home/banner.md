@@ -8,7 +8,7 @@ headless = true  # This file represents a page section.
 active = true  # Activate this widget? true/false
 weight = 10  # Order that this section will appear.
 
-title = "<p style='font-weight: bold;'> everythingData</p>"
+title = "<h1 style='font-weight: bold;'> everythingData</h1>"
 subtitle = "<h3 style='font-weight: normal;'> ...with some tangents</h3>"
 
 [design]

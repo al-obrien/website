@@ -14,11 +14,11 @@ menu_text_active = "#cdf9fa"
 menu_title = "#1d2b2e"
 
 # Backgrounds
+
+#dark_background = "#ebfaff"
+#dark_home_section_odd = "#ebfaff"
+#dark_home_section_even = "#ebfaff"
+
 background = "#ebfaff"
-dark_background = ""
-
-dark_home_section_odd = ""
-dark_home_section_even = ""
-
 home_section_odd = "#ebfaff"
 home_section_even = "#ebfaff"
