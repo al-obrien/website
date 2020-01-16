@@ -19,3 +19,12 @@ body.dark,
 .dark .home-section:nth-of-type(even) {
   background-color: #2b2b2b; 
 }
+
+// Adjust spacing within unordered lists for articles
+.article-style ul li p {
+  margin-bottom: 1px;
+//  padding: 0;
+}
+
+
+

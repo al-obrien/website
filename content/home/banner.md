@@ -9,7 +9,7 @@ active = true  # Activate this widget? true/false
 weight = 10  # Order that this section will appear.
 
 title = "<h1 style='font-weight: bold;'> everythingData</h1>"
-subtitle = "<h3 style='font-weight: normal;'> ...with some tangents</h3>"
+subtitle = "<h3 style='font-weight: normal; font-size: 22px;'> ...with some tangents</h3>"
 
 [design]
   # Choose how many columns the section has. Valid values: 1 or 2.
@@ -50,10 +50,11 @@ subtitle = "<h3 style='font-weight: normal;'> ...with some tangents</h3>"
  css_class = ""
 +++
 <br/>
-A collection of articles primarily covering a variety of data topics, with a few minor diversions.
+<br/>
+A collection of blog posts and articles on data analysis topics, with a focus on applications in the public health domain.
 <br/>
 <br/>
-<br/>
+
 
 
  

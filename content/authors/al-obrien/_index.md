@@ -1,6 +1,6 @@
 ---
 authors:
-- Allen
+- al-obrien
 bio: I am an epidemiologist with a passion for teaching and all things data.
 education:
   courses:
@@ -33,7 +33,7 @@ social:
   link: https://scholar.google.com/citations?user=ExLNVw8AAAAJ&hl=en&oi=aoJ
 - icon: github
   icon_pack: fab
-  link: https://github.com/al-obrien
+  link: https://github.com/al-obrien/website
 - icon: stack-overflow
   icon_pack: fab
   link: https://stackoverflow.com/users/4481570/al-obrien
