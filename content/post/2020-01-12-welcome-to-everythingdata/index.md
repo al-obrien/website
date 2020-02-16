@@ -43,7 +43,7 @@ Some readers (perhaps my future forgetful self) may wonder how I made this websi
 1. [Hugo documentation](https://github.com/gohugoio/hugoDocs)
 1. [Academic theme documentation](https://sourcethemes.com/academic/docs/)
 1. [blogdown - Creating Website with R Markdown](https://bookdown.org/yihui/blogdown/) by Yihui Xie, Amber Thomas, and Alison Presmanes Hill
-1. Mike Dane's [webpage and videos on Hugo](www.mikedane.com)
+1. Mike Dane's [webpage and videos on Hugo](https://www.mikedane.com)
 1. Freely usable images by [Upsplash](https://unsplash.com/)
 
 Now that the difficult part of launching and christening the website is complete (I had to drag myself out of customization tedium), the next post can be what we all care about: anything and everything about data!

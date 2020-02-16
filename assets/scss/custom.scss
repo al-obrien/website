@@ -1,5 +1,26 @@
 // Override this file to add your own SCSS styling.
 
+
+// Container sizes
+
+/*
+.container {
+    max-width: 90%;
+}
+*/
+.article-container {
+  max-width: 800px; //90%;
+  padding: 0 20px 0 20px;
+  margin: 0 auto 0 auto;
+}
+
+// Adjust heading sizes
+h1 {
+  font-size: 2rem;
+}
+
+// If want to change code colors, examine _code.scss and _variables.scss
+
 // Fix dark colors
 body.dark,
 .dark .docs-toc-link,
