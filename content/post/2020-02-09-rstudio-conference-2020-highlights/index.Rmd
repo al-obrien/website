@@ -90,7 +90,7 @@ With those comments out of the way, I will switch now to a more objective docume
       <figcaption>*Using `ggtext` to insert images and formatted text, by [Claus Wilke](https://raw.githubusercontent.com/wilkelab/ggtext/master/man/figures/README-unnamed-chunk-5-1.png).*</figcaption>
     </figure>  
 
-1. **Parallel Computing With R Using Foreach, Future, And Other Packages** (Bryan Lewis): My own projects have not typically needed the performance improvements of parallel processing. However, the unified framework within the `future` package has tempted me to reevaluate my work-flows. When I have looked at parallel processing options in R before, I was overwhelmed by the options, often dependent upon the operating system of choice. `future`, as stated on its CRAN web-page, provides "...distributed processing in R for Everyone"! 
+1. **Parallel Computing With R Using Foreach, Future, And Other Packages** (Bryan Lewis): My own projects have not typically needed the performance improvements of parallel processing. However, the unified framework within the `future` package has tempted me to reevaluate my work-flows. When I have looked at parallel processing options in R before, I was overwhelmed by the options, often dependent upon the operating system of choice. `future`, as stated on its CRAN web-page, provides "...distributed processing in R for everyone"! 
 
     Related links: [CRAN](https://cran.r-project.org/web/packages/future/index.html)
 
