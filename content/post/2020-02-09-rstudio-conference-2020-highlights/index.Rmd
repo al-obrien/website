@@ -9,7 +9,7 @@ tags:
   - R
 subtitle: ''
 summary: ''
-authors: []
+authors: [al-obrien]
 lastmod: '2020-02-15T13:41:41-07:00'
 featured: no
 image: 
@@ -46,7 +46,7 @@ With those comments out of the way, I will switch now to a more objective docume
 
 ## Breakout sessions
 
-1. **Deploying end-to-end data science with shiny, plumber, and pins** (Alex Gold, RStudio): My main takeaway from this presentation, besides how to deploy an application, was the use of the `pins` package. This was my first time hearing about pins and they have a very valuable purpose. Where data typically sits on a comfy server, models and smaller objects created from data also need a place to live. The `pins` package provides a method of storing objects, essentially a caching mechanism, for small objects. For instance, when updating a model daily or weekly, `pins` provides a simple way to store and retrieve the model for use within the application. Definitely worth looking into! 
+1. **Deploying end-to-end data science with shiny, plumber, and pins** (Alex Gold, RStudio): My main takeaway from this presentation, besides how to deploy an application, was the use of the `pins` package. This was my first time hearing about `pins` and they have a very valuable purpose. Where data typically sits on a comfy server, models and smaller objects created from data also need a place to live. The `pins` package provides a method of storing objects, essentially a caching mechanism, for small objects. For instance, when updating a model daily or weekly, `pins` provides a simple way to store and retrieve the model for use within the application. Definitely worth looking into! 
 
     Related links: [github](https://github.com/akgold/rsconf2020-deployment)
 
