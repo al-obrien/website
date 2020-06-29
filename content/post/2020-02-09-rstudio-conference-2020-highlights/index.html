@@ -9,7 +9,7 @@ tags:
   - R
 subtitle: ''
 summary: ''
-authors: []
+authors: [al-obrien]
 lastmod: '2020-02-15T13:41:41-07:00'
 featured: no
 image: 
@@ -41,7 +41,7 @@ I think many people experience this when they approach a modeling problem in the
 <div id="breakout-sessions" class="section level2">
 <h2>Breakout sessions</h2>
 <ol style="list-style-type: decimal">
-<li><p><strong>Deploying end-to-end data science with shiny, plumber, and pins</strong> (Alex Gold, RStudio): My main takeaway from this presentation, besides how to deploy an application, was the use of the <code>pins</code> package. This was my first time hearing about pins and they have a very valuable purpose. Where data typically sits on a comfy server, models and smaller objects created from data also need a place to live. The <code>pins</code> package provides a method of storing objects, essentially a caching mechanism, for small objects. For instance, when updating a model daily or weekly, <code>pins</code> provides a simple way to store and retrieve the model for use within the application. Definitely worth looking into!</p>
+<li><p><strong>Deploying end-to-end data science with shiny, plumber, and pins</strong> (Alex Gold, RStudio): My main takeaway from this presentation, besides how to deploy an application, was the use of the <code>pins</code> package. This was my first time hearing about <code>pins</code> and they have a very valuable purpose. Where data typically sits on a comfy server, models and smaller objects created from data also need a place to live. The <code>pins</code> package provides a method of storing objects, essentially a caching mechanism, for small objects. For instance, when updating a model daily or weekly, <code>pins</code> provides a simple way to store and retrieve the model for use within the application. Definitely worth looking into!</p>
 <p>Related links: <a href="https://github.com/akgold/rsconf2020-deployment">github</a></p></li>
 <li><p><strong>Practical plumber patterns</strong> (James Blair, RStudio): provided a compelling example of the progressive steps to deploy a data product at scale. He demonstrated how plumber code can be integrated directly within a package during deployment. As one tests their project’s R code within a package another set of tests can also be performed for plumber. Examples of how to capture log information and test execution time while scaling the product were also provided.</p>
 <p>Related links: <a href="https://github.com/blairj09/ppp">github</a></p></li>

@@ -1,0 +1,389 @@
+---
+title: "Tokyo Ramen: Mapping with OpenStreetMaps"
+author: al-obrien
+date: '2020-04-25'
+slug: tokyoramen
+categories: []
+tags:
+  - R
+  - geospatial
+subtitle: ''
+summary: ''
+authors: [al-obrien]
+lastmod: '2020-06-28T13:59:40-06:00'
+featured: no
+image:
+  caption: '<span>Photo by <a href="https://unsplash.com/@crystalsjo?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Crystal Jo</a> on <a href="/s/photos/ramen?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>'
+  focal_point: ''
+  preview_only: yes
+projects: []
+---
+
+
+
+<p>Due to the combination of physical distancing and my work supporting the analytics arm of Alberta’s COVID-19 pandemic response, I have been unable to visit some of my favorite ramen shop. Naturally, I have been thinking about ramen, usually of favorite locations in Tokyo. Another topic at the front of my mind has been mapping; one of my contributions to the COVID-19 response has been creating a seemingly endless supply of maps, most of which were cast into the fires of rejection…</p>
+<p><img src="https://media.giphy.com/media/9J92ARAauOQfdDoKlC/giphy.gif" height="400px" width="300px" /></p>
+<p>However, after several iterations and trying new tools, I was able to create some rather interesting maps, some of which have made it into use for the public. Most were built with the staple packages such as <code>ggplot2</code>, <code>leaflet</code>, <code>tmap</code>, and the like, but none of them had a unique visual appeal that I was hoping for. I wanted something to really showcase what can be done with open-source tools. This is when I stumbled across a blog post that used <strong>OpenStreetMaps (OSM)</strong> to create amazingly detailed and publication-ready <a href="https://ggplot2tutor.com/streetmaps/streetmaps/">streetmaps</a>. This post, and another by <a href="https://dominicroye.github.io/en/2018/accessing-openstreetmap-data-with-r/">Dominic Royé</a>, were my points of reference to get started on some new techniques. I had used OSM through various R packages starting in 2013 but due to API restrictions or lack of maintenance over the years, many of these packages have fallen out of use. This is not uncommon in the R ecosystem, which has a graveyard of abandoned packages. Fortunately, most have been replaced by powerful alternatives such as <a href="https://r-spatial.github.io/sf/index.html">sf (simple features)</a> and <a href="https://cran.r-project.org/web/packages/osmdata/vignettes/osmdata.html">osmdata</a>. When combined with <code>ggplot2</code>, or another plotting library of your choice, really impressive maps can be created.</p>
+<p>Although I used these newfound packages in my work tracking COVID-19 in high-resolution, these data-sets have obvious privacy concerns. As such, if we replace <em>COVID-19 deaths/cases</em> with <em>number of ramen seller</em> we get a similar map albeit with a less morbid message. The real challenge here was creating the base-map using OSM. The geocoded count data (i.e. contains information on lat/long coordinates) to superimpose on the map could easily be swapped out with a data-set of choice. So, how do we accomplish this? These are the overall steps taken:</p>
+<ul>
+<li>Install required packages</li>
+<li>Query OSM and layer all desired features</li>
+<li>Superimpose ramen data-set on base-map</li>
+<li>Make it pretty…</li>
+</ul>
+<div id="load-packages" class="section level2">
+<h2>Load packages</h2>
+<p>The three core packages used here are <code>ggplot2</code>, <code>sf</code>, and <code>osmdata</code> as they are integral to the mapping components. These all appear to be stable and work nicely together. They are also all under active development. Although several other packages could be swapped out to one’s own preference, I have selected primarily <code>tidyverse</code> packages.</p>
+<pre class="r"><code># Packages to make data munging easier...
+library(&#39;magrittr&#39;)
+library(&#39;stringr&#39;)
+library(&#39;dplyr&#39;)
+library(&#39;tidyr&#39;)
+library(&#39;scales&#39;)
+
+# Packages for fancy maps...
+library(&#39;sf&#39;)
+library(&#39;ggplot2&#39;)
+library(&#39;osmdata&#39;)</code></pre>
+</div>
+<div id="create-bounding-box" class="section level2">
+<h2>Create bounding box</h2>
+<p>As our goal is to map Tokyo ramen sellers, we first need to create a bounding-box specific to this location. There are two main ways this can be performed. First, we can use the <code>getbb()</code> function from <code>osmdata</code> which returns a vector of lat/long coordinates. However, I found this less than ideal for Greater Tokyo as the shape, which includes several islands in the pacific, is not well defined by default bounding-box. In essence, the bounding box is too large, and I only had interest in the Tokyo core. Instead I used the second more manual method of defining the bounding box myself using an <a href="https://www.openstreetmap.org/export#map=9/35.6986/140.2707">online tool from OSM</a>. I then passed the coordinates to the <code>bbox</code> parameters of <code>opq()</code> which will query OSM for features in that defined area.</p>
+<pre class="r"><code># Manually define the bounding-box for Tokyo core
+loc_boundary &lt;- c(139.6867, 35.6238, 139.8642, 35.7643)</code></pre>
+</div>
+<div id="query-osm-for-map-features" class="section level2">
+<h2>Query OSM for map features</h2>
+<p>Now that we have Tokyo’s coordinates, we can use that to pull out select geographic features. This works by providing <a href="https://wiki.openstreetmap.org/wiki/Map_Features">key-value pairs</a> to the <code>add_osm_feature()</code> function which will translate the input to an <a href="https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL">overpass API query</a>. This abstraction is welcome as the overpass query syntax is not easily picked up in an afternoon. If you want to see the actual overpass query you can extract the string using <code>opq_string()</code>. You can also observe available values for a particular feature key using <code>available_tags()</code>. After some trial and error you’ll know which values you want in your map.</p>
+<p>After digging through the available features, we’ll extract those for the major highways and convert them to an <code>sf</code> object. The request may fail on the first attempt to query the server, but should work on the second or third attempt.</p>
+<pre class="r"><code># Large roads
+large_roads &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &quot;highway&quot;, 
+                  value = c(&quot;motorway&quot;, &quot;primary&quot;, &quot;secondary&quot;,&#39;tertiary&#39;)) %&gt;%
+  osmdata_sf</code></pre>
+<p>Let’s see what this looks like using <code>ggplot2</code>. This should be easy with <code>geom_sf()</code> since we already converted the OSM data into an <code>sf</code> object. Depending on the feature, the information needed to map will be stored in various formats; for roads, this is typically as <code>lines</code>, but <code>multilines</code>, <code>points</code>, and <code>polygons</code> are also possible depending on the feature selected.</p>
+<pre class="r"><code># Create ggplot and add road layer
+tokyo_ramen &lt;- ggplot() +
+  geom_sf(data = large_roads$osm_lines)
+
+tokyo_ramen</code></pre>
+<p><img src="/post/2020-04-25-tokyoramen/index_files/figure-html/unnamed-chunk-5-1.png" width="100%" /></p>
+<p>Building on this, we can now add smaller roads to see the complexity of Tokyo’s criss-crossed concrete landscape…</p>
+<pre class="r"><code># Small roads query
+small_roads &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &quot;highway&quot;, 
+                  value = c(&#39;unclassified&#39;, &#39;residential&#39;, &quot;service&quot;)) %&gt;%
+  osmdata_sf
+
+# Add to plot
+tokyo_ramen &lt;- tokyo_ramen +
+  geom_sf(data = small_roads$osm_lines)</code></pre>
+<p>As a bay city, there are also many waterways in Tokyo which can also be accessed through OSM. A mixture of both <code>osm_lines</code> and <code>osm_polygons</code> are needed in this case. Let’s add those as well…</p>
+<pre class="r"><code># Small waterways
+waterway &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &#39;waterway&#39;,
+                  value = c(&#39;canal&#39;)) %&gt;%
+  osmdata_sf
+
+# Small rivers and banks (lines)
+waterway_river &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &#39;waterway&#39;,
+                  value = c(&#39;river&#39;, &#39;riverbank&#39;)) %&gt;%
+  osmdata_sf
+
+# Polygons for rivers (query is chained for &#39;and&#39; operation)
+waterbody &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &#39;natural&#39;,
+                  value = c(&#39;water&#39;)) %&gt;%
+  add_osm_feature(key = &#39;water&#39;,
+                  value = c(&#39;river&#39;)) %&gt;%
+  osmdata_sf 
+
+# Add to plot
+tokyo_ramen &lt;- tokyo_ramen +
+  geom_sf(data = waterway$osm_lines) +
+  geom_sf(data = waterway_river$osm_lines) +
+  geom_sf(data = waterbody$osm_polygons)
+
+tokyo_ramen</code></pre>
+<p><img src="/post/2020-04-25-tokyoramen/index_files/figure-html/unnamed-chunk-7-1.png" width="100%" /></p>
+<p>At this point, we have a <em>truly ugly</em> blob of features and the waterways have extended beyond the Tokyo core…</p>
+<p><img src="https://media.giphy.com/media/yhLV2DGTLDRCw/giphy.gif" width="350px" /></p>
+<p>So, let’s start some of the formatting to make this a bit more visually pleasing. Since each feature has its own layer it is easy to customize each to our liking. To ensure <code>aes()</code> elements are not inherited, we set it to <code>FALSE</code> in each <code>geom_sf()</code>.</p>
+<pre class="r"><code># Define colors
+colour_water &lt;- &#39;#5cbef4&#39;
+colour_large_road &lt;- &quot;#b8ab66&quot;
+colour_small_road &lt;- &quot;#766759&quot;
+
+# Ensure bounding box is maintained
+tokyo_ramen &lt;- ggplot() +
+  xlim(loc_boundary[c(1,3)]) +
+  ylim(loc_boundary[c(2,4)])
+
+# Format feature layers
+tokyo_ramen &lt;- tokyo_ramen +  
+  geom_sf(data = large_roads$osm_lines,
+          color = colour_large_road,
+          size = .25,
+          alpha = .8,
+          inherit.aes = F)+
+  geom_sf(data = small_roads$osm_lines,
+          color = colour_small_road,
+          size = .05,
+          alpha = 0.1,
+          inherit.aes = F) +
+  geom_sf(data = waterway$osm_lines,
+          color = colour_water,
+          size = 1, 
+          inherit.aes = F) +
+  geom_sf(data = waterway_river$osm_lines,
+          color = colour_water,
+          inherit.aes = F) +
+  geom_sf(data = waterbody$osm_polygons,
+          color = colour_water,
+          fill = colour_water) 
+
+# Adjust the overall theme, add custom changes
+tokyo_ramen &lt;- tokyo_ramen +  
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = &quot;#282828&quot;),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        axis.line = element_blank(),
+        panel.grid = element_blank())
+
+tokyo_ramen</code></pre>
+<p><img src="/post/2020-04-25-tokyoramen/index_files/figure-html/unnamed-chunk-8-1.png" width="100%" /></p>
+<p>This is looking much better but there is one glaring feature missing, the water for the coastline in the bottom right of the map. This is a bit trickier than simply adding a feature from OSM. The coastline feature has a <code>line</code> format and will not create a complete polygon to represent the body of water. Thankfully, there are some solutions readily available to us online, such as one outlined by <a href="https://altran-data-analytics.netlify.app/2017/11/09/2017-11-09-creating-maps-with-coastlines/">Florian Zenoni</a>. The <code>st</code> package provides several functions such as <code>st_line_merge()</code> and <code>st_cast()</code> to accomplish this.</p>
+<pre class="r"><code># Coastline will help fill the area in the bay
+coastline &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &#39;natural&#39;,
+                  value = c(&#39;coastline&#39;)) %&gt;%
+  osmdata_sf
+
+# Convert `line` to `multilines`, and then convert to a `polygon`
+coastline &lt;- coastline$osm_lines %&gt;% st_union %&gt;% st_line_merge() %&gt;% sf::st_cast(&#39;POLYGON&#39;)
+
+# Add to map
+tokyo_ramen &lt;- tokyo_ramen +
+    geom_sf(data = coastline,
+          fill = colour_water,
+          color = colour_water,
+          inherit.aes = F)
+
+tokyo_ramen</code></pre>
+<p><img src="/post/2020-04-25-tokyoramen/index_files/figure-html/unnamed-chunk-9-1.png" width="100%" /></p>
+</div>
+<div id="superimposing-ramen-data" class="section level2">
+<h2>Superimposing ramen data</h2>
+<p>Our base-map is looking good but, as pretty as it looks, it doesn’t tell me anything about <em>ramen</em>. After exploring available OSM features, there is one under <code>amenity</code> for <code>restaurant</code>s. With a bit of basic string manipulation we can pull out all restaurants that have the mention of <em>ramen</em>. Using their coordinates, we create a dataset of these points we bin and plot them into square tiles using <code>geom_bing2d()</code>. After some minor fiddling with the scale features, formatting, and tightening the margins with <code>coord_sf()</code>, we finally see the density of ramen shops!</p>
+<pre class="r"><code># Grab features for restaurants
+restaurant &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &#39;amenity&#39;,value =   &#39;restaurant&#39;) %&gt;%
+  osmdata_sf
+
+# Grab all points that feature the word &#39;ramen&#39;.
+ramen &lt;- restaurant$osm_points %&gt;% 
+  mutate(cuisine = str_to_lower(str_trim(cuisine))) %&gt;%
+  filter(str_detect(cuisine, &#39;ramen&#39;)) %&gt;%
+  select(geometry, cuisine)
+
+# Create a dataset for all the ramen points and their coordinates
+ramen &lt;- ramen %&gt;% 
+  as_tibble() %&gt;%
+  mutate(id = names(geometry)) %&gt;%
+  unnest(&#39;geometry&#39;) %&gt;% 
+  group_by(id) %&gt;%
+  mutate(coord = c(&#39;long&#39;, &#39;lat&#39;)) %&gt;%
+  pivot_wider(names_from = coord, values_from = geometry)
+
+# Add to map
+tokyo_ramen &lt;- tokyo_ramen +
+  geom_bin2d(data = ramen, aes(x = long, y = lat), color = &#39;white&#39;, alpha = 0.9) +
+  scale_fill_gradient(low = &#39;white&#39;,
+                      high =  &#39;#d25050&#39;, 
+                      breaks = pretty_breaks(),
+                      guide = guide_colourbar(title = &#39;Ramen shops&#39;, 
+                                              title.position =&quot;top&quot;,
+                                              ticks.colour = &#39;transparent&#39;,
+                                              title.theme = element_text(color = &#39;snow1&#39;, face = &#39;bold&#39;),
+                                              label.theme = element_text(color = &#39;snow1&#39;, face = &#39;bold&#39;, size = 10),
+                                              label.position = &#39;bottom&#39;,
+                                              direction = &quot;horizontal&quot;, 
+                                              title.hjust = 0.5,
+                                              barwidth = 10, barheight = 0.55)) +
+  theme(legend.position = &#39;bottom&#39;,
+        legend.box = &#39;horizontal&#39;,
+        legend.box.margin = margin(t = 15)) +
+  coord_sf(expand = F)
+
+tokyo_ramen</code></pre>
+<p><img src="/post/2020-04-25-tokyoramen/index_files/figure-html/unnamed-chunk-10-1.png" width="100%" /></p>
+<p>Now, the first one may think when they see this complete map: “that seems to be fewer shops than I would expect”. And I believe you would be right. In 2016, there is an estimated <a href="https://books.google.ca/books?id=2LXMDAAAQBAJ&amp;pg=PT384&amp;redir_esc=y#v=onepage&amp;q&amp;f=false">10,000 ramen shops</a> in Japan, many of which I would expect to be in the Tokyo core. As such, this brings into question the quality of the <code>amenity</code> data available in OSM. After a quick search, OSM data has been known to suffer from <a href="https://link.springer.com/article/10.1007/s10708-019-10035-z">several biases</a>, one of which must include a rather incomplete source of restaurant locations. Although there may be better alternative data-sources, I think this map provides a good dense of what we aimed to accomplish, with some room for improvement.</p>
+</div>
+<div id="all-together-now" class="section level2">
+<h2>All together now…</h2>
+<p>For convenience, the code below is the complete set required to recreate the map with superimposed ramen shop density. Although I am sure the formatting and styling could be taken even further, I think it is good for now.</p>
+<pre class="r"><code>#---------------------#
+# Setup
+#---------------------#
+
+# Packages to make data munging easier...
+library(&#39;magrittr&#39;)
+library(&#39;stringr&#39;)
+library(&#39;dplyr&#39;)
+library(&#39;tidyr&#39;)
+library(&#39;scales&#39;)
+
+# Packages for fancy maps...
+library(&#39;sf&#39;)
+library(&#39;ggplot2&#39;)
+library(&#39;osmdata&#39;)
+
+# Manually define the bounding-box for Tokyo core
+loc_boundary &lt;- c(139.6867, 35.6238, 139.8642, 35.7643)
+
+# Define colors
+colour_water &lt;- &#39;#5cbef4&#39;
+colour_large_road &lt;- &quot;#b8ab66&quot;
+colour_small_road &lt;- &quot;#766759&quot;
+
+
+#---------------------#
+# Query OSM
+#---------------------#
+
+# Large roads
+large_roads &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &quot;highway&quot;, 
+                  value = c(&quot;motorway&quot;, &quot;primary&quot;, &quot;secondary&quot;,&#39;tertiary&#39;)) %&gt;%
+  osmdata_sf
+
+# Small roads query
+small_roads &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &quot;highway&quot;, 
+                  value = c(&#39;unclassified&#39;, &#39;residential&#39;, &quot;service&quot;)) %&gt;%
+  osmdata_sf
+
+# Small waterways
+waterway &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &#39;waterway&#39;,
+                  value = c(&#39;canal&#39;)) %&gt;%
+  osmdata_sf
+
+# Small rivers and banks (lines)
+waterway_river &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &#39;waterway&#39;,
+                  value = c(&#39;river&#39;, &#39;riverbank&#39;)) %&gt;%
+  osmdata_sf
+
+# Polygons for rivers (query is chained for &#39;and&#39; operation)
+waterbody &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &#39;natural&#39;,
+                  value = c(&#39;water&#39;)) %&gt;%
+  add_osm_feature(key = &#39;water&#39;,
+                  value = c(&#39;river&#39;)) %&gt;%
+  osmdata_sf 
+
+# Coastline will help fill the area in the bay
+coastline &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &#39;natural&#39;,
+                  value = c(&#39;coastline&#39;)) %&gt;%
+  osmdata_sf
+
+# Convert `line` to `multilines`, and then convert to a `polygon`
+coastline &lt;- coastline$osm_lines %&gt;% st_union %&gt;% st_line_merge() %&gt;% sf::st_cast(&#39;POLYGON&#39;)
+
+# Grab features for restaurants
+restaurant &lt;- opq(loc_boundary) %&gt;% 
+  add_osm_feature(key = &#39;amenity&#39;,value =   &#39;restaurant&#39; ) %&gt;%
+  osmdata_sf
+
+
+#---------------------#
+# Ramen dataset
+#---------------------#
+
+# Grab all points that feature the word &#39;ramen&#39;.
+ramen &lt;- restaurant$osm_points %&gt;% 
+  mutate(cuisine = str_to_lower(str_trim(cuisine))) %&gt;%
+  filter(str_detect(cuisine, &#39;ramen&#39;)) %&gt;%
+  select(geometry, cuisine)
+
+# Create a dataset for all the ramen points and their coordinates
+ramen &lt;- ramen %&gt;% 
+  as_tibble() %&gt;%
+  mutate(id = names(geometry)) %&gt;%
+  unnest(&#39;geometry&#39;) %&gt;% 
+  group_by(id) %&gt;%
+  mutate(coord = c(&#39;long&#39;, &#39;lat&#39;)) %&gt;%
+  pivot_wider(names_from = coord, values_from = geometry)
+
+
+#---------------------#
+# Create map
+#---------------------#
+
+# Ensure bounding box is maintained
+tokyo_ramen &lt;- ggplot() +
+  xlim(loc_boundary[c(1,3)]) +
+  ylim(loc_boundary[c(2,4)])
+
+# Add and format feature layers
+tokyo_ramen &lt;- tokyo_ramen + 
+  geom_sf(data = large_roads$osm_lines,
+          color = colour_large_road,
+          size = .25,
+          alpha = .8,
+          inherit.aes = F) +
+  geom_sf(data = small_roads$osm_lines,
+          color = colour_small_road,
+          size = .05,
+          alpha = 0.1,
+          inherit.aes = F) +
+  geom_sf(data = waterway$osm_lines,
+          color = colour_water,
+          size = 1, 
+          inherit.aes = F) +
+  geom_sf(data = waterway_river$osm_lines,
+          color = colour_water,
+          inherit.aes = F) +
+  geom_sf(data = waterbody$osm_polygons,
+          color = colour_water,
+          fill = colour_water) +
+  geom_sf(data = coastline,
+          fill = colour_water,
+          color = colour_water,
+          inherit.aes = F)
+
+# Add the ramen shops
+tokyo_ramen &lt;- tokyo_ramen +
+  geom_bin2d(data = ramen, aes(x = long, y = lat), color = &#39;white&#39;, alpha = 0.9) +
+  scale_fill_gradient(low = &#39;white&#39;,
+                      high =  &#39;#d25050&#39;, 
+                      breaks= pretty_breaks(),
+                      guide = guide_colourbar(title = &#39;Ramen sellers&#39;, 
+                                              title.position =&quot;top&quot;,
+                                              ticks.colour = &#39;transparent&#39;,
+                                              title.theme = element_text(color = &#39;snow1&#39;, face = &#39;bold&#39;),
+                                              label.theme = element_text(color = &#39;snow1&#39;, face = &#39;bold&#39;, size = 10),
+                                              label.position = &#39;bottom&#39;,
+                                              direction = &quot;horizontal&quot;, 
+                                              title.hjust = 0.5,
+                                              barwidth = 10, barheight = 0.55))
+
+# Adjust theme
+tokyo_ramen &lt;- tokyo_ramen +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = &quot;#282828&quot;),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        axis.line = element_blank(),
+        panel.grid = element_blank(),
+        legend.position = &#39;bottom&#39;,
+        legend.box = &#39;horizontal&#39;,
+        legend.box.margin = margin(t = 15)) +
+  coord_sf(expand = F)</code></pre>
+</div>
