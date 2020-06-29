@@ -82,7 +82,7 @@ large_roads <- opq(loc_boundary) %>%
 ```
 
 Let's see what this looks like using `ggplot2`. This should be easy with `geom_sf()` since we already converted the OSM data into an `sf` object. Depending on the feature, the information needed to map will be stored in various formats; for roads, this is typically as `lines`, but `multilines`, `points`, and `polygons` are also possible depending on the feature selected.
-```{r, out.width='100%', crop=TRUE}
+```{r, out.width='100%', crop = TRUE}
 # Create ggplot and add road layer
 tokyo_ramen <- ggplot() +
   geom_sf(data = large_roads$osm_lines)
@@ -104,7 +104,7 @@ tokyo_ramen <- tokyo_ramen +
 ```
 
 As a bay city, there are also many waterways in Tokyo which can also be accessed through OSM. A mixture of both `osm_lines` and `osm_polygons` are needed in this case. Let's add those as well...
-```{r, out.width='100%', crop = T}
+```{r, out.width='100%'}
 # Small waterways
 waterway <- opq(loc_boundary) %>% 
   add_osm_feature(key = 'waterway',
@@ -140,7 +140,7 @@ At this point, we have a *truly ugly* blob of features and the waterways have ex
 
 So, let's start some of the formatting to make this a bit more visually pleasing. Since each feature has its own layer it is easy to customize each to our liking. To ensure `aes()` elements are not inherited, we set it to `FALSE` in each `geom_sf()`.
 
-```{r, out.width='100%', crop = T}
+```{r, out.width='100%', crop = TRUE}
 # Define colors
 colour_water <- '#5cbef4'
 colour_large_road <- "#b8ab66"
@@ -189,7 +189,7 @@ tokyo_ramen
 
 This is looking much better but there is one glaring feature missing, the water for the coastline in the bottom right of the map. This is a bit trickier than simply adding a feature from OSM. The coastline feature has a `line` format and will not create a complete polygon to represent the body of water. Thankfully, there are some solutions readily available to us online, such as one outlined by [Florian Zenoni](https://altran-data-analytics.netlify.app/2017/11/09/2017-11-09-creating-maps-with-coastlines/). The `st` package provides several functions such as `st_line_merge()` and `st_cast()` to accomplish this.
 
-```{r, out.width='100%', crop = T}
+```{r, out.width='100%', crop = TRUE}
 # Coastline will help fill the area in the bay
 coastline <- opq(loc_boundary) %>% 
   add_osm_feature(key = 'natural',
@@ -212,7 +212,7 @@ tokyo_ramen
 ## Superimposing ramen data
 
 Our base-map is looking good but, as pretty as it looks, it doesn't tell me anything about *ramen*. After exploring available OSM features, there is one under `amenity` for `restaurant`s. With a bit of basic string manipulation we can pull out all restaurants that have the mention of *ramen*. Using their coordinates, we create a dataset of these points we bin and plot them into square tiles using `geom_bing2d()`. After some minor fiddling with the scale features, formatting, and tightening the margins with `coord_sf()`, we finally see the density of ramen shops! 
-```{r , out.width='100%', crop = T, dpi = 350}
+```{r , out.width='100%', crop = TRUE, dpi = 350}
 # Grab features for restaurants
 restaurant <- opq(loc_boundary) %>% 
   add_osm_feature(key = 'amenity',value =	'restaurant') %>%
