@@ -39,7 +39,7 @@ projects: []
 <h1>Set up document</h1>
 <p>First we will create an R Markdown document using the <code>bookdown::html_document2</code> output. Other HTML outputs could work, but this version has some extra features available through <a href="https://bookdown.org/yihui/bookdown/a-single-document.html"><code>bookdown</code></a>. Your <code>YAML</code> header may look something like the following:</p>
 <pre><code>---
-title: &quot;Untitled&quot;
+title: &quot;Tile Info Test&quot;
 author: &quot;Allen OBrien&quot;
 date: &quot;6/11/2020&quot;
 output: 
@@ -79,7 +79,7 @@ library(fontawesome)
    &lt;span&gt;Details&lt;/span&gt; 
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
-<p>Although it wont look like it yet, this code will create two ‘tiles’. Within each nested <code>&lt;div&gt; &lt;\div&gt;</code>, the <code>&lt;span&gt; &lt;\span&gt;</code> tags contain information we want to highlight. Being within an R Markdown document it is easy to avoid hard-coding information by adding in-line R code <code>`r {code}`</code> within the HTML tags. We can also set styling to the <code>background</code> through some in-line CSS.</p>
+<p>Although it won’t look like it yet, this code will create two ‘tiles’. Within each nested <code>&lt;div&gt; &lt;\div&gt;</code>, the <code>&lt;span&gt; &lt;\span&gt;</code> tags contain information we want to highlight. Being within an R Markdown document it is easy to avoid hard-coding information by adding in-line R code <code>`r {code}`</code> within the HTML tags. We can also set styling to the <code>background</code> through some in-line CSS.</p>
 <p><img src="html_only.jpg" /></p>
 <p>If you want an icon included, try adding an additional <code>&lt;span&gt;</code> with the associated R code (i.e. using <code>fontawesome::fa()</code>) or Unicode (e.g. <code>knitr::asis_output('\U26b1')</code>:</p>
 <pre><code>&lt;div&gt;
@@ -252,7 +252,7 @@ library(fontawesome)
 <div id="the-functionality---javascript" class="section level2">
 <h2>The functionality - JavaScript</h2>
 <p>The final component is to allow the information tiles to act as navigation buttons, taking users to the tab with additional details related to the tile. Like before, the associated JavaScript code can be either sourced as a separate file through the <code>YAML</code> header, or added as a specific chunk, as done here. The concept is simple, once the page is loaded each tile will have an <code>on-click</code> event function that will navigate the Document Object Model (DOM) and reveal the tab of interest. The tiles and tabs are tracked by a unique <code>id</code> (prefixed with <code>#</code>); we already assigned the tiles an <code>id</code> and the tabset headers in the R Markdown file should match the targetdestination (in this case, <em>Report Details</em> will have the <em>#report-details</em> <code>id</code>). The popular <a href="https://jquery.com">jQuery</a> library is used here but vanilla JavaScript can achieve the same effect.</p>
-<pre class="js"><code> ```{js, echo = FALSE}
+<pre class="js"><code>```{js, echo = FALSE}
 
 // Set destination for clicks on the id tabs after page is ready
 $(document).ready ( function () {
@@ -364,7 +364,7 @@ library(fontawesome)
 }
 ```
 
- ```{js, echo = FALSE}
+```{js, echo = FALSE}
 
 // Set destination for clicks on the id tabs after page is ready
 $(document).ready ( function () {

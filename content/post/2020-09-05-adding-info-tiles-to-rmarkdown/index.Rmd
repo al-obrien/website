@@ -41,7 +41,7 @@ This feature can be created directly within the R Markdown document in just a fe
 First we will create an R Markdown document using the `bookdown::html_document2` output. Other HTML outputs could work, but this version has some extra features available through [`bookdown`](https://bookdown.org/yihui/bookdown/a-single-document.html). Your `YAML` header may look something like the following:
 ````
 ---
-title: "Untitled"
+title: "Tile Info Test"
 author: "Allen OBrien"
 date: "6/11/2020"
 output: 
@@ -94,7 +94,7 @@ The underlying structure for all the tiles is made with HTML, upon which formatt
 </div>
 ````
 
-Although it wont look like it yet, this code will create two 'tiles'. Within each nested `<div> <\div>`, the `<span> <\span>` tags contain information we want to highlight. Being within an R Markdown document it is easy to avoid hard-coding information by adding in-line R code `` `r knitr::inline_expr("{code}")` `` within the HTML tags. We can also set styling to the `background` through some in-line CSS.
+Although it won't look like it yet, this code will create two 'tiles'. Within each nested `<div> <\div>`, the `<span> <\span>` tags contain information we want to highlight. Being within an R Markdown document it is easy to avoid hard-coding information by adding in-line R code `` `r knitr::inline_expr("{code}")` `` within the HTML tags. We can also set styling to the `background` through some in-line CSS.
 
 ![](html_only.jpg)
 
@@ -239,7 +239,7 @@ The final component is to allow the information tiles to act as navigation butto
 
 
 ````js
-`r '' ` ```{js, echo = FALSE}
+`r '' ````{js, echo = FALSE}
 
 // Set destination for clicks on the id tabs after page is ready
 $(document).ready ( function () {
@@ -354,7 +354,7 @@ library(fontawesome)
 }
 ```
 
-`r '' ` ```{js, echo = FALSE}
+`r '' ````{js, echo = FALSE}
 
 // Set destination for clicks on the id tabs after page is ready
 $(document).ready ( function () {
