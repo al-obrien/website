@@ -30,7 +30,7 @@ projects: []
 </div>
 <div id="customized-info-tiles-in-r-markdown" class="section level2">
 <h2>Customized info tiles in R Markdown</h2>
-<p>One example customization is creating interactive information tiles that act both as report highlights and navigation aides. Although <code>ggplot2</code> can get pretty close, the result is a static image, and using something like <a href="https://shiny.rstudio.com">Shiny</a> may seem excessive or even unsuitable if the final HTML document needs to work offline for non-R users. This narrows our toolbox to languages that work directly in the browser. Several approaches could be used, such as leveraging frameworks like <a href="https://css-tricks.com/snippets/css/complete-guide-grid/">CSS Grid</a> and <a href="https://reactjs.org">React</a> but for our purpose, there should be no reason why we cannot simply use a combination of basic HTML, CSS and JavaScript. Even a quick Google search will bring up an assortment of <a href="https://stackoverflow.com/questions/35656195/creating-tiles-with-divs">starting examples</a> to get started.</p>
+<p>One example customization is creating interactive information tiles that act both as report highlights and navigation aides. Although <code>ggplot2</code> can get pretty close, the result is a static image, and using something like <a href="https://shiny.rstudio.com">Shiny</a> may seem excessive or even unsuitable if the final HTML document needs to work offline for non-R users. This narrows our toolbox to languages that work directly in the browser. Several approaches could be used, such as leveraging frameworks like <a href="https://css-tricks.com/snippets/css/complete-guide-grid/">CSS Grid</a> and <a href="https://reactjs.org">React</a> but for our purpose there should be no reason why we cannot simply use a combination of basic HTML, CSS and JavaScript. Even a quick Google search will bring up an assortment of <a href="https://stackoverflow.com/questions/35656195/creating-tiles-with-divs">starting examples</a> to get started.</p>
 <p>Let’s assume you want to create a large report with <a href="https://bookdown.org/yihui/rmarkdown/html-document.html#tabbed-sections">tabbed sections</a>. R Markdown leverages libraries such as Bootstrap to make some of these features possible. To further organize large reports, one option is to provide key highlights in a series of information tiles, which can also act as navigation buttons. For example, this is what was used for Alberta Health’s daily reporting on COVID-19:</p>
 <p><img src="tileInteraction.gif" /></p>
 <p>This feature can be created directly within the R Markdown document in just a few steps.</p>
@@ -53,15 +53,13 @@ knitr::opts_chunk$set(echo = TRUE)
 library(fontawesome)
 ```</code></pre>
 <p><code>fontawesome</code> is an optional addition, in case you want to include graphics in the information tiles. Now, create a tabset report with a section for the highlights and as many others needed for your respective report.</p>
-<pre class="r"><code>```{r}
-# COVID-19 in Alberta  {- .tabset .tabset-fade .tabset-pills}
+<pre class="r"><code># COVID-19 in Alberta  {- .tabset .tabset-fade .tabset-pills}
 
 ## Highlights {-}
 
 ## Report Details {-}
 
-# {-}
-```</code></pre>
+# {-}</code></pre>
 <p>At this point you may already have lost interest and wonder how much longer this torment will continue before you see the final product and code…</p>
 <p><img src="https://media.giphy.com/media/xT9KVmINRKGsIzd0YM/giphy.gif" /></p>
 <p>If you care not for the details, skip to the end to see the final <a href="#example-template">example template</a>.</p>
