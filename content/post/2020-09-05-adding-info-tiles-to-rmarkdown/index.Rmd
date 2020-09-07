@@ -64,7 +64,7 @@ library(fontawesome)
 
 ## Highlights {-}
 
-## Report Details {-}
+## First Content Tab {-}
 
 # {-}
 ````
@@ -224,6 +224,8 @@ The styles now need to be associated with the HTML structure, which is done by a
 </div>
 ````
 
+After adding a few more tiles, you will have something akin to the following...
+
 ![](with_css.jpg)  
 
 Collectively, we now have tiles that are much easier on the eyes but they still require some interactivity!
@@ -233,7 +235,7 @@ Collectively, we now have tiles that are much easier on the eyes but they still 
 
 ## The functionality - JavaScript
 
-The final component is to allow the information tiles to act as navigation buttons, taking users to the tab with additional details related to the tile. Like before, the associated JavaScript code can be either sourced as a separate file through the `YAML` header, or added as a specific chunk, as done here. The concept is simple, once the page is loaded each tile will have an `on-click` event function that will navigate the Document Object Model (DOM) and reveal the tab of interest. The tiles and tabs are tracked by a unique `id` (prefixed with `#`); we already assigned the tiles an `id` and the tabset headers in the R Markdown file should match the targetdestination (in this case, *Report Details* will have the *#report-details* `id`). The popular [jQuery](https://jquery.com) library is used here but vanilla JavaScript can achieve the same effect. 
+The final component is to allow the information tiles to act as navigation buttons, taking users to the tab with additional details related to the tile. Like before, the associated JavaScript code can be either sourced as a separate file through the `YAML` header, or added as a specific chunk, as done here. The concept is simple, once the page is loaded each tile will have an `on-click` event function that will navigate the Document Object Model (DOM) and reveal the tab of interest. The tiles and tabs are tracked by a unique `id` (prefixed with `#`); we already assigned the tiles an `id` and the tabset headers in the R Markdown file should match the targetdestination (in this case, *First Content Tab* will have the *#first-content-tab* `id`). The popular [jQuery](https://jquery.com) library is used here but vanilla JavaScript can achieve the same effect. 
 
 
 ````js
@@ -244,7 +246,7 @@ $(document).ready ( function () {
 
 // When tile 1 (#tile1) is clicked, navigate to the report-details tab.
 $( "#tile1" ).on( "click", function() {
-$('.nav-pills li a[href="#report-details"]').tab('show');
+$('.nav-pills li a[href="#first-content-tab"]').tab('show');
 });
 
 // Repeat for other tiles, or create a function/loop to reduce code
@@ -359,7 +361,7 @@ $(document).ready ( function () {
 
 // When tile 1 (#tile1) is clicked, navigate to the report-details tab.
 $( "#tile1" ).on( "click", function() {
-$('.nav-pills li a[href="#report-details"]').tab('show');
+$('.nav-pills li a[href="#first-content-tab"]').tab('show');
 });
 
 // Repeat for other tiles, or create a function/loop to reduce code
@@ -383,7 +385,7 @@ $('.nav-pills li a[href="#report-details"]').tab('show');
   </div>
 </div>
 
-## Report Details {-}
+## First Content Tab {-}
 
 # {-}
 
