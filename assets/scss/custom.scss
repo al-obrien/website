@@ -17,6 +17,15 @@
 // Adjust heading sizes
 h1 {
   font-size: 2rem;
+  //font-weight: bold;
+}
+
+h2 {
+  //font-weight: bold;
+}
+
+h3 {
+  font-weight: 400;
 }
 
 // If want to change code colors, examine _code.scss and _variables.scss
@@ -46,6 +55,71 @@ body.dark,
   margin-bottom: 1px;
 //  padding: 0;
 }
+
+/* Table adjustments */
+// Caption position
+caption {
+  caption-side: top;
+}
+
+.dark caption {
+  color: rgb(248, 248, 242);
+}
+
+
+// Adjust color of text in tables (align with other night theme text)
+.dark table {
+  color: rgb(248, 248, 242);
+}
+
+table {
+  display: table;
+}
+/* End of table adjustments */
+
+
+/* Code folding */
+
+/* Each code block button */
+.code-folding-btn { 
+  margin-bottom: 4px; 
+	float: right;
+}
+
+.row-code, .row-code-collapsed { 
+    display: flex;
+    border-bottom: dashed 1px #d7d7d7;
+}
+
+// Alternative but needs other Jquery
+/*.row-code-collapsed {
+//  margin: 0 0 10px auto;
+}
+*/
+
+// To give a gap to the collapsed code
+/*.collapse:not(.show){
+    display:     block;
+    overflow:    hidden;
+    height:      0; // if you want it to start collapsed, you need this, else remove this
+    margin: 0 0 10px auto;
+}*/
+  
+.col-md-12 {
+    margin: 0 0 0 auto;
+}
+
+/* Main show/hide button */
+#code-folding-buttons {float: right;}
+
+#code-folding-buttons .dropdown-menu {
+    min-width: 80px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+}
+
+/* End code folding */
 
 
 

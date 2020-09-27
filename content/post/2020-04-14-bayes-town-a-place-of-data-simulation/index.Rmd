@@ -1,7 +1,7 @@
 ---
 title: 'Bayes'' Town: A place of data simulation'
 author: al-obrien
-date: '2020-07-14'
+date: '2020-09-24'
 slug: bayes-town-a-place-of-data-simulation
 categories: []
 tags:
@@ -11,28 +11,45 @@ tags:
 subtitle: ''
 summary: ''
 authors: [al-obrien]
-lastmod: '2020-07-14T10:27:06-06:00'
+lastmod: '2020-09-26T10:27:06-06:00'
 featured: no
 image:
   caption: ''
   focal_point: ''
   preview_only: yes
 projects: []
-draft: true
+draft: false
+codefolding_show: show
 ---
 
-```{r, include = FALSE, message = FALSE, error = FALSE, warning = FALSE}
+```{r setup, include = FALSE, message = FALSE, error = FALSE, warning = FALSE}
 knitr::opts_chunk$set(message = FALSE, error = FALSE, warning = FALSE, echo = TRUE)
+set.seed(11)
 ```
 
-```{r setup, include = FALSE}
+```{r style, include = FALSE}
+theme_eD <- function() {
+  theme_minimal() %+replace%
+  theme(
+    panel.grid.major.x = element_blank(),
+    axis.title = element_text(face = 'bold'),
+    strip.text = element_text(face = 'bold'),
+    legend.position = 'top',
+    legend.title = element_blank(),
+    legend.key.size = unit(2, 'line')
+  )
+}
+```
+
+```{r simluation_code, include = FALSE}
 
 # ------------------ #
 # Required libraries
 # ------------------ #
 library(R6)
 library(rjags)
-
+library(dplyr)
+library(magrittr)
 
 # ------------------ #
 # Create class for simulation
@@ -177,7 +194,10 @@ Bayes' Town is a special place, a place where we can be omnipotent and omniscien
 
 For public health, creating a synthetic population can be a valuable tool. Population characteristics, and relations between them, can be modeled based upon prior knowledge or to understand 'what-if' scenarios. Sometimes, it even is just a good way to better understand how a model is working. If you know the generative process of a synthetic population, then you can see how well certain models perform under those circumstances. More on this later...
 
-As we are the masters of our simulated domain, we can decide exactly how the characteristics of our Bayes' Town citizens are connected. Citizens of Bayes' Town are very concerned about disease, specifically the rampant *Disease X*. Fortunately for us as the creators, we can instantly summon the image of how the population is impacted by this pestilence. We can visualize the relationship as an network between variables of *sex*, *age*, and whether or not the individual lives in an *urban or rural* location. Using [`DiagrammeR`](https://rich-iannone.github.io/DiagrammeR/graphviz_and_mermaid.html) and the `DOT` language, we can visualize this relationship. 
+
+## Simulating Bayes' Town's Blight
+
+As we are the masters of our simulated domain, we can decide exactly how the characteristics of our Bayes' Town citizens are connected. Citizens of Bayes' Town are very concerned about disease, specifically the rampant *Disease X*. Fortunately for us, as the creators we can instantly summon the image of how the population is impacted by this pestilence. We can visualize the relationship as an network between variables of *sex*, *age*, and whether or not the individual lives in an *urban or rural* location. Using [`DiagrammeR`](https://rich-iannone.github.io/DiagrammeR/graphviz_and_mermaid.html) and the `DOT` language, we can visualize this relationship.
 
 ```{r echo = FALSE, collapse = T, fig.cap = 'The "known" relationship between Disease X and the citizens of Bayes\' Town.', out.height = '100%', out.width = "100%"}
 library(DiagrammeR)
@@ -206,42 +226,64 @@ DiagrammeR::grViz("digraph {
   {sex urb age} -> disease
   }")
 ```
-    
-With this knowledge, we can generate data on our citizens for this particular scenario. The core functionality is powered by `rJAGS` but to make it a bit easier to use, the process is wrapped up into an `R6` object called `BayesTown`. This should be familiar to anyone from object-orientated programming (OOP) languages like Python but perhaps a bit foreign for those more comfortable with multiple dispatch, which is the common approach in R (`S3` and `S4`) and Julia. To create a population of 1,000 people we provide some predefined information to the `new` (construct) method. 
 
-```{r include = FALSE}
-# Example inputs
+### Generate Bayes' Town 
+With this knowledge, we can generate data on our citizens for this particular scenario. The core functionality is powered by `rJAGS` but to make it a bit easier to use, the process is wrapped up into an `R6` object called `BayesTown`. This should be familiar to anyone from object-orientated programming (OOP) languages like Python but perhaps a bit foreign for those more comfortable with multiple dispatch, which is the common approach in R (`S3` and `S4`) and Julia. To create a population of 1,000 people we provide some predefined information to the `new` (construct) method. The `inputParam` and `simModel` values will be discussed later in the [methodology section](#data-simulation-with-bayesian-networks).
+
+```{r simulation_input, include = FALSE}
+# ------------------ #
+# Initially used to create the dataset
+# ------------------ #
+
+# Set input parameters
 inputParam <- list(p_sex = 0.52, 
                    age_shape = 6,
                    age_scale = 6,
-                   b_age = 0.7)
+                   age_param = 0.7)
 
+# Define model
 simModel <-  as.character('
                       model {
-                      sex ~ dbinom(p_sex, 1);
-                      urbanRural ~ dbinom(0.8, 1);
-                      age ~ dgamma((age_shape+b_age*sex), 1/age_scale);
-                      a_d ~ dnorm(-10, 10);
-                      b1_d ~ dnorm(.015, 10);
-                      b2_d ~ dnorm(.005, 10);
-                      b3_d ~ dnorm(5, 10);
-                      logit(p) <- a_d + b1_d * age + b2_d * sex + b3_d * urbanRural;
-                      disease ~ dbinom(p, 1);
+                        a_disease ~ dnorm(-10, 10);
+                        b_age ~ dnorm(.015, 10);
+                        b_sex ~ dnorm(.005, 10);
+                        b_urbanity ~ dnorm(5, 10);
+                      
+                        sex ~ dbinom(p_sex, 1);
+                        urbanRural ~ dbinom(0.8, 1);
+                        age ~ dgamma((age_shape + age_param * sex), 1/age_scale);
+                      
+                        logit(p) <- a_disease + b_age * age + b_sex * sex + b_urbanity * urbanRural;
+                        disease ~ dbinom(p, 1);
                       }')
 ```
 
-```{r results = FALSE}
+```{r, results = FALSE, eval =  FALSE}
 newTown <- BayesTown$new(population_size = 1000,
                       jags_data = inputParam, 
                       n.chains = 2,
                       n.iter = 5000,
                       jags_model = simModel)
 ```
-The output provides some basic information on the model graph and a snapshot of the data sample. This includes all the information from the simulation, including the various coefficients and distribution parameters. However, since we are currently only interested in the variables from the diagram above right now, we can extract just those. This is easily done by *method chaining* `set_variables` (to sample only particular variables/parameters) and `resample` (to rerun the simulation).
 
-```{r results = FALSE}
+```{r loadData, include = F}
+# ------------------ #
+# Load saved file to keep consistent
+# ------------------ #
+
+newTown <- readRDS('./bayesTownSimulation.RDS')
+```
+
+
+The output provides some basic information on the model graph and a snapshot of the data sample. This includes all the information from the simulation, including the various data variables, coefficients, and distribution parameters. Due to sampling variation, subsequent runs with the same parameters will create slightly different populations. 
+
+### Explore simulated population
+To explore the simulated data, we extract the variables we observed in the [diagram above](#htmlwidget-1). This is easily done by [method chaining](https://en.wikipedia.org/wiki/Method_chaining) `set_variables` (to sample only particular variables/parameters) and `resample` (to rerun the simulation).
+
+```{r, eval = F}
 # Import library for some exploration work
 library(dplyr)
+library(magrittr)
 
 # Data sample just to include the set of variables in the list
 newTown$set_variables(c('age', 'sex', 'urbanRural', 'disease'), mode = 'include')$resample()
@@ -253,32 +295,23 @@ head(newTown$data, 5)
 newTown$data %>% 
   group_by(sex, urbanRural) %>%
   summarise(meanAge = mean(age),
-            diseasePerc = 100 * (sum(disease)/nrow(.)))
+            diseasePerc = 100 * (sum(disease)/nrow(.))) 
 ```
 
-```{r echo = FALSE, results = TRUE}
+Here is a sample of the simulated data:
+```{r echo = FALSE}
 head(newTown$data, 10)
+```
+
+And here are some summary statistics:
+```{r echo = FALSE}
 newTown$data %>% group_by(sex, urbanRural) %>% summarise(meanAge = mean(age), diseasePerc = 100 * (sum(disease)/nrow(.))) 
 ```
 
-Just from this basic summary, we can see that (a) living in urban areas has a large influence on disease status, (b) females and older ages on average have a slightly higher proportion of disease. Tables are nice, but pictures are better. Let's create a few plots to see how the Bayes' Town citizen characteristics relate to their disease status.
+Just from this basic summary, we can see that **(a)** urban areas have a larger burden of disease and **(b)** females and older age groups on average have a slightly higher proportion of disease. Tables are nice, but pictures are better. Let's create a few plots to see how the characteristics of Bayes' Town citizens relate to disease status.
 
-```{r style}
-theme_eD <- function() {
-  theme_minimal() %+replace%
-  theme(
-    panel.grid.major.x = element_blank(),
-    axis.title = element_text(face = 'bold'),
-    legend.position = 'top',
-    legend.title = element_blank(),
-    legend.key.size = unit(2, 'line')
-  )
-}
-  
-```
-
-
-```{r}
+Age among females is slightly higher on average than their male counterparts.
+```{r, echo = FALSE, collapse = T, fig.cap = 'Distribution of disease by age and sex.', out.width = "100%", out.extra = "style= 'margin-bottom: 0rem;'"}
 # Load plotting library
 library(ggplot2)
 
@@ -295,236 +328,371 @@ ggplot(plotData) +
                width = 0.5) +
   xlab('Sex') +
   ylab('Age') +
-  theme_eD() +
+  theme_eD() + # Custom theme
   scale_fill_manual(values = c('Male' = '#5cb8ff',
                                'Female' = '#ff8fb7'))
+```
 
+We could plot each variable against the outcome (disease) separately but since the data has just 4 variables it is possible to observe the relationships at the same time. This may not be always preferable, as the visualization can become quite **dense**; that is to say, it could be hard to digest all of the dimensions presented from the data. How the variables are assigned to plot are important for aiding interpretation. As our interest is the presence/absence of *Disease X*, we assign this variable as the plot color to ensure it is included in each panel. In this instance plotting all the variables does provide some interesting insights:
+
+  - Males appear to have a larger representation in the younger age groups
+  - Disease is present in higher proportions among older age groups
+```{r, echo = FALSE, fig.cap = '<i>Disease X</i> in terms of age, sex, and location.', out.height = '100%', out.width = "100%", out.extra = "style= 'margin-bottom: 0rem;'" }
 # Disease by age, sex, urban
+plotData %>%
+  mutate(urbanRural = factor(urbanRural, labels = c('Rural', 'Urban')),
+         disease = factor(disease, labels = c('No Disease', 'Disease X'))) %>%
+  
+  ggplot(aes(x = age)) +
+  geom_density(aes(fill = disease), color = 'transparent', alpha = 0.2) +
+  geom_line(aes(color = disease), size = 1.05, stat = 'density', show.legend = F) +
+  facet_grid(sex~urbanRural) +
+  xlab('Age') +
+  ylab('Density') +
+  theme_eD() + # Custom theme
+  scale_fill_manual(values = c('No Disease' = '#71C47D',
+                               'Disease X' = '#EA817A')) +
+  scale_color_manual(values = c('No Disease' = '#71C47D',
+                                'Disease X' = '#EA817A')) +
+  guides(colour = guide_legend(override.aes = list(color = c('#71C47D', '#EA817A'))))
+```
+
+Although I used a density plot in the example above, some may prefer using a box-plot as a suitable alternative. 
+
+```{r include = FALSE}
+plotData %>%
+  mutate(urbanRural = factor(urbanRural, labels = c('Rural', 'Urban')),
+         disease = factor(disease, labels = c('No Disease', 'Disease X'))) %>%
+  
+  ggplot() +
+  geom_boxplot(aes(y = age, fill = disease),
+               outlier.fill = NULL, 
+               outlier.shape = 21, 
+               width = 0.5) +
+  facet_grid(vars(urbanRural, sex)) +
+  xlab('') +
+  ylab('Age') +
+  coord_flip() +
+  theme_eD() + # Custom theme
+  theme(axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank()) +
+  scale_fill_manual(values = c('No Disease' = '#71C47D',
+                               'Disease X' = '#EA817A')) +
+  scale_color_manual(values = c('No Disease' = '#71C47D',
+                                'Disease X' = '#EA817A')) +
+  guides(colour = guide_legend(override.aes = list(color = c('#71C47D', '#EA817A'))))
+```
+
+Age seems to have a strong impact on the disease outcome which may be masking more subtle relationships. When we remove age we observe urban areas have a higher proportion of *Disease X*, and there is subtle evidence of a higher proportion of disease among females. None of this should come as a surprise, as we set these relationships in advance but it is nice to validate them through these figures.
+```{r, echo = FALSE, fig.cap = 'Proportion of <i>Disease X</i> in terms of sex and location.', out.width = "100%", out.extra = "style= 'margin-bottom: 0rem;'" }
+# Disease by age, sex, urban
+plotData  %>%
+  count(disease, sex, urbanRural) %>% 
+  left_join(count(plotData, sex, urbanRural, name = 'total'), by = c('sex', 'urbanRural')) %>%
+  mutate(urbanRural = factor(urbanRural, labels = c('Rural', 'Urban')),
+         disease = factor(disease, labels = c('No Disease', 'Disease X')),
+         propDisease = 100 * n/total) %>%
+  
+  ggplot(aes(y = propDisease, x = sex)) +
+  geom_bar(aes(fill = disease), stat = 'identity', color = 'transparent', alpha = 0.6) +
+   facet_grid(~urbanRural) +
+  xlab('Sex') +
+  ylab('Proportion with Disease X') +
+  theme_eD() + # Custom theme
+  scale_fill_manual(values = c('No Disease' = '#71C47D',
+                               'Disease X' = '#EA817A')) +
+  scale_color_manual(values = c('No Disease' = '#71C47D',
+                                'Disease X' = '#EA817A')) +
+  guides(colour = guide_legend(override.aes = list(color = c('#71C47D', '#EA817A'))))
+```
+
+## A case for simulated data
+
+You may be asking yourself, why would I bother 'making up' data, it seems like a lot of trouble? It even may appear to reinforce bias as the data is often a product from our own assumptions. However, in reality, simulated data have a great amount of value, here are just a few examples:
+
+- Simulation allows us to know the exact data generation process, an important tool to troubleshoot statistical models and see where they succeed or fail.
+- Creating 'What-If' scenarios can provide valuable insight for program and policy planning.
+- Although there are many [publicly-available datasets](#resources) in our digital age, many are highly aggregated, difficult to link to other important sources, and hard to access when content is highly sensitive (e.g. health records)
+
+Focusing on the last point, it can be very difficult to access and share interesting data in public health. For example, most sources that share infectious disease information have limited content to reduce the chance of identifying individuals. Sometimes there isn't even enough information available to do basic descriptive epidemiology, which usually requires key demographics (e.g. age, sex), locations (e.g. urban/rural, health authority), and time (e.g. diagnosis date, treatment administration date). Obviously, this can raise concerns about privacy. For meaningful and interesting analyses this type of information is needed and to obtain access a data-sharing agreement and ethical approval is often required. For academic research endeavors this is a necessity but for this website I resort to real data where it is openly available and simulated data when it is not. When the focus is to showcase specific methods, simulated data is all we really need. Even common problems that plague 'real' data, such as missing information, can be added to our simulated data.
+
+### Simulation toolbox
+
+Agreeing on the usefulness of simulating data, how can it be done? There are a many approaches with varying complexity:
+
+- Agent/individual-based models 
+- Random variables simulated from probability distributions
+- Creating Bayesian networks based upon priors and/or learned from data
+
+Most approaches are available in R or its host of packages, albeit with a tradeoff between flexibility and complexity. For instance, [NetLogo](https://ccl.northwestern.edu/netlogo/) is a programming environment for agent-based simulation and can connect to R through the *RNetLogo* package; this however still requires knowledge of the NetLogo syntax. Other simulation approaches in R are available from [HydeNet](https://cran.r-project.org/web/packages/HydeNet/index.html), [greta](https://greta-stats.org), [RStan](https://mc-stan.org/users/interfaces/rstan), and [simstudy](https://www.rdatagen.net/page/simstudy/). Some packages are limited as they only allow certain data types (e.g. discrete or continuous) and the possible relationships that can exist between them (e.g. linear trend). Typically, 'low-level' interfaces (i.e. a package that gets you close to the 'engine') allow more freedom but increase the learning curve and chances of blunder. Furthermore, a selection of methods listed may some amount of data to generate the models and simulate additional samples; for some purposes, this may be unsuitable.
+
+I am partial to Bayesian networks, which is my method of choice in this post, as I find their associated diagrams a powerful visualization tool to understand the model. They can also be created from our imagination, or trained on any available data we happen to have. Flexible and powerful!
+
+### Basic simulation example 
+
+Before I continue to explain the method I used to create Bayes' Town, now is a good time to demonstrate that simulation techniques are not be out of anyone's reach. 
+
+Keeping with the theme of health, let's simulate the probability of death by boredom in Bayes' Town. Hopefully you are not suffering from this affliction as it is quite serious, as we will soon discover.
+
+As a binary outcome, we can use the **binomial** distribution for modeling death. The probability of death will be a function of an intercept term and the binary explanatory variable for 'boredom' (0: not bored, 1: bored). The **logit link** will map the linear combination of the intercept and 'boredom' term between 0% and 100% probability. In math jargon this looks like:
+
+\begin{align*}
+& y_i \sim Binomial(n, p_i) \\
+& logit(p_i) = \alpha + \beta x_i\\
+\end{align*}
+
+<img src="https://media.giphy.com/media/3o6Ztf2G1n4a5QQlWw/giphy.gif"/>
+
+If you are like me, you may get nervous when a page becomes overtaken by formulae. I promise, it is not as bad as it looks. I usually feel more at ease once I see the formulae translated to code, which we will do now.
+
+```{r}
+# Set 100,000 people in our population
+n <- 1e5
+
+# Half of our population is bored
+bored <- rep(c(0,1), each = n/2)
+
+# Bored has a small increase to the log-odds of death
+beta <- 0.3
+
+# The baseline chance of death is low
+alpha <- 0.05
+
+# The log-odds of the outcome (arithmetic from the formula above!)
+logodds <- alpha + beta * bored
+
+# Probability of death (size = 1, only one death possible per person!)
+death_probability <- rbinom(n, prob = plogis(logodds), size = 1)
+
+# Final dataset
+data <- data.frame(boredom = bored,
+                   death = death_probability)
 
 ```
 
+We can see a relationship between boredom and death in a simple 2x2 table. The values on the bottom of the table compare the odds of not being bored among the living and dead; these results show a 1.4x higher odds of death among those experiencing boredom. 
+```{r}
+library(knitr)
+library(kableExtra)
 
-    
-    ```{r example}
+# Function to calculate odds
+odds <- function(x) round(x[[1]]/x[[2]], 3)
 
-# Example
+# Create table with odds, adjust rounding, and format
+summary_tbl <- table(Boredom = data$boredom,
+                     Death = data$death) %>% 
+  addmargins(margin = c(1,2),
+             FUN = list(Odds = odds),
+             quiet = T)
+
+summary_tbl[c(1:3), c(1,3)] <- as.character(summary_tbl[c(1:3), c(1,3)])
+
+summary_tbl %>%
+  kable(caption = 'Relationship between boredom and death.') %>%
+  kable_styling(full_width = T) %>%
+  pack_rows('Boredom', 1,2, label_row_css = 'border-bottom:0px solid;') %>%
+  add_header_above(c(" ", "Death" = 3), align = 'l') %>%
+  scroll_box(box_css = "", extra_css = 'overflow-x: auto; width: 100%')
+```
+
+
+If that isn't enough to convince you that the simulated data created a positive correlation between boredom and death, let's pass the data through a logisitic regression model to see how well we can retrieve the original parameters for the intercept (0.05) and beta term (0.3). 
+
+```{r}
+coef(glm(death ~ boredom, data = data, family = 'binomial')) %>%
+  round(3) %>%
+  kable(col.names = 'Estimate', caption = 'Parameter estimates for model on boredom and death.') %>%
+  kable_styling() %>%
+  scroll_box(box_css = "",
+             extra_css = 'overflow-x: auto; width: 50%')
+```
+
+That is pretty close! We could take this simulation further and create a dependency of boredom upon additional terms. I encourage you to explore other situations, such as collinear variables. As the simulation becomes increasingly complex other approaches may be easier to maintain. This is what we will discuss next.
+
+## Data simulation with Bayesian networks
+
+Another approach to simulate data is using BNs, specifically **hybrid** BNs which are more complex but allow the use of both continuous and discrete variables. Although raw data are typically used included in these models, it is also possible to create BNs based solely on our own conceptions. In this case, we can say we are creating a network using **prior probability distributions**.
+
+Up until now we have focused on the outputs from the data simulation in hopes of showcasing its capabilities without yet being cowed in either boredom or fear from maths. For those willing, understanding the details will curb the feeling of mathematical mysticism and avoid ascribing too much faith in the simulation and underlying model. Although there are many strategies to simulate data, in this example I have used a Bayesian Network (BN), known by several other names, including the less exciting, directed graphical model. The overall idea is simple:
+
+1. First create a relationship using a graph, consisting of nodes and arcs. Each node represents a random variable (e.g. age, sex) and their arcs define relationships. Mathematically, this is typically seen as: $G = (X, A)$, where $X$ is a set of variables. 
+1. Next, we assign probability distributions to the variables. BNs are useful as they can describe the *global* probabilistic relationship among $X$ by their various *local* distributions. That is to say, we understand the probability of every node by the relationship it has to its direct parent nodes. Again, as Greek soup this is seen as: $Pr\mathbf(X) = \prod_{i=1}^{p}Pr(X{_i}|\textstyle\prod_{X_i})$.
+
+When we know both the graph as well as the local distribution, the model is called an *expert system*. In other words, everything is defined  upfront by us; we aren't using any data to directly  fit the model. In Bayesian lingo, we are essentially making a model with just priors. 
+
+<img src="https://media.giphy.com/media/ToMjGpNzwVayAyJQteU/giphy.gif"/>
+
+If you feel overwhelmed do not fret, I felt this way initially too (and perhaps still do). Deeper understanding comes at a cost. Fortunately, half of our job is already done as we have previously defined the [graph](#htmlwidget-1) using our infinite wisdom. Now we just need to decide on the probability distributions and how they relate between each node. 
+
+### Model definition
+
+Similar to our simple example, we will start by assigning our **parameter priors**, essentially a set of distributions for the intercept and coefficient terms in the model.
+
+$$
+\begin{align*}
+& \textbf{Prior parameters}\\
+& a_{disease} \sim Normal(-10, 10) \\
+& b_{age} \sim Normal(0.015, 10) \\
+& b_{sex} \sim Normal(0.005, 10) \\
+& b_{urbanity} \sim Normal(5, 10) \\ \\ 
+\end{align*}
+$$
+$a_{disease}$ is the baseline odds of disease and the other parameters define the magnitude by which they increase the odds of disease. Next, we create distributions for our variables of interest (alternatively, these could be set as fixed values).
+
+$$
+\begin{align*}
+& \textbf{Random variable priors}\\
+& sex \sim  Binom(propMale, 1) \\ 
+& urbanRural \sim Binom(0.8, 1) \\
+& age \sim Gamma((age_{shape}+ age\_parameter * sex), 1/age_{scale}) \\ \\
+\end{align*}
+$$
+
+We also will have several input parameters for our variables. We can adjust these or the prior parameters to create strong/weaker, or entirely different, relationships.
+
+$$
+\begin{align*}
+& \textbf{Input parameters}\\
+& propMale = 0.52  \\ 
+& age_{shape} = 6 \\
+& age_{scale} = 6 \\
+& age\_parameter = 0.7 \\ \\
+\end{align*}
+$$
+
+And finally, we need to assign a likelihood function. This is the distribution for *Disease X* based upon the relationship of age, sex, and location.
+
+$$
+\begin{align*}
+& \textbf{Likelihood function}\,\text{(for prior predictive simulation)}\\
+& disease \sim Binom(p, 1) \\
+& logit(p) = a_{disease} + b_{age}(age) + b_{sex}(sex) + b_{urbanity}(urbanRural) \\\\
+\end{align*}
+$$
+
+These formulae may look confusing, but they are outlining very similar concepts to the simple example between boredom and death. If you are a little lost, the DAG from the beginning should help. In plain English we are saying that:
+
+- Sex is slightly more likely to be male
+- Location has a much higher chance to be urban
+- Age is slightly dependent upon sex; females reach slightly older age groups on average
+- *Disease X* is a linear relationship between age, sex, and location
+- The strength of age, sex, and location are pulled from a distribution of values that we can tweak to increase/decrease their strength.
+
+In R code it looks quite similar: 
+
+```{r, eval = F}
+# Set input parameters (could be included directly in the model below if we arent changing often)
 inputParam <- list(p_sex = 0.52, 
                    age_shape = 6,
                    age_scale = 6,
-                   b_age = 0.7)
+                   age_param = 0.7)
 
+# Define model (character string is code for JAGS)
 simModel <-  as.character('
                       model {
-                      sex ~ dbinom(p_sex, 1);
-                      urbanRural ~ dbinom(0.8, 1);
-                      age ~ dgamma((age_shape+b_age*sex), 1/age_scale);
-                      a_d ~ dnorm(-10, 10);
-                      b1_d ~ dnorm(.015, 10);
-                      b2_d ~ dnorm(.005, 10);
-                      b3_d ~ dnorm(5, 10);
-                      logit(p) <- a_d + b1_d * age + b2_d * sex + b3_d * urbanRural;
-                      disease ~ dbinom(p, 1);
+                        a_disease ~ dnorm(-10, 10);
+                        b_age ~ dnorm(.015, 10);
+                        b_sex ~ dnorm(.005, 10);
+                        b_urbanity ~ dnorm(5, 10);
+                      
+                        sex ~ dbinom(p_sex, 1);
+                        urbanRural ~ dbinom(0.8, 1);
+                        age ~ dgamma((age_shape + age_param * sex), 1/age_scale);
+                      
+                        logit(p) <- a_disease + b_age * age + b_sex * sex + b_urbanity * urbanRural;
+                        disease ~ dbinom(p, 1);
                       }')
-simModel2 <- 'model {
-disease ~ dbinom(p, 1);
-logit(p) <- a_d + b1_d * age + b2_d * sex + b3_d * urbanRural;
-sex ~ dbinom(.52, 1);
-urbanRural ~ dbinom(0.8, 1);
-age ~ dgamma((6+.7*sex), 1/6);
-a_d ~ dnorm(-10, 10);
-b1_d ~ dnorm(.015, 10);
-b2_d ~ dnorm(.005, 10);
-b3_d ~ dnorm(5, 10);
-}'
+```
 
+This is the set of rules that governs Bayes' Town citizens. Right now it provides a single snapshot but it is possible to extend this to a *dynamic* BN to create multiple time slices. 
+
+**Bayes' Theorem** is used to solve this type of question and the equation may look simple enough... $$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$ I do not provide details here as there are a plethora of resources online that go through Bayes' Theorem; however, I will point out that a special 'engine' is often required to solve these models. When the distributions are complex, the solutions become non-trivial. Whilst some examples such as the beta-binomial have closed-form solutions, others require special sampling methods to solve, which we will discuss next.
+
+
+### MCMC and `rjags`
+
+With the rules now defined to create *Disease X* in Bayes' Town, we now need to perform the simulation. The procedure used is called **markov chain monte carlo (MCMC)**, a stochastic method to estimate posterior probability distributions. In short this means we collect samples of possible parameter values instead of attempting to directly compute them. The results are then understood in terms of their sample distribution. However, generating these samples is not always easy and there are various MCMC methods to tackle this challenge, albeit with their own limitations and takeoffs.  
+
+<strong>1. Metropolis algorithm: </strong> original and 'simple' MCMC implementation.  
+<strong>1. Metropolis-Hastings algorithm:</strong> an extension to the metropolis algorithm.  
+<strong>1. Gibbs sampling:</strong> more efficient sampling by using *adaptive proposals* (`BUGS` and `JAGS` software use this method).  
+<strong>1. Hamiltonian Monte Carlo (HMC):</strong> runs a (resource expensive) physics simulation to generate informative samples. HMC provides useful diagnostics but currently cannot sample discrete parameters (not easily at least). `STAN` uses this method and is considered harder to learn than `BUGS`.  
+
+Numerous `R` packages implement the assortment of MCMC methods but require, or are built on top of, an `R` interface to `STAN` (e.g. `rstan`) or `JAGS` (e.g. `rjags`). For my current purposes, I decided to use `rjags` (authored by *Martyn Plummer* who is also the creator of `JAGS`) since it can generate discrete values and follows a [syntax](http://www.ci.tuwien.ac.at/Conferences/DSC-2003/Drafts/Plummer.pdf) similar to `R`. Using `rjags` directly is a bit more complex (as we saw in the [model definitions](#model-definition)) but provides flexibility and customization. 
+
+There are three steps to run a model with `JAGS`: (1) Define, (2) Compile, and (3) Simulate. We have already done the first step, for the rest I created helper functions to pass the model to `JAGS` and retrieve the samples! This may be unnecessary but I found it to be a helpful abstraction. We can always dip into `rjags` if we need something more specific. 
+
+The `R6` package was used to encapsulate the `BayesTown` object created from the simulation. This object is created by running `BayesTown$new()` with the provided model (`simModel`) and input parameters (`inputParam`). `JAGS` will then compile and perform the simulation, returning the results to the assigned object class. A subset of variables can be retained via the `set_variables()` method and a new draw can be done via `resample()`. Various diagnostics are also accessible. If this is still a bit unclear, the complete example in the next section may be of help. 
+
+## Full simulation run
+
+At the beginning a model and parameters were already determined. Below I provide the code to create the simulated *Bayes' Town*. A few helper functions built on top of `rjags` make the process a bit more friendly to read. The *Bayes' Town* example is an expert system using just priors but if we decide to include data in the model we simply add a loop to the likelihood function.
+
+```{r example, results = FALSE}
+# Set input parameters
+inputParam <- list(p_sex = 0.52, 
+                   age_shape = 6,
+                   age_scale = 6,
+                   age_param = 0.7)
+
+# Define model
+simModel <-  as.character('
+                      model {
+                        a_disease ~ dnorm(-10, 10);
+                        b_age ~ dnorm(.015, 10);
+                        b_sex ~ dnorm(.005, 10);
+                        b_urbanity ~ dnorm(5, 10);
+                      
+                        sex ~ dbinom(p_sex, 1);
+                        urbanRural ~ dbinom(0.8, 1);
+                        age ~ dgamma((age_shape + age_param * sex), 1/age_scale);
+                      
+                        logit(p) <- a_disease + b_age * age + b_sex * sex + b_urbanity * urbanRural;
+                        disease ~ dbinom(p, 1);
+                      }')
+
+# Simulate new town
 newTown <- BayesTown$new(population_size = 1000,
                       jags_data = inputParam, 
                       n.chains = 2,
                       n.iter = 5000,
                       jags_model = simModel)
-newTown2 <- BayesTown$new(population_size = 1000,
-                         jags_data = NULL, 
-                         n.chains = 2,
-                         n.iter = 5000,
-                         jags_model = simModel2)
 
-newTown$set_variables(names(inputParam), mode = 'exclude')
-newTown$resample()
-newTown$plot()
-newTown$set_variables('sex', mode = 'include')
-newTown$resample()
-newTown$plot()
-
+# Keep only subset of parameters of interest
 newTown$set_variables(c('age', 'sex', 'urbanRural', 'disease'), mode = 'include')
+
+# Resample data
 newTown$resample()
-mydata <- newTown$data
-mean(mydata$age)
-prop.table(table(mydata$urbanRural, mydata$disease), margin = 1)
-
-plot(newTown$set_variables('b3_d')$resample())
-
-
-```
-    
-    
-    
-    
-    
-    
-(describe the overall method here)
-I used a method of bayesian networks and my belief of the network to create this. The tools 
-used are diverse and can be a challenge to start with. But the ability to create your own town and simulate datasets is a 
-valuable tool. So, lets get into the details
-
-IF this is all you need to know, then that fine, the rest go through the use case and detaisl!
-
-I plan to use this or similar methods for 'quick' examples where it may be troublesome to get actual datasets. But will explore with others too. More discussion below.
-
-
-
-## A case for simulated data
-
-- Access to data in the public domain has become easier over time. This has become a bit hand-in-hand with the big data age ....
-- HOwever, usually this data becomes highly aggregated, or linkage to other datasets are difficult.
-- This is even more challenging with sensitive data types, such as health. There are some sources available:
-- This is even more so with infectious diseases
-- Usually involves a data sharing agreement with the group...
-
-However,being in the bizz... I always want more, and usually these datasets do not do much to satisfy. They rarely give the key data for even descriptive epi, names person, place and time. Obvioulsy if we had all of this, the data would be quite identifiable, especially if place is postal code, time is day, and person is all their demographics. Usually this means the data is quite lacking... and uninteresting
-
-  EXAMPLE OF SUPER BASIC SIMULATION TO SHOW HOW EASY... but we want to do more... and more complex like ABM will be for future post
-
-We can do a lot of great things with this, even more when we partner with the data curators. But, sometimes we just want data to be simluaated to show some basic principles and practice with some new coding methods.
-
-## The simulation toolbox
-
-So what to do... well, we can simulate. How? There are a multitude of ways, with varying complexity. There are agent/individual-based models, using tools such as [NetLogo](https://ccl.northwestern.edu/netlogo/), assigning random variables to representative probaiblity distribtuions, creating bayesian networks based upon priors, bayesian netowrks from data. Some of these are availble in packages in R already. NetLogo has a connection to R but requries knowing how to use NetLogo. YOu can also make your own simulation with some knowhow, within R coding itself. The is the Greta, Stan, HydeNet, and simluation packages. Each of these have a balance between flexibility and complexity. 
-
-Most packages may limit what you can do by only allowing certain types of data and node types adn the relationships that can exist between them. By using more 'low-level' packages, for mathematical modelling, and MCMC, there is more freedom in the relationships you can assign. of course, the learning curve is steeper too! Manyt methods rely on having data and dont allow just prior to be set.
-
-I am partial to bayesian methods, as I find them intutiive through their diagrams, and they can be created through imagiation or based upon data. Both of which is good for our purposes.
-
-
-## Bayesian network data simulation using prior
-
-I wanted a method where I wouldnt need any data if I didnt have it. Short of learning mathematical modelling and agent simulation, I thought I would lean on my knowledge of probability distribution and bayesian approaches. 
-
-Prob distribution alone are quite powerful and have a very straightforward implemetnation in R to create/sample data. But they are not great at allowing one to define the realtionship between the random variables. For this, having a network of connections between the random variables provides a sturcutre that we can understand and test. Since we can also used just our belief based upon distirbutions without data to 'update' our estimates, it is a viable way to create a fake dataset, even though it may not be the preferred choice in practice for a number of reasons, no excluding the obvious one of a priori biases. For a more robust implementation, for a latter post, agent based simulations provide other altnetaives with some success (https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0208775). 
-
-With this knowledge in hand, I can create a simulated town. For now, it is just a snapshot, but dynamic BNs would allow for the dimension of time to be added.
-
-What is MCMC?! It demands attention, but not here. It is a tool I am using to create the datasets from the prob dist.
-The heart of the model is code used to create the probability distributions. There are a number of software that can sample from a proability distribution, a popular one being hamiltonian monte carlo impletnations in STAN. However, I found the code in JAGS (an implemetation of the Gibbs sampler) more appraochable, similar to R syntax and relativelyt consise. For my purposes, it worked well. There are a number of packages that make STAN more approachble, but since I wanted all the flexiblity exposed, JAGS provided this quite well. Each MCM implemation has a tradeoff, and for my purposes, although I could have implemented it in STAN, I preferred how RJAGS worked. Since the network was a hybrid network, I found that there was not many resources to learn from and so the examples I could find often used JAGS. There are even several JAGS implementations in R... I used rjags as it was created by the creator of JAGS Martyn Plummer using the BUGS language syntax
-
-DEFINE< COMPILE<SIMUALTE
-
-Although I could use the rjags functions directly, which could be completed in a few steps, I wanted to hide myself from the extra code, most of which would not need to be touched much. So I encapsulated it within a class using R6 package. This allowed me to focus more on what the output is, rather than on all the functions that are needed to create the data. Although I still need to know it, I can have a layer of abstraction once compelted to ensure that I have logical names specific to making Bayes town... this makes it so i can have specific operations on the data, without having to use rjags directly anymore than I have to. Of course, anythign custom I may need to delve into the code and class. But since Im using MCMC as a tool, its find that I have my class focused on what hte data output is and the diagnostics for it.
-
-Based upon image 1... I need to define how all the random variables interact...
-
-In statistics lingo, this looks like this...
-prior predictive simulation....
-
-\begin{align*}
-& \textbf{Likelihood function}\,\text{(for prior predictive simulation)}\\
-& disease \sim Binom(p, 1) \\
-& logit(p) = a_{disease} + b_1(age) + b_2(sex) + b_3(urbanRural) \\\\
-
-& \textbf{Random variable priors}\\
-& sex \sim  Binom(propMale, 1) \\ 
-& urbanRural \sim Binom(0.8, 1) \\
-& age \sim Gamma((shape+paramter\_age*sex), 1/agescale) \\ \\
-
-& \textbf{Parameter priors}\\
-& a_{disease} \sim Normal(-10, 10) \\
-& b_{1} \sim Normal(0.015, 10) \\
-& b_{2} \sim Normal(0.005, 10) \\
-& b_{3} \sim Normal(5, 10) \\ \\ 
-\end{align*}
-
-product of liklihood and the prior to get postieror... sometimes closed form soluation doesnt exist and need to approxiatme it using MCMC methods.
-
-When converted to R, we see an RJAGS model like so.
-Normally, RJAGS will require a loop, where the data input is placed. But since I am only using prior, it will look like this without the for loop, like this which is defining the likelihood. BUt i only want the priors.
-
-{    for ( i in 1:N ) {
-    
-    P[i] <- 1/V[i]
-    
-    y[i] ~ dnorm( d, P[i] )
-
-    }
-
-```{r echo=TRUE, eval=FALSE}
-bayesTownModel <- 'model {
-disease ~ dbinom(p, 1);
-logit(p) <- a + b1 * age + b2 * sex + b3 * urbanRural;
-
-sex ~ dbinom(.52, 1);
-urbanRural ~ dbinom(0.8, 1);
-age ~ dgamma((6+.7*sex), 1/6);
-
-a ~ dnorm(-10, 10);
-b1 ~ dnorm(.015, 10);
-b2 ~ dnorm(.005, 10);
-b3 ~ dnorm(5, 10);
-}'
 ```
 
+We can now use `newTown` as we saw at the start of the post and explore our newly simulated dataset!           
 
-simModel <-  '
-                      model {
-                      sex ~ dbinom(p_sex, 1);
-                      urbanRural ~ dbinom(0.8, 1);
-                      age ~ dgamma((age_shape+b_age*sex), 1/age_scale);
-                      a_d ~ dnorm(-10, 10);
-                      b1_d ~ dnorm(.015, 10);
-                      b2_d ~ dnorm(.005, 10);
-                      b3_d ~ dnorm(5, 10);
-                      logit(p) <- a_d + b1_d * age + b2_d * sex + b3_d * urbanRural;
-                      disease ~ dbinom(p, 1);
-                      }'
-               textConnection()       
+## Resources
+### Useful data sources
+1. [Kaggle](https://www.kaggle.com/tags/healthcare)
+1. [WHO](https://apps.who.int/gho/data/node.resources)
+1. [US Gov](https://www.data.gov/)
+1. [CDC](https://wonder.cdc.gov/Welcome.html) 
+1. [NHS data catalogue ](https://data.england.nhs.uk/datase)
+1. [Alberta Open Datasets](http://www.ahw.gov.ab.ca/IHDA_Retrieval/) 
+1. [Canada Open Data](https://open.canada.ca/en/open-data)  
+1. [UCI Machine Learning Repository](https://perma.cc/M3XC-M9HU)
 
-I then set some input parameters. These are my beliefs on what the proprtion of the sex distribution is, and the relationship between age and sex. The rest I have already just coded directly into the model itself, but I know I may want these ones changed and allowing for some input parameters, will allow me to provide data to this function int he future as well...
+### Software and details on simulation methods
+1. [NetLogo](https://ccl.northwestern.edu/netlogo/) and [RNetLogo](https://rdrr.io/cran/RNetLogo/man/RNetLogo-package.html)
+1. [Paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0208775) that uses NetLogo for ABM of infectious disease.
+1. [simstudy](https://www.rdatagen.net/page/simstudy/) 
+1. [epimodel](https://www.epimodel.org/), mathematical epidemiology models in R
+1. [HydeNet](https://cran.r-project.org/web/packages/HydeNet/index.html)
+1. [bnlearn](https://www.bnlearn.com/ Bayesian simluation)
+1. [bayesvl](https://github.com/sshpa/bayesvl)
+1. [Blog](https://aosmith.rbind.io/2018/08/29/getting-started-simulating-data/) that introduces data simulation with probability distributions
 
-<!-- inputParam <- list(p_sex = 0.52,  -->
-<!--                    age_shape = 6, -->
-<!--                    age_scale = 6, -->
-<!--                    b_age = 0.7) -->
+### Information on Bayesian statistics
+While there are many blogs and online articles about Bayesian statistics and Bayesian networks; I found some actually books were my best resource; both are enjoyable and worth the price tag. 
 
-Then we setup the model
-
-newTown2 <- BayesTown$new(population_size = 1000,
-                         jags_data = NULL, 
-                         n.chains = 2,
-                         n.iter = 5000,
-                         jags_model = simModel2)
-                   
-
-## Appendix
-
-### Data sources
-1. Kaggle https://www.kaggle.com/tags/healthcare 
-1. WHO https://apps.who.int/gho/data/node.resources
-1. https://www.data.gov/
-1. CDC https://wonder.cdc.gov/Welcome.html
-1. NHS data catalogue https://data.england.nhs.uk/dataset
-1. Alberta open datasets http://www.ahw.gov.ab.ca/IHDA_Retrieval/
-1. Canada open data https://open.canada.ca/en/open-data 
-1. https://perma.cc/M3XC-M9HU
-
-### Simulation method
-1. NetLogo: https://ccl.northwestern.edu/netlogo/  and RNetLogo https://rdrr.io/cran/RNetLogo/man/RNetLogo-package.html
-1. Simulation R https://www.rdatagen.net/page/simstudy/
-1. Useful blog on starting data simulation with probability distributions https://aosmith.rbind.io/2018/08/29/getting-started-simulating-data/ 
-1. Mathematical modelling appraoch https://www.epimodel.org/ 
-1. HydeNet https://cran.r-project.org/web/packages/HydeNet/index.html and bnlearn https://www.bnlearn.com/ Bayesian simluation ; bayesvl
-https://github.com/sshpa/bayesvl  https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3469457
-
-### Bayesian statistics
-
-While there are many blogs and online articles about bayesian statistics and bayesian networks; I found some actualy books were my best resource; both are enjoyable and worth the price tag.
-1. https://xcelab.net/rm/statistical-rethinking/  and https://www.youtube.com/channel/UCNJK6_DZvcMqNSzQdEkzvzA/featured
-1. https://www.routledge.com/Bayesian-Networks-With-Examples-in-R/Scutari-Denis/p/book/9781482225587
-1. https://www.aaai.org/ojs/index.php/aimagazine/article/view/918
+1. [Statistical Rethinking](https://xcelab.net/rm/statistical-rethinking/) and related [YouTube channel](https://www.youtube.com/channel/UCNJK6_DZvcMqNSzQdEkzvzA/featured) 
+1. [Bayesian Networks with Examples in R](https://www.routledge.com/Bayesian-Networks-With-Examples-in-R/Scutari-Denis/p/book/9781482225587)
+1. [Bayesian Networks without Tears](https://www.aaai.org/ojs/index.php/aimagazine/article/view/918), a great introduction to the topic.
