@@ -414,7 +414,7 @@ tokyo_ramen <- tokyo_ramen +
   scale_fill_gradient(low = 'white',
                       high =  '#d25050', 
                       breaks= pretty_breaks(),
-                      guide = guide_colourbar(title = 'Ramen sellers', 
+                      guide = guide_colourbar(title = 'Ramen shops', 
                                               title.position ="top",
                                               ticks.colour = 'transparent',
                                               title.theme = element_text(color = 'snow1', face = 'bold'),
@@ -427,7 +427,7 @@ tokyo_ramen <- tokyo_ramen +
 # Adjust theme
 tokyo_ramen <- tokyo_ramen +
   theme_minimal() +
-  theme(plot.background = element_rect(fill = "#282828"),
+  theme(plot.background = element_rect(fill = '#282828'),
         axis.text = element_blank(),
         axis.ticks = element_blank(),
         axis.title = element_blank(),
