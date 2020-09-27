@@ -548,7 +548,7 @@ $$
 & \textbf{Random variable priors}\\
 & sex \sim  Binom(propMale, 1) \\ 
 & urbanRural \sim Binom(0.8, 1) \\
-& age \sim Gamma((age_{shape}+ age\_parameter * sex), 1/age_{scale}) \\ \\
+& \begin{aligned} age \sim Gamma((age_{shape} + &age\_param * sex),\\ 1/age_{scale}) \end{aligned}\\ \\
 \end{align*}
 $$
 
@@ -560,17 +560,20 @@ $$
 & propMale = 0.52  \\ 
 & age_{shape} = 6 \\
 & age_{scale} = 6 \\
-& age\_parameter = 0.7 \\ \\
+& age\_param = 0.7 \\ \\
 \end{align*}
 $$
 
-And finally, we need to assign a likelihood function. This is the distribution for *Disease X* based upon the relationship of age, sex, and location.
+And finally, we need to assign a likelihood function for the prior predictive simulation. This is the distribution for *Disease X* based upon the relationship of age, sex, and location.
 
 $$
 \begin{align*}
-& \textbf{Likelihood function}\,\text{(for prior predictive simulation)}\\
+& \textbf{Likelihood function}\\
 & disease \sim Binom(p, 1) \\
-& logit(p) = a_{disease} + b_{age}(age) + b_{sex}(sex) + b_{urbanity}(urbanRural) \\\\
+& \begin{aligned} logit(p) &= a_{disease} \\
+&+ b_{age}(age) \\
+&+ b_{sex}(sex) \\
+&+ b_{urbanity}(urbanRural)\\\\ \end{aligned} 
 \end{align*}
 $$
 

@@ -352,7 +352,7 @@ boredom
 &amp; \textbf{Random variable priors}\\
 &amp; sex \sim  Binom(propMale, 1) \\ 
 &amp; urbanRural \sim Binom(0.8, 1) \\
-&amp; age \sim Gamma((age_{shape}+ age\_parameter * sex), 1/age_{scale}) \\ \\
+&amp; \begin{aligned} age \sim Gamma((age_{shape} + &amp;age\_param * sex),\\ 1/age_{scale}) \end{aligned}\\ \\
 \end{align*}
 \]</span></p>
 <p>We also will have several input parameters for our variables. We can adjust these or the prior parameters to create strong/weaker, or entirely different, relationships.</p>
@@ -362,15 +362,18 @@ boredom
 &amp; propMale = 0.52  \\ 
 &amp; age_{shape} = 6 \\
 &amp; age_{scale} = 6 \\
-&amp; age\_parameter = 0.7 \\ \\
+&amp; age\_param = 0.7 \\ \\
 \end{align*}
 \]</span></p>
-<p>And finally, we need to assign a likelihood function. This is the distribution for <em>Disease X</em> based upon the relationship of age, sex, and location.</p>
+<p>And finally, we need to assign a likelihood function for the prior predictive simulation. This is the distribution for <em>Disease X</em> based upon the relationship of age, sex, and location.</p>
 <p><span class="math display">\[
 \begin{align*}
-&amp; \textbf{Likelihood function}\,\text{(for prior predictive simulation)}\\
+&amp; \textbf{Likelihood function}\\
 &amp; disease \sim Binom(p, 1) \\
-&amp; logit(p) = a_{disease} + b_{age}(age) + b_{sex}(sex) + b_{urbanity}(urbanRural) \\\\
+&amp; \begin{aligned} logit(p) &amp;= a_{disease} \\
+&amp;+ b_{age}(age) \\
+&amp;+ b_{sex}(sex) \\
+&amp;+ b_{urbanity}(urbanRural)\\\\ \end{aligned} 
 \end{align*}
 \]</span></p>
 <p>These formulae may look confusing, but they are outlining very similar concepts to the simple example between boredom and death. If you are a little lost, the DAG from the beginning should help. In plain English we are saying that:</p>
