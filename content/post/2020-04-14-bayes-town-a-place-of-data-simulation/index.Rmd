@@ -617,9 +617,9 @@ This is the set of rules that governs Bayes' Town citizens. Right now it provide
 With the rules now defined to create *Disease X* in Bayes' Town, we now need to perform the simulation. The procedure used is called **markov chain monte carlo (MCMC)**, a stochastic method to estimate posterior probability distributions. In short this means we collect samples of possible parameter values instead of attempting to directly compute them. The results are then understood in terms of their sample distribution. However, generating these samples is not always easy and there are various MCMC methods to tackle this challenge, albeit with their own limitations and takeoffs.  
 
 <strong>1. Metropolis algorithm: </strong> original and 'simple' MCMC implementation.  
-<strong>1. Metropolis-Hastings algorithm:</strong> an extension to the metropolis algorithm.  
-<strong>1. Gibbs sampling:</strong> more efficient sampling by using *adaptive proposals* (`BUGS` and `JAGS` software use this method).  
-<strong>1. Hamiltonian Monte Carlo (HMC):</strong> runs a (resource expensive) physics simulation to generate informative samples. HMC provides useful diagnostics but currently cannot sample discrete parameters (not easily at least). `STAN` uses this method and is considered harder to learn than `BUGS`.  
+<strong>2. Metropolis-Hastings algorithm:</strong> an extension to the metropolis algorithm.  
+<strong>3. Gibbs sampling:</strong> more efficient sampling by using *adaptive proposals* (`BUGS` and `JAGS` software use this method).  
+<strong>4. Hamiltonian Monte Carlo (HMC):</strong> runs a (resource expensive) physics simulation to generate informative samples. HMC provides useful diagnostics but currently cannot sample discrete parameters (not easily at least). `STAN` uses this method and is considered harder to learn than `BUGS`.  
 
 Numerous `R` packages implement the assortment of MCMC methods but require, or are built on top of, an `R` interface to `STAN` (e.g. `rstan`) or `JAGS` (e.g. `rjags`). For my current purposes, I decided to use `rjags` (authored by *Martyn Plummer* who is also the creator of `JAGS`) since it can generate discrete values and follows a [syntax](http://www.ci.tuwien.ac.at/Conferences/DSC-2003/Drafts/Plummer.pdf) similar to `R`. Using `rjags` directly is a bit more complex (as we saw in the [model definitions](#model-definition)) but provides flexibility and customization. 
 
