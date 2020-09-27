@@ -336,8 +336,9 @@ ggplot(plotData) +
 
 We could plot each variable against the outcome (disease) separately but since the data has just 4 variables it is possible to observe the relationships at the same time. This may not be always preferable, as the visualization can become quite **dense**; that is to say, it could be hard to digest all of the dimensions presented from the data. How the variables are assigned to plot are important for aiding interpretation. As our interest is the presence/absence of *Disease X*, we assign this variable as the plot color to ensure it is included in each panel. In this instance plotting all the variables does provide some interesting insights:
 
-  - Males appear to have a larger representation in the younger age groups
-  - Disease is present in higher proportions among older age groups
+  - Males appear to have a larger representation in the younger age groups  
+  - Disease is present in higher proportions among older age groups  
+
 ```{r, echo = FALSE, fig.cap = '<i>Disease X</i> in terms of age, sex, and location.', out.height = '100%', out.width = "100%", out.extra = "style= 'margin-bottom: 0rem;'" }
 # Disease by age, sex, urban
 plotData %>%

@@ -105,15 +105,16 @@ Figure 2: Distribution of disease by age and sex.
 </div>
 <p>We could plot each variable against the outcome (disease) separately but since the data has just 4 variables it is possible to observe the relationships at the same time. This may not be always preferable, as the visualization can become quite <strong>dense</strong>; that is to say, it could be hard to digest all of the dimensions presented from the data. How the variables are assigned to plot are important for aiding interpretation. As our interest is the presence/absence of <em>Disease X</em>, we assign this variable as the plot color to ensure it is included in each panel. In this instance plotting all the variables does provide some interesting insights:</p>
 <ul>
-<li>Males appear to have a larger representation in the younger age groups</li>
-<li>Disease is present in higher proportions among older age groups
+<li>Males appear to have a larger representation in the younger age groups<br />
+</li>
+<li>Disease is present in higher proportions among older age groups</li>
+</ul>
 <div class="figure"><span id="fig:unnamed-chunk-7"></span>
 <img src="/post/2020-04-14-bayes-town-a-place-of-data-simulation/index_files/figure-html/unnamed-chunk-7-1.png" alt="&lt;i&gt;Disease X&lt;/i&gt; in terms of age, sex, and location." width="100%" height="100%" style= 'margin-bottom: 0rem;' />
 <p class="caption">
 Figure 3: <i>Disease X</i> in terms of age, sex, and location.
 </p>
-</div></li>
-</ul>
+</div>
 <p>Although I used a density plot in the example above, some may prefer using a box-plot as a suitable alternative.</p>
 Age seems to have a strong impact on the disease outcome which may be masking more subtle relationships. When we remove age we observe urban areas have a higher proportion of <em>Disease X</em>, and there is subtle evidence of a higher proportion of disease among females. None of this should come as a surprise, as we set these relationships in advance but it is nice to validate them through these figures.
 <div class="figure"><span id="fig:unnamed-chunk-9"></span>
