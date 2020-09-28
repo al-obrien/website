@@ -60,4 +60,4 @@ window.initializeCodeFolding = function(show) {
       showCodeText.text('Hide');
     });
   });
-}
+};
