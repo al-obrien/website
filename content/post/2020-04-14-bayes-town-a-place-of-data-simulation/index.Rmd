@@ -634,7 +634,7 @@ The `R6` package was used to encapsulate the `BayesTown` object created from the
 
 At the beginning a model and parameters were already determined. Below I provide the code to create the simulated *Bayes' Town*. A few helper functions built on top of `rjags` make the process a bit more friendly to read. The *Bayes' Town* example is an expert system using just priors but if we decide to include data in the model we simply add a loop to the likelihood function.
 
-```{r example, echo = T, eval = F}
+```{r, echo = T, eval = F}
 # Set input parameters
 inputParam <- list(p_sex = 0.52, 
                    age_shape = 6,
