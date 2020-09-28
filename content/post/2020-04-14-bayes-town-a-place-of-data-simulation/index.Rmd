@@ -188,17 +188,16 @@ BayesTown <- R6Class('BayesTown', list(
 
 ```
 
-
 ## Welcome to Bayes' Town
 
 Bayes' Town is a special place, a place where we can be omnipotent and omniscient. We take comfort in having knowledge and control of all things, even though we know the entire place is apart from reality, a muddled reflection at best and a complete fantasy at worst. Bayes' Town is a simulation, a useful tool we can use to explore scenarios and test hypotheses, based in reality or otherwise.
 
-For public health, creating a synthetic population can be a valuable tool. Population characteristics, and relations between them, can be modeled based upon prior knowledge or to understand 'what-if' scenarios. Sometimes, it even is just a good way to better understand how a model is working. If you know the generative process of a synthetic population, then you can see how well certain models perform under those circumstances. More on this later...
+For public health, creating a synthetic population can be a valuable tool. Population characteristics, and relations between them, can be modeled based upon prior knowledge or to understand 'what-if' scenarios. Sometimes, it even is just a good way to better understand how a model is working. If you know the generative process of a synthetic population then you can see how well certain models perform under those circumstances. More on this later...
 
 
 ## Simulating Bayes' Town's Blight
 
-As we are the masters of our simulated domain, we can decide exactly how the characteristics of our Bayes' Town citizens are connected. Citizens of Bayes' Town are very concerned about disease, specifically the rampant *Disease X*. Fortunately for us, as the creators we can instantly summon the image of how the population is impacted by this pestilence. We can visualize the relationship as an network between variables of *sex*, *age*, and whether or not the individual lives in an *urban or rural* location. Using [`DiagrammeR`](https://rich-iannone.github.io/DiagrammeR/graphviz_and_mermaid.html) and the `DOT` language, we can visualize this relationship.
+As we are the masters of our simulated domain, we can decide exactly how the characteristics of our Bayes' Town citizens are connected. Citizens of Bayes' Town are very concerned about disease, specifically the rampant *Disease X*. Fortunately for us, as the creators we can instantly summon the image of how the population is impacted by this pestilence. We can visualize the relationship as a network between variables of *sex*, *age*, and whether or not the individual lives in an *urban or rural* location. Using [`DiagrammeR`](https://rich-iannone.github.io/DiagrammeR/graphviz_and_mermaid.html) and the `DOT` language, we can visualize this relationship.
 
 ```{r echo = FALSE, collapse = T, fig.cap = 'The "known" relationship between Disease X and the citizens of Bayes\' Town.', out.height = '100%', out.width = "100%"}
 library(DiagrammeR)
@@ -229,7 +228,7 @@ DiagrammeR::grViz("digraph {
 ```
 
 ### Generate Bayes' Town 
-With this knowledge, we can generate data on our citizens for this particular scenario. The core functionality is powered by `rJAGS` but to make it a bit easier to use, the process is wrapped up into an `R6` object called `BayesTown`. This should be familiar to anyone from object-orientated programming (OOP) languages like Python but perhaps a bit foreign for those more comfortable with multiple dispatch, which is the common approach in R (`S3` and `S4`) and Julia. To create a population of 1,000 people we provide some predefined information to the `new` (construct) method. The `inputParam` and `simModel` values will be discussed later in the [methodology section](#data-simulation-with-bayesian-networks).
+With this knowledge we can generate data on our citizens for this particular scenario. The core functionality is powered by `rJAGS` but to make it a bit easier to use, the process is wrapped up into an `R6` object called `BayesTown`. This should be familiar to anyone from object-orientated programming (OOP) languages like Python but perhaps a bit foreign for those more comfortable with multiple dispatch, which is the common approach in R (`S3` and `S4`) and Julia. To create a population of 1,000 people we provide some predefined information to the `new` (construct) method. The `inputParam` and `simModel` values will be discussed later in the [methodology section](#data-simulation-with-bayesian-networks).
 
 ```{r simulation_input, include = FALSE}
 # ------------------ #
@@ -422,19 +421,19 @@ Focusing on the last point, it can be very difficult to access and share interes
 
 ### Simulation toolbox
 
-Agreeing on the usefulness of simulating data, how can it be done? There are a many approaches with varying complexity:
+Agreeing on the usefulness of simulating data, how can it be done? There are many approaches with varying complexity:
 
 - Agent/individual-based models 
 - Random variables simulated from probability distributions
 - Creating Bayesian networks based upon priors and/or learned from data
 
-Most approaches are available in R or its host of packages, albeit with a tradeoff between flexibility and complexity. For instance, [NetLogo](https://ccl.northwestern.edu/netlogo/) is a programming environment for agent-based simulation and can connect to R through the *RNetLogo* package; this however still requires knowledge of the NetLogo syntax. Other simulation approaches in R are available from [HydeNet](https://cran.r-project.org/web/packages/HydeNet/index.html), [greta](https://greta-stats.org), [RStan](https://mc-stan.org/users/interfaces/rstan), and [simstudy](https://www.rdatagen.net/page/simstudy/). Some packages are limited as they only allow certain data types (e.g. discrete or continuous) and the possible relationships that can exist between them (e.g. linear trend). Typically, 'low-level' interfaces (i.e. a package that gets you close to the 'engine') allow more freedom but increase the learning curve and chances of blunder. Furthermore, a selection of methods listed may some amount of data to generate the models and simulate additional samples; for some purposes, this may be unsuitable.
+Most approaches are available in R or its host of packages, albeit with a tradeoff between flexibility and complexity. For instance, [NetLogo](https://ccl.northwestern.edu/netlogo/) is a programming environment for agent-based simulation and can connect to R through the *RNetLogo* package; this however still requires knowledge of the NetLogo syntax. Other simulation approaches in R are available from [HydeNet](https://cran.r-project.org/web/packages/HydeNet/index.html), [greta](https://greta-stats.org), [RStan](https://mc-stan.org/users/interfaces/rstan), and [simstudy](https://www.rdatagen.net/page/simstudy/). Some packages are limited as they only allow certain data types (e.g. discrete or continuous) and the possible relationships that can exist between them (e.g. linear trend). Typically, 'low-level' interfaces (i.e. a package that gets you close to the 'engine') allow more freedom but increase the learning curve and chances of blunder. Furthermore, a selection of methods listed require data to operate and for some purposes this may be unsuitable.
 
 I am partial to Bayesian networks, which is my method of choice in this post, as I find their associated diagrams a powerful visualization tool to understand the model. They can also be created from our imagination, or trained on any available data we happen to have. Flexible and powerful!
 
 ### Basic simulation example 
 
-Before I continue to explain the method I used to create Bayes' Town, now is a good time to demonstrate that simulation techniques are not be out of anyone's reach. 
+Before I continue to explain the method I used to create Bayes' Town, now is a good time to demonstrate that simulation techniques are not out of anyone's reach. 
 
 Keeping with the theme of health, let's simulate the probability of death by boredom in Bayes' Town. Hopefully you are not suffering from this affliction as it is quite serious, as we will soon discover.
 
@@ -635,7 +634,7 @@ The `R6` package was used to encapsulate the `BayesTown` object created from the
 
 At the beginning a model and parameters were already determined. Below I provide the code to create the simulated *Bayes' Town*. A few helper functions built on top of `rjags` make the process a bit more friendly to read. The *Bayes' Town* example is an expert system using just priors but if we decide to include data in the model we simply add a loop to the likelihood function.
 
-```{r example, results = FALSE}
+```{r example, echo = T, eval = F}
 # Set input parameters
 inputParam <- list(p_sex = 0.52, 
                    age_shape = 6,
@@ -696,8 +695,16 @@ We can now use `newTown` as we saw at the start of the post and explore our newl
 1. [Blog](https://aosmith.rbind.io/2018/08/29/getting-started-simulating-data/) that introduces data simulation with probability distributions
 
 ### Information on Bayesian statistics
-While there are many blogs and online articles about Bayesian statistics and Bayesian networks; I found some actually books were my best resource; both are enjoyable and worth the price tag. 
+While there are many blogs and online articles about Bayesian statistics and Bayesian networks, I found books were my best resource; enjoyable and worth the price tag. 
 
 1. [Statistical Rethinking](https://xcelab.net/rm/statistical-rethinking/) and related [YouTube channel](https://www.youtube.com/channel/UCNJK6_DZvcMqNSzQdEkzvzA/featured) 
-1. [Bayesian Networks with Examples in R](https://www.routledge.com/Bayesian-Networks-With-Examples-in-R/Scutari-Denis/p/book/9781482225587)
-1. [Bayesian Networks without Tears](https://www.aaai.org/ojs/index.php/aimagazine/article/view/918), a great introduction to the topic.
+1. [Bayesian Networks with Examples in R](https://www.routledge.com/Bayesian-Networks-With-Examples-in-R/Scutari-Denis/p/book/9781482225587)  
+1. [Bayesian Networks without Tears](https://www.aaai.org/ojs/index.php/aimagazine/article/view/918), a great introduction to the topic.  
+
+
+
+
+
+
+
+
