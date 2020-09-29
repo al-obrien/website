@@ -617,7 +617,7 @@ This is the set of rules that governs Bayes' Town citizens. Right now it provide
 
 ### MCMC and `rjags`
 
-With the rules now defined to create *Disease X* in Bayes' Town, we now need to perform the simulation. The procedure used is called **markov chain monte carlo (MCMC)**, a stochastic method to estimate posterior probability distributions. In short this means we collect samples of possible parameter values instead of attempting to directly compute them. The results are then understood in terms of their sample distribution. However, generating these samples is not always easy and there are various MCMC methods to tackle this challenge, albeit with their own limitations and takeoffs.  
+With the rules now defined to create *Disease X* in Bayes' Town, we now need to perform the simulation. The procedure used is called **markov chain monte carlo (MCMC)**, a stochastic method to estimate posterior probability distributions. In short this means we collect samples of possible parameter values instead of attempting to directly compute them. The results are then understood in terms of their sample distribution. However, generating these samples is not always easy and there are various MCMC methods to tackle this challenge, albeit with their own limitations and trade-offs.  
 
 <strong>1. Metropolis algorithm: </strong> original and 'simple' MCMC implementation.  
 <strong>2. Metropolis-Hastings algorithm:</strong> an extension to the metropolis algorithm.  
