@@ -411,7 +411,7 @@ simModel &lt;-  as.character(&#39;
 </div>
 <div id="mcmc-and-rjags" class="section level3">
 <h3>MCMC and <code>rjags</code></h3>
-<p>With the rules now defined to create <em>Disease X</em> in Bayes’ Town, we now need to perform the simulation. The procedure used is called <strong>markov chain monte carlo (MCMC)</strong>, a stochastic method to estimate posterior probability distributions. In short this means we collect samples of possible parameter values instead of attempting to directly compute them. The results are then understood in terms of their sample distribution. However, generating these samples is not always easy and there are various MCMC methods to tackle this challenge, albeit with their own limitations and trade-offs.</p>
+<p>With the rules defined to create <em>Disease X</em> in Bayes’ Town, we now need to perform the simulation. The procedure used is called <strong>markov chain monte carlo (MCMC)</strong>, a stochastic method to estimate posterior probability distributions. In short this means we collect samples of possible parameter values instead of attempting to directly compute them. The results are then understood in terms of their sample distribution. However, generating these samples is not always easy and there are various MCMC methods to tackle this challenge, albeit with their own limitations and trade-offs.</p>
 <p><strong>1. Metropolis algorithm: </strong> original and ‘simple’ MCMC implementation.<br />
 <strong>2. Metropolis-Hastings algorithm:</strong> an extension to the metropolis algorithm.<br />
 <strong>3. Gibbs sampling:</strong> more efficient sampling by using <em>adaptive proposals</em> (<code>BUGS</code> and <code>JAGS</code> software use this method).<br />
