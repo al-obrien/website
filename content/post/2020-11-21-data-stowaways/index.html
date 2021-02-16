@@ -1,0 +1,313 @@
+---
+title: 'Addressing data stowaways and R memory usage'
+author: al-obrien
+date: '2021-02-13'
+slug: data-stowaway
+categories: []
+tags:
+  - R
+subtitle: ''
+summary: ''
+authors: [al-obrien]
+lastmod: '2021-02-13T15:43:59-07:00'
+featured: no
+image:
+  caption: '[Photo by Harrison Broadbent Hurst on Unsplash](https://unsplash.com/photos/ING1Uf1Fc30)'
+  focal_point: ''
+  preview_only: yes
+projects: []
+diagram: false
+codefolding_show: show
+---
+
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/viz/viz.js"></script>
+<link href="/rmarkdown-libs/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/grViz-binding/grViz.js"></script>
+
+
+<p>Among the errors R sessions produce, one commonly feared is: <code>Error: cannot allocate vector of size X</code>. This error is thrown when you force-feed R too much data. In other words, the system ran out of memory to run an operation. Not only is this an issue when trying to load a single massive data-set but also when a project slowly develops over time and becomes complex. The environment, if one is not careful, gradually becomes polluted with objects one may or may not need until the aforementioned error appears. The objects that a project needs (i.e. <code>rm(...)</code> is not an option) but can no longer accommodate I refer to as <strong>data stowaways</strong>. They are part of our project but are not typically needed simultaneously.</p>
+<p>There are many solutions to ensure R uses Random Access Memory (RAM) efficiently and several of them will be touched upon here. However, the focus below is on addressing data stowaways by developing a pair of helper functions to quickly <code>stow()</code> and <code>retrieve()</code> objects at specific times. The solution takes advantage of packages like <code>fst</code> that make serialization of R objects incredibly quick between RAM and the disk-drive. Before going into how to address data stowaways, we first need a basic understanding of how R uses RAM. If you are already familiar with these details or are only interested in a solution to data stowaways, skip to the <a href="#stow-and-retrieve">later section</a>.</p>
+<div id="r-and-ram" class="section level2">
+<h2>R and RAM</h2>
+<p>R typically relies on RAM to temporarily store and operate on data. Data, or any R object, is assigned a memory address in RAM; this address is ephemeral and when the R session closes it will be cleared. If the system running R runs out of RAM an error will appear and possibly crash the session. Compared to common disk-drives, RAM has very fast read/write speeds but lower storage capacity and a higher price point. Although RAM is becoming cheaper, and systems with over 32 or 64 gigabytes are common, it is still frustrating when <code>Error: cannot allocate vector of size X</code> appears and a spare stick of RAM is not at your fingertips.</p>
+<p>Although Hadley Wickham (and <a href="https://www.brodieg.com/2019/02/18/an-unofficial-reference-for-internal-inspect/">others</a>) have covered the topic of R’s RAM usage in <a href="https://adv-r.hadley.nz/names-values.html">detail</a>, there are some basic concepts that can benefit all R users. R has a <strong>copy on modify</strong> behaviour, which means if an object is changed it will create copy. R tries to be efficient and only uses RAM if it has to, otherwise it will continue to point to the same memory address. This is easier to understand with an example (similar to what Hadley demonstrates in his <a href="https://adv-r.hadley.nz/names-values.html#copy-on-modify">book</a>). Below we use the <code>lobstr</code> package to create an object and determine both the location and how much space it occupies in memory. We then assign the object another name, which does not copy the object until the new object changes.</p>
+<pre class="r"><code># Create a random vector
+x &lt;- rnorm(100)
+
+# Print the size and location of &#39;x&#39; in memory
+cat(paste0(tracemem(x), # Trace changes in memory
+           &#39;\n\nObject x&#39;,
+           &#39;\nSize: &#39;, lobstr::obj_size(x),
+           &#39;\nAddress: &#39;, lobstr::obj_addr(x), &#39;\n&#39;))
+
+# Assign &#39;x&#39; to a another name &#39;y&#39; and confirm nothing has changed
+y &lt;- x
+cat(paste0(&#39;\nObject y (before modification)&#39;,
+           &#39;\nSize: &#39;, lobstr::obj_size(y),
+           &#39;\nAddress: &#39;, lobstr::obj_addr(y), &#39;\n&#39;))
+
+# Adjust an element in &#39;y&#39; 
+y[10] &lt;- 0L
+
+# Check size and location of &#39;y&#39; again.
+cat(paste0(&#39;\nObject y (after modification)&#39;,
+           &#39;\nSize: &#39;, lobstr::obj_size(y),
+           &#39;\nAddress: &#39;, lobstr::obj_addr(y), &#39;\n\n&#39;))
+
+
+# Show the difference in space used
+temp &lt;- lobstr::mem_used()
+rm(x); exists(&#39;y&#39;); # &#39;y&#39; still exists after x removed
+cat(&#39;Size difference: &#39;); lobstr::mem_used() - temp;</code></pre>
+<pre><code>## Object x
+## Size: 848
+## Address: 0x15ae7f70
+## 
+## Object y (before modification)
+## Size: 848
+## Address: 0x15ae7f70
+## 
+## Object y (after modification)
+## Size: 848
+## Address: 0x14506d68
+## 
+## [1] TRUE
+## Size difference: -45,272 B</code></pre>
+<p>From the memory trace, we see <code>y</code> is assigned a new location upon modification (e.g. [0x00000208e227b998 -&gt; 0x00000208d77b1780]) and if <code>x</code> is removed <code>y</code> still exists and memory usage decreases. Other programming languages, and some specific packages in R such as <code>data.table</code>, have <strong>modify in place</strong> behaviour which are more memory efficient since data will not be copied; however, sometimes this is undesirable. A copy on modify approach means the object is <strong>immutable</strong>, the original object is untouched unless specifically assigned to the same address (i.e. <code>df &lt;- mutate(df, ...)</code> instead of <code>mutate(df, ...)</code>. R does clever garbage collection behind the scenes to ensure stale memory addresses are released for further use. Overall, what this demonstrates is that populating the R environment with objects (usually temporary or intermediate copies) without considering how the objects are saved in memory can lead to excessive memory usage if they are not removed and will ultimately summon <code>Error: cannot allocate vector of size X</code>.</p>
+</div>
+<div id="sources-and-solutions-for-r-ram-errors" class="section level2">
+<h2>Sources and Solutions for R RAM Errors</h2>
+<p>There are two main situations I have experienced where R utilizes more RAM than what is available on a given machine. The most common is early in a data analysis project where uploading the entirety of a terabyte data-set causes the computer to complain. There are several solutions that can address this problem. The second situation is when your R session is very complex, creates a multitude of intermediate objects that should be culled but become lost/hidden in the environment pane. Sometimes copies of objects are needed both early and late in a project workflow but along the way R may throw the dreaded error. This situation is similar but distinct from the first; in the latter case, <strong>data stowaways</strong> enter our environment but are not easily removed. There are other situations where RAM usage becomes troublesome; for instance, some model fitting procedures temporarily occupy a large portion of RAM. However the discussion here is focused more on the upstream stages in a data pipeline, specifically the initial load, cleaning, and transformation steps.</p>
+<p>There are several options available to address RAM usage in R. I have listed a few below by what I consider to be their increasing level of complexity or difficulty to implement (from blue, yellow, and red).
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"diagram":"digraph {\n  \n  # Set graph\n  graph [layout = circo, rankdir = LR]\n  \n  # Nodes overall\n  node [shape = rectangle, style = filled, fontcolor = \"#394045\"]  \n  \n  # Center node\n  node [fillcolor = \"white\", color = \"#575e6a\"] \n  center [label = \"Error: cannot allocate \\nvector of size X\"]\n  \n  # Easy change nodes\n  node [fillcolor = \"#5cb8ff\", color = \"#3f82b5\"]  \n  one [label = \"RAM upgrade\"]\n  two [label = \"Code improvement\"]\n\n  \n  # Medium change nodes\n  node [fillcolor = \"#ffc15e\", color = \"#c99747\"]  \n  three [label = \"data.table\"]\n  four [label = \"Serialization\"]\n\n  \n  # Hard change nodes\n  node [fillcolor = \"#f65353\", color = \"#C44242\"]  \n  five [label = \"diskframe\"]\n  six [label = \"Data base connections\"]\n  \n  # Edges\n  edge [color = \"#848c91\"]\n  {one two three four five six} -> center [arrowhead=none]\n  }","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script></p>
+<p>There are numerous ways to address RAM usage in R but not all are interchangeable, the best choice will often be use-case specific. I have attempted to group some options into general categories below:</p>
+<ol style="list-style-type: decimal">
+<li>Memory is cheap and coding is hard. Purchasing more RAM or migrating to cloud computing solutions will prevent/delay memory limitation issues.<br />
+</li>
+<li>R code efficiency and organization
+<ul>
+<li>Clear temporary objects as soon as they are unneeded</li>
+<li>Use functions to encapsulate environments and ensure temporary objects remain temporary</li>
+<li>Use <code>list()</code> to organize the R environment and make object removal easier</li>
+<li>Avoid loops on large data-sets, <a href="https://adv-r.hadley.nz/perf-improve.html#vectorise">vectorize</a> code for better performance</li>
+</ul></li>
+<li>Recode R
+<ul>
+<li>Use the R package <a href="https://rdatatable.gitlab.io/data.table/">data.table</a> for large in-memory data-sets (has modify in place operations).</li>
+<li><a href="https://cran.r-project.org/web/packages/Rcpp/index.html">Rcpp</a> for a C++ interface; may have more benefits in terms of speed than memory gains</li>
+<li>Julia has <a href="https://cran.r-project.org/web/packages/JuliaCall/index.html">modify in place</a> features. <a href="https://cran.r-project.org/web/packages/JuliaCall/index.html">JuliaCall</a> provides an interface between Julia and R but since data is copied, memory usage will likely increase. As such, the processes may have to run separately with an intermediate write to disk operation. Projects such as Apache Arrow are making this easier to communicate data representations between different software. If you want to learn more about how R and Julia compare in terms of speed and memory use, check out <a href="https://www.datasciencecentral.com/profiles/blogs/6448529:BlogPost:871831">Daniel Moura’s blog post</a>.</li>
+</ul></li>
+<li>Data serialization and transfer
+<ul>
+<li><a href="https://blog.rstudio.com/2016/03/29/feather/">feather</a> is part of the <a href="https://arrow.apache.org/">Apache Arrow</a> project and has a lot of potential to improve data sharing between software so the best tool for the job is used while ensuring efficient use of memory (i.e. zero-copy reads).</li>
+<li><a href="https://www.fstpackage.org/">fst</a> provides “lightning fast serialization of data frames”.</li>
+<li><a href="https://diskframe.com/index.html">disk.frame</a> can operate on data in chunks from the disk drive using syntax similar to dplyr. Other functions like <code>readr::read_csv()</code> have options to read data in chunks as well.</li>
+<li><a href="https://cran.r-project.org/web/packages/ff/index.html">ff</a> provides an option similar to the <em>disk.frame</em> package.</li>
+</ul></li>
+<li>Leverage data base infrastructure. If data is already stored in a data base (relational or otherwise), pushing calculations to that location is often the best option. The network speed for data transfer alone, nevermind data size, is an incentive for a basic understanding of SQL.
+<ul>
+<li><a href="https://spark.rstudio.com">sparklyr</a></li>
+<li><a href="https://dbplyr.tidyverse.org">dbplyr</a> + SQL backend</li>
+<li><a href="https://cran.r-project.org/web/packages/RSQLite/index.html">RSQLite</a></li>
+</ul></li>
+</ol>
+<p>Typically, workflows use a combination of items above. For projects with an expectation of ongoing support and interest it is good practice to ensure the design and infrastructure is able to scale with respect to available resources. A single solution may not be enough to keep a large complex workflow afloat.</p>
+</div>
+<div id="stow-and-retrieve" class="section level2">
+<h2>Stow and Retrieve</h2>
+<p>Having options, both simple to complex, to address memory issues is great but how does this help us specifically with the aforementioned <strong>data stowaways</strong>? Although this is just one obstacle that an analyst may face, it can be readily addressed using options previously listed. In most situations, recoding an entire R workflow is not a preferred solution, neither is setting up, configuring, and maintaining a data base for a single project. As an intermediate solution, leveraging serialization to deal with data stowaways is a suitable choice.</p>
+<p>The idea is quite simple and commonly used. When a data set is no longer needed, it can be written to disk for persistent storage. Although these outputs tend to be a final product, we can also write data to disk <em>temporarily</em> and retrieve them at later steps in a workflow. When writing to a local disk drive, serialization (e.g. via the <code>fst</code> package) can be incredibly quick, on the scale of several GB/s. Data stowed and retrieved at these speeds barely interrupt a workflow while ensuring RAM is available to the processes that need it.</p>
+<p>So, the solution to data stowaways is to <strong>stow</strong> them to disk and <strong>retrieve</strong> them when actually needed. As suitable serialization methods already exist we can use them directly; however, I found the process benefited by using a pair of helper functions (<code>stow()</code> and <code>retrieve()</code>) to ensure code consistency and ease of use during collaboration on our team. Here are some of the benefits provided by the helper functions:</p>
+<ul>
+<li>Basic checks on valid file paths and descriptive errors</li>
+<li>Retrieve the object under the same name at the time it was stowed</li>
+<li>Save the location in a temporary location by default</li>
+<li>S3 class to save metadata about the stowed object (e.g. location and original name of object) and ensure retrieval is predictable</li>
+<li>Provide multiple methods to serialize data (e.g. connect to <code>fst</code> or <code>feather</code> packages)</li>
+</ul>
+<p>The basic function pair uses a simple <a href="https://adv-r.hadley.nz/s3.html">S3 class</a> and is provided below, followed by a usage example.</p>
+<div id="function-to-stow" class="section level3">
+<h3>Function to <strong>stow</strong></h3>
+<pre class="r"><code># ----------------------------------- #
+# Stow a file temporarily
+
+# Stowing to local disk is recommend (i.e. not a network drive)
+# Use a very basic S3 class for metadata on stowed object
+# ----------------------------------- #
+
+
+stow &lt;- function(object,
+                 path = NULL, # Defaults to /temp directory
+                 new_name = NULL, # Provide a new name to the file being stowed
+                 method = c(&#39;rds&#39;, &#39;fst&#39;),
+                 compress = T,
+                 cleanup = F,  # Remove original object from R environment (defaults FALSE for safety)?
+                 envir = .GlobalEnv) {
+  
+  # Basic checks
+  if(is.null(path) &amp; !is.null(new_name)) warning(&#39;New name for object will be saved.&#39;);
+  if(!is.null(path)) if(!dir.exists(path)) stop(&#39;The path provided does not exist. Please check and try again&#39;);
+  if(is.null(path)) warning(&#39;A temporary file will be created for the object. Original object name or &quot;new_name&quot; used if retrieval assignment automatic.&#39;);
+  if(!is.null(new_name) &amp;&amp; !is.character(new_name) &amp;&amp; length(new_name == 1)) stop(&#39;new_name must be a character of length 1&#39;);
+  
+  # Method check
+  method &lt;-  match.arg(method)
+  if(method == &#39;fst&#39; &amp; !(&#39;fst&#39; %in% installed.packages()[,1])) stop(&#39;fst package was not found, please install.&#39;)
+  
+  # Create path string, if no path provided, use temp location
+  path_out &lt;- if(is.null(path)) tempfile() else normalizePath(path);
+  
+  # For custom new name, assign to path or else use object name
+  if(!is.null(path) &amp; is.null(new_name)){
+    
+    # Create from new name
+    name &lt;- substitute(object)
+    path_out &lt;- file.path(path_out, name, fsep = &#39;\\&#39;)
+    
+  } else if(!is.null(path) &amp; !is.null(new_name)) {
+    
+    # Take object name
+    path_out &lt;- file.path(path_out, new_name, fsep = &#39;\\&#39;)
+    
+  }
+  
+  # Save to location by method (add more methods like fst as needed)
+  switch(method,
+         
+         rds = {saveRDS(object, paste0(path_out, &#39;.rds&#39;), compress = compress)},
+         fst = {fst::write_fst(object, paste0(path_out, &#39;.fst&#39;))})
+  
+  # Create returned object list
+  out_list &lt;- list(path= paste0(path_out, &#39;.&#39;, method),
+                   name = if(!is.null(new_name)) new_name else deparse(substitute(object)),
+                   method = method)
+  
+  # Set as specific class
+  class(out_list) &lt;- &quot;stow&quot;
+  
+  # Remove object from environment
+  if(cleanup == T) {
+    
+    warning(&#39;Removing &#39;, substitute(object), &#39; from the following environment: &#39;, substitute(envir))
+    rm(list = deparse(substitute(object)), envir = envir)
+    
+  }
+  
+  # Return the class
+  out_list
+  
+}</code></pre>
+<p>When using <code>stow()</code> the object created has (1) an attribute for the class and (2) a simple a list of information required by <code>retrieve()</code>.</p>
+<pre><code>$path
+[1] &quot;C:\\Users\\USRNAME\\AppData\\Local\\Temp\\RtmpERw4Jl\\file36b042f21712.fst&quot;
+
+$name
+[1] &quot;file36b042f21712&quot;
+
+$method
+[1] &quot;fst&quot;
+
+attr(,&quot;class&quot;)
+[1] &quot;stow&quot;</code></pre>
+</div>
+<div id="function-to-retrieve" class="section level3">
+<h3>Function to <strong>retrieve</strong></h3>
+<pre class="r"><code># ----------------------------------- #
+# Retrieve a file
+
+# Must be created by the stow function (stow class)
+# ----------------------------------- #
+
+retrieve &lt;- function(stow, # The stowed object class created by `stow()`
+                     keep_name = T, # Assign the stowed object under name provided in the class metadata
+                     cleanup = F, # Remove the (temporary) file from  disk
+                     as.data.table = T, # Convert to a data.table, which is a parameter specific to `fst`
+                     envir = .GlobalEnv) {
+  
+  if(class(stow)!=&#39;stow&#39;) stop(&#39;Input needs to be created by the function `stow`&#39;)
+  
+  # Switch between selection of methods to read data
+  out &lt;- switch(stow$method,
+                rds = {readRDS(stow$path)},
+                fst = {fst::read_fst(stow$path, as.data.table = as.data.table)})
+  
+  # Use name provided in class
+  if(keep_name == T){
+    
+    assign(x = stow$name, value = out, envir = envir)
+    
+    if(cleanup == T){
+      
+      warning(&#39;Removing original file from the following location: &#39;, stow$path)
+      file.remove(stow$path)
+      
+    }
+    
+    return(paste0(&#39;Variable assigned to environment automatically with the name: &#39;, stow$name))
+    
+  }
+  
+  # Check if file should be removed
+  if(cleanup == T) {
+    
+    warning(&#39;Removing original file from the following location: &#39;, stow$path)
+    file.remove(stow$path)
+    
+  }
+  
+  return(out)
+  
+}</code></pre>
+</div>
+<div id="example-usage" class="section level3">
+<h3>Example usage</h3>
+<p>Users may find <code>stow()</code> and <code>retrieve()</code> primarily benefits larger complex workflows where large objects leave and re-enter. As such, to keep things simple, I have created (a rather contrived) <em>pseudo-code</em> example. The process of stowing an object temporarily to make efficient use of RAM should be clear in the commented code.</p>
+<pre class="r"><code>#
+# Psuedo-code for stow/retrieve in a normal workflow
+#
+
+# Load a massive dataset that still fits into available RAM
+inital_data &lt;- read_csv(&#39;/path/to/data.csv&#39;)
+
+# Perform workflow operations
+adjusted_data &lt;- inital_data %&gt;%
+  select(contains(&#39;pattern of interest&#39;)) %&gt;%
+  mutate(date_column = lubdridate::ymd(raw_date))
+  filter(date_column &lt;= today())
+
+# Remove unnecessary data
+rm(inital_data)
+
+# Only subset needed for subsequent set of operations
+adjusted_data_filtered &lt;- filter(adjusted_data, date_column &lt;= today())
+
+# Stow unfiltered temporarily to allow for other operations (data loads, calculations, etc.)
+adjusted_data_stowed &lt;- stow(adjusted_data, method = &#39;fst&#39;, cleanup = T)
+
+# Perform other RAM intensive operations by placeholder function `f()`
+adjusted_data_filtered &lt;- f(adjusted_data_filtered)
+
+# Stow adjusted_data_filtered (and remove from environment)
+adjusted_data_filtered_stowed &lt;- stow(adjusted_data_filtered, method = &#39;fst&#39;, cleanup = T)
+
+# Retrieve the initial unfiltered data and do other operations via `g()`; alternatively assign via &lt;-
+retrieve(adjusted_data_stowed, keep_name = T, cleanup = T)
+rm(adjusted_data_stowed)
+adjusted_data &lt;- g(adjusted_data)</code></pre>
+<p>While using <code>stow()</code>, output messages may appear as…</p>
+<pre><code>Warning messages:
+1: In stow(testData, method = &quot;fst&quot;, new_name = &quot;new_object_name&quot;) :
+  New name for object will be saved.
+2: In stow(testData, method = &quot;fst&quot;, new_name = &quot;new_object_name&quot;) :
+  A temporary file will be created for the object. Original object name or &quot;new_name&quot; used if retrieval assignment automatic.</code></pre>
+<p>Whereas <code>retrieve()</code>, if allowing assignment by the object name (<code>keep_name = T</code>), messages will appear similar to…</p>
+<pre><code>[1] &quot;Variable assigned to environment automatically with the name: new_object_name&quot;</code></pre>
+<p>Otherwise, <code>retrieve()</code> uses assignment as normal (i.e. <code>&lt;-</code>) to name of your choosing.</p>
+</div>
+</div>
+<div id="takeaway" class="section level2">
+<h2>Takeaway</h2>
+<p>Although <code>stow()</code> and <code>retrieve()</code> help with the issue of data stowaways, they are just one tool used among several while working with large datasets within complex workflows to ensure one treads above RAM limits.</p>
+</div>
