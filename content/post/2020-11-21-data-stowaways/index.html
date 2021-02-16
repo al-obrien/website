@@ -62,15 +62,15 @@ rm(x); exists(&#39;y&#39;); # &#39;y&#39; still exists after x removed
 cat(&#39;Size difference: &#39;); lobstr::mem_used() - temp;</code></pre>
 <pre><code>## Object x
 ## Size: 848
-## Address: 0x16658808
+## Address: 0x162da150
 ## 
 ## Object y (before modification)
 ## Size: 848
-## Address: 0x16658808
+## Address: 0x162da150
 ## 
 ## Object y (after modification)
 ## Size: 848
-## Address: 0x167d2c60
+## Address: 0x14506d68
 ## 
 ## [1] TRUE
 ## Size difference: -45,272 B</code></pre>
