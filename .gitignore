@@ -1,8 +1,10 @@
-public/
-blogdown/
+/public/
+/blogdown
+/resources/
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 Thumbs.db
 .Renviron
+.DS_Store
