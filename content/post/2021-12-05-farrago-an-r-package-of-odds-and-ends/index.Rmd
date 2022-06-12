@@ -1,0 +1,216 @@
+---
+title: '{farrago}: an R Package of odds-and-ends'
+author: al-obrien
+date: '2022-06-01'
+slug: farrago
+categories: []
+tags:
+  - R
+  - Package
+subtitle: ''
+summary: ''
+authors: [al-obrien]
+lastmod: '2022-06-01T12:22:24-07:00'
+featured: no
+image:
+  caption: '[Photo by Todd Quackenbush on Unsplash](https://unsplash.com/photos/IClZBVw5W5A)'
+  focal_point: ''
+  preview_only: yes
+projects: []
+codefolding_show: show
+---
+
+```{r, include=FALSE}
+library(farrago)
+library(magrittr)
+library(data.table)
+library(tibble)
+
+convert_date2fluseason <- function(date, format = '%Y-%m-%d', flu_wk_start = 35, return_values, split_wk53 = TRUE, sunday_start = TRUE){
+
+  valid_returns <- c('week', 'month', 'year', 'season')
+  if(!missing(return_values)) match.arg(return_values, valid_returns, several.ok = TRUE)
+
+  # Run through parsing check for YYYY-MM-DD formats
+  date <- lubridate::as_date(date, format = format)
+
+  # Parse year, month, wk number, wk day (vectors)
+  year_test <- lubridate::year(date)
+  month <- lubridate::month(date)
+  if(sunday_start) {fmt_wk <- lubridate::isoweek(date + 1)} else {fmt_wk <- lubridate::isoweek(date)} # +1 for Sunday start...
+  week_day <- lubridate::wday(date)
+
+  if(split_wk53){
+    # Calculate conditions for weeks and season
+    fmt_wk[fmt_wk == 53 & month == 12] <- 52 # Roll back to week 52 if in prior year, Dec
+    fmt_wk[fmt_wk == 53 & month == 1] <- 1 # Roll into week 1 if in next year, Jan
+
+    # week <- fmt_wk
+    # index1 <- week_day == 1 & fmt_wk + 1 == 53 & month == 12 # if Sunday, in Dec & just shy of week 53 (will force to 52)
+    # index2 <- !index1 & week_day == 1 # Sunday but not matched to prior index
+    # week[index1] <- 52
+    # week[index2] <- fmt_wk[index2] + 1
+  }
+  week <- fmt_wk
+
+
+  year <- year_test
+  index3 <- week==1 & month == 12
+  year[index3] <- year_test[index3]+1
+
+  season <- rep(NA, length(fmt_wk))
+  index4 <- fmt_wk < flu_wk_start | (fmt_wk == 52 & month == 1) # Go back a year for season for those in 52 wk but next year month
+  index5 <- !index4 & fmt_wk == 53 & month == 12
+  season[index4] <- paste(year[index4]-1, year[index4], sep="-")
+  season[index5 & is.na(season)] <- paste(year[index5 & is.na(season)]+1, year[index5 & is.na(season)]+2, sep="-")
+  season[!index5 & is.na(season)] <-  paste(year[!index5 & is.na(season)],year[!index5 & is.na(season)]+1, sep="-")
+
+  out <- setNames(list(week, month, year, season),
+                  valid_returns)
+
+  if(!missing(return_values)) {
+    return(out[return_values])
+  } else {
+    return(out)
+  }
+}
+```
+
+
+After working with R both professionally and through hobby projects I have accumulated an assortment of coding 'odds-and-ends', snippets that I have found useful enough to collate and document. [{farrago}](https://github.com/al-obrien/farrago) is an R package serving as a personal collection of tools to assist with data workflows and analysis, with a focus on health surveillance and epidemiological data; however, it may have utility to other audiences as well.
+
+The functions are organized by general operation type, such as *calculations*, *conversions*, *content creation*, *data transfer*, and *plotting*. As the package continues to grow, I anticipate that particular function themes will be unified under their own distinct packages. This will ensure that the number of dependencies are minimized, making it simpler to maintain. 
+
+Functions that have been topics of [previous posts](/post/data-stowaway/) (e.g. `stow()` and `retrieve()`), are included in {farrago}. Further development and fixes are routinely incorporated in the package (and are not typically deserving of additional blog spotlight). The package content continues to expand and other functions in {farrago} may warrant additional attention in future blog posts. A few of particular interest I have given a cursory introduction below... 
+
+## File transfer
+
+Uploading and downloading files via SFTP is a common operation and, in most instances, it is possible to automate these steps. When working on Windows OS, WinSCP is a common tool used for this purpose and the option of using batch files helps streamline the process. It is a small leap to then have R write and pass these WinSCP batch files to a pre-established configuration on WinSCP. {farrago} can upload and download from these connections after the initial setup in WinSCP through the `transfer_winscp()` function:
+
+```{r, eval = FALSE, echo = TRUE}
+drop_location <- 'C:/PATH/TO/DESIRED/FOLDER/'
+  
+transfer_winscp(file ='my_rmt_file.csv'),
+               direction = 'download',
+               connection = 'sftp://myusername:mypwd@hostlocation.ca/'
+               rmt_path = './location/',
+               drop_location = drop_location)
+
+my_transferred_file <- read.csv(paste0(drop_location, 'my_rmt_file.csv'))
+```
+
+## Pesky dates
+
+When working with data, it is hard to escape working with dates. In several instances, they can be frustrating to deal with. 
+
+One of which is determining flu weeks each year... 
+```{r}
+# Sample date list for flu seasons
+date_list <- c('2022-01-01',
+               '2021-01-01',
+               '2020-08-30',
+               '2020-09-01',
+               '2020-09-23',
+               '2020-01-01',
+               '2019-12-31',
+               '2018-01-01', 
+               '2017-01-01', 
+               '2016-01-01')
+
+# Return just the week and season category
+convert_date2fluseason(date_list, return_values = c('week', 'season'))
+```
+
+Another example is determining holidays, which can be useful to schedule reports...
+
+```{r}
+# Find labour day (first monday in Sept) 
+list_weekdays(2021, 9, 'Monday')[1]
+```
+
+```{r}
+# Find observed holiday of xmas day
+find_observedday(2021, month = 12, day = 25)
+```
+
+## Cohorts
+
+Several operations are useful for working with cohorts but can be difficult to code efficiently in R, especially if they require `for` loops. This includes identifying overlapping time-frames, collapsing cohort entry/exit by a threshold, and assigning episode periods across repeat observations.
+```{r, message = FALSE}
+test_data <- tibble::tribble(~grp_id, ~date_start, ~date_end,
+                      1, '2020-01-01', '2020-01-02',
+                      1, '2020-01-03', '2020-01-04',
+                      1, '2020-01-04', '2020-09-02',
+                      2, '2020-01-01', '2020-09-02',
+                      2, '2020-09-10', '2020-09-20',
+                      2, '2020-09-21', '2020-09-22',
+                      3, '2020-01-01', '2020-01-02',
+                      3, '2020-01-02', '2020-01-20',
+                      3, '2020-01-21', '2020-01-22',
+                      3, '2020-01-22', '2020-04-02',
+                      3, '2020-04-22', '2021-04-22',
+                      3, '2021-06-09', '2021-06-22') %>%
+   dplyr::mutate_at(dplyr::vars(contains('date')), lubridate::ymd)
+
+# Assign an incremental id to rows overlapping (i.e. date end is same or prior to the next start date; these will have same value)
+test_data$overlap_id <- identify_overlap(data = test_data,
+                                      grp_id = grp_id,
+                                      date_start = date_start,
+                                      date_end = date_end)
+
+# Create group when difference between date end and start start is 1 day
+test_data$collapsed_grp <- collapse_timesteps(data = test_data,
+                                              grp_id = grp_id,
+                                              date_start = date_start,
+                                              date_end = date_end,
+                                              threshold = 1)
+
+# Create episode period based upon start dates and a threshold of 10
+test_data$episode_period <- assign_episode(data = test_data,
+                             grp_id = grp_id,
+                             date = date_start,
+                             threshold = 10)
+
+knitr::kable(test_data) %>% kableExtra::scroll_box(width = "100%", box_css = 'padding: 5px;')
+```
+
+## Create and summarise groups
+
+Although this can be achieved easily with packages like {dplyr}, the `create_hypercube` function makes it simple to create summarised tables that include rows for totals by provided grouping columns.
+```{r, message = FALSE}
+create_hypercube(mtcars, columns = c('gear', 'cyl'), drop_sum_columns = 'cyl')
+```
+
+When working with ages or binning numeric values into discrete categories it is convenient to have automatic labeling...just assign the breaks and let `create_breaks` do the rest.
+```{r, message = FALSE}
+data = data.frame(val = c(-1,0,10,5,999,9))
+
+breaks = c(0, 1, 10,50,100)
+
+data$cat <- create_breaks(data$val, breaks, TRUE)
+
+data
+```
+
+If you have used SAS, you may be familiar with `MULTILABEL FORMAT` summaries. In {farrago}, `create_multilevel_factor` can simulate this kind of behavior and create a dataset with combined category levels. Below shows an example of how overlapping age groups can be added and summarized.
+```{r, message = FALSE}
+# Sample data with groups and conditions
+example_data <- tibble(group = c('Area1', 'Area1', 'Area1', 'Area2', 'Area3', 'Area3'),
+                       condition = factor(c('<5', '5-10', '11-20', '<5', '5-10', '20+'), ordered = FALSE))
+
+# Create dataset with additional levels defined
+new_data <- create_multilevel_factor(example_data,
+                         target_col = 'condition',
+                         group_col = 'group',
+                         new_levels = list('NewGrp:0-10' = c('<5', '5-10'), 'NewGrp:5-20' = c('11-20', '5-10')), # Define combined categories
+                         collapse = FALSE,
+                         track = TRUE)
+
+# Summarise the multi-level grouping by their group id
+tmptbl <- addmargins(table(new_data$group,new_data$condition), margin = 1)
+knitr::kable(tmptbl)
+```
+
+## Wrap-up
+
+If the examples above have kept your attention, I encourage interested readers to explore the package and associated documentation more thoroughly on the repository. Due to the scope of the package, it is simply hosted on [GitHub](https://github.com/al-obrien/farrago). 
