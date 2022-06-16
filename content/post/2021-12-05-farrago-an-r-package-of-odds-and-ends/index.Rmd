@@ -81,7 +81,7 @@ After working with R both professionally and through hobby projects I have accum
 
 The functions are organized by general operation type, such as *calculations*, *conversions*, *content creation*, *data transfer*, and *plotting*. As the package continues to grow, I anticipate that particular function themes will be unified under their own distinct packages. This will ensure that the number of dependencies are minimized, making it simpler to maintain. 
 
-Functions that have been topics of [previous posts](/post/data-stowaway/) (e.g. `stow()` and `retrieve()`), are included in {farrago}. Further development and fixes are routinely incorporated in the package (and are not typically deserving of additional blog spotlight). The package content continues to expand and other functions in {farrago} may warrant additional attention in future blog posts. A few of particular interest I have given a cursory introduction below... 
+Functions that have been topics of [previous posts](/post/data-stowaway/) (e.g. `stow()` and `retrieve()`) are included in {farrago}. Further development and fixes are routinely incorporated in the package (and are not typically deserving of additional blog spotlight). The package content continues to expand and other functions in {farrago} may warrant additional attention in future blog posts. A few of particular interest I have given a cursory introduction below... 
 
 ## File transfer
 
@@ -101,7 +101,7 @@ my_transferred_file <- read.csv(paste0(drop_location, 'my_rmt_file.csv'))
 
 ## Pesky dates
 
-When working with data, it is hard to escape working with dates. In several instances, they can be frustrating to deal with. 
+When working with data it is hard to escape working with dates. In several instances they can be frustrating to deal with. 
 
 One of which is determining flu weeks each year... 
 ```{r}
@@ -201,12 +201,11 @@ example_data <- tibble(group = c('Area1', 'Area1', 'Area1', 'Area2', 'Area3', 'A
 # Create dataset with additional levels defined
 new_data <- create_multilevel_factor(example_data,
                          target_col = 'condition',
-                         group_col = 'group',
                          new_levels = list('NewGrp:0-10' = c('<5', '5-10'), 'NewGrp:5-20' = c('11-20', '5-10')), # Define combined categories
                          collapse = FALSE,
                          track = TRUE)
 
-# Summarise the multi-level grouping by their group id
+# Summarise the multi-level grouping by their condition
 tmptbl <- addmargins(table(new_data$group,new_data$condition), margin = 1)
 knitr::kable(tmptbl)
 ```

@@ -27,7 +27,7 @@ codefolding_show: show
 
 <p>After working with R both professionally and through hobby projects I have accumulated an assortment of coding ‘odds-and-ends’, snippets that I have found useful enough to collate and document. <a href="https://github.com/al-obrien/farrago">{farrago}</a> is an R package serving as a personal collection of tools to assist with data workflows and analysis, with a focus on health surveillance and epidemiological data; however, it may have utility to other audiences as well.</p>
 <p>The functions are organized by general operation type, such as <em>calculations</em>, <em>conversions</em>, <em>content creation</em>, <em>data transfer</em>, and <em>plotting</em>. As the package continues to grow, I anticipate that particular function themes will be unified under their own distinct packages. This will ensure that the number of dependencies are minimized, making it simpler to maintain.</p>
-<p>Functions that have been topics of <a href="/post/data-stowaway/">previous posts</a> (e.g. <code>stow()</code> and <code>retrieve()</code>), are included in {farrago}. Further development and fixes are routinely incorporated in the package (and are not typically deserving of additional blog spotlight). The package content continues to expand and other functions in {farrago} may warrant additional attention in future blog posts. A few of particular interest I have given a cursory introduction below…</p>
+<p>Functions that have been topics of <a href="/post/data-stowaway/">previous posts</a> (e.g. <code>stow()</code> and <code>retrieve()</code>) are included in {farrago}. Further development and fixes are routinely incorporated in the package (and are not typically deserving of additional blog spotlight). The package content continues to expand and other functions in {farrago} may warrant additional attention in future blog posts. A few of particular interest I have given a cursory introduction below…</p>
 <div id="file-transfer" class="section level2">
 <h2>File transfer</h2>
 <p>Uploading and downloading files via SFTP is a common operation and, in most instances, it is possible to automate these steps. When working on Windows OS, WinSCP is a common tool used for this purpose and the option of using batch files helps streamline the process. It is a small leap to then have R write and pass these WinSCP batch files to a pre-established configuration on WinSCP. {farrago} can upload and download from these connections after the initial setup in WinSCP through the <code>transfer_winscp()</code> function:</p>
@@ -43,7 +43,7 @@ my_transferred_file &lt;- read.csv(paste0(drop_location, &#39;my_rmt_file.csv&#3
 </div>
 <div id="pesky-dates" class="section level2">
 <h2>Pesky dates</h2>
-<p>When working with data, it is hard to escape working with dates. In several instances, they can be frustrating to deal with.</p>
+<p>When working with data it is hard to escape working with dates. In several instances they can be frustrating to deal with.</p>
 <p>One of which is determining flu weeks each year…</p>
 <pre class="r"><code># Sample date list for flu seasons
 date_list &lt;- c(&#39;2022-01-01&#39;,
@@ -422,12 +422,11 @@ example_data &lt;- tibble(group = c(&#39;Area1&#39;, &#39;Area1&#39;, &#39;Area1
 # Create dataset with additional levels defined
 new_data &lt;- create_multilevel_factor(example_data,
                          target_col = &#39;condition&#39;,
-                         group_col = &#39;group&#39;,
                          new_levels = list(&#39;NewGrp:0-10&#39; = c(&#39;&lt;5&#39;, &#39;5-10&#39;), &#39;NewGrp:5-20&#39; = c(&#39;11-20&#39;, &#39;5-10&#39;)), # Define combined categories
                          collapse = FALSE,
                          track = TRUE)
 
-# Summarise the multi-level grouping by their group id
+# Summarise the multi-level grouping by their condition
 tmptbl &lt;- addmargins(table(new_data$group,new_data$condition), margin = 1)
 knitr::kable(tmptbl)</code></pre>
 <table>
@@ -496,7 +495,7 @@ Area2
 0
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
 0
@@ -519,10 +518,10 @@ Area3
 1
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 </tr>
 <tr>
@@ -542,10 +541,10 @@ Sum
 2
 </td>
 <td style="text-align:right;">
-2
+4
 </td>
 <td style="text-align:right;">
-2
+3
 </td>
 </tr>
 </tbody>
