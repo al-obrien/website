@@ -63,17 +63,17 @@ base_url &lt;- &#39;https://www.mera-petfood.com/en/dog/dogs-companion/&#39;</co
 <pre class="r"><code>summary(dog_baton)</code></pre>
 <pre><code>## 
 ## Metadata of baton...
-## *id: 20221117094354-llCY1450
+## *id: 20221117124354-llCY1450
 ## *referee: TRACE
 ## *relay_type: COMPETITION
-## *relay_start: 2022-11-17 09-43-54
+## *relay_start: 2022-11-17 12-43-54
 ## *relay_finish: NA
 ## *all_grabs:
 ## *all_passes:
 ## *pass_complete: FALSE
 ## *passes_completed: 0
 ## *location:
-## C:\...\RtmpKanqll/_baton-20221117094354-llCY1450.yml
+## C:\...\RtmpKanqll/_baton-20221117124354-llCY1450.yml
 ## *dropped: FALSE
 ## 
 ## Contents of baton...
@@ -92,7 +92,7 @@ write_logbook(dog_baton, &#39;Starting my dog workflow!&#39;)
 write_logbook(dog_baton, &#39;Checking a trace message&#39;, msg_type = &#39;TRACE&#39;)</code></pre>
 <p>Let’s quickly review what is in the baton’s log-book!</p>
 <pre class="r"><code>read_logbook(dog_baton)</code></pre>
-<pre><code>## [1] &quot;Pass [0] 2022-11-17 09:43:54 [MESSAGE] Starting my dog workflow!&quot;</code></pre>
+<pre><code>## [1] &quot;Pass [0] 2022-11-17 12:43:54 [MESSAGE] Starting my dog workflow!&quot;</code></pre>
 <p>The output probably looks like a familiar format, with the time-stamp, message type, and content listed. {relay} also includes the ‘pass’ under which the message was written. In this instance, the baton was just made, no pass was made yet, so it occurred during <em>Pass [0]</em>.</p>
 </div>
 <div id="pass-the-baton" class="section level3">
@@ -107,10 +107,10 @@ dog_baton &lt;- pass_baton(dog_baton)</code></pre>
 <p>Let’s take a quick peek at our metadata again. We will see that is has been passed once successfully.</p>
 <pre class="r"><code>relay::read_metadata(dog_baton, subset =  c(&#39;relay_start&#39;, &#39;all_passes&#39;, &#39;pass_complete&#39;))</code></pre>
 <pre><code>## $relay_start
-## [1] &quot;2022-11-17 09-43-54&quot;
+## [1] &quot;2022-11-17 12-43-54&quot;
 ## 
 ## $all_passes
-## [1] &quot;2022-11-17 09-44-36&quot;
+## [1] &quot;2022-11-17 12-44-36&quot;
 ## 
 ## $pass_complete
 ## [1] TRUE</code></pre>
@@ -245,24 +245,24 @@ dog_baton &lt;- pass_baton(dog_baton, content = baton_content)
 summary(dog_baton)</code></pre>
 <pre><code>## 
 ## Metadata of baton...
-## *id: 20221117094354-llCY1450
+## *id: 20221117124354-llCY1450
 ## *referee: MESSAGE
 ## *relay_type: COMPETITION
-## *relay_start: 2022-11-17 09-43-54
-## *relay_finish: 2022-11-17 09-44-37
-## *all_grabs: 2022-11-17 09-44-36
-## *all_passes: 2022-11-17 09-44-36
-## *all_passes: 2022-11-17 09-44-37
+## *relay_start: 2022-11-17 12-43-54
+## *relay_finish: 2022-11-17 12-44-37
+## *all_grabs: 2022-11-17 12-44-36
+## *all_passes: 2022-11-17 12-44-36
+## *all_passes: 2022-11-17 12-44-37
 ## *pass_complete: TRUE
 ## *passes_completed: 2
 ## *location:
-## C:\...\RtmpKanqll\_bundle-20221117094354-llCY1450/_baton-20221117094354-llCY1450.yml
+## C:\...\RtmpKanqll\_bundle-20221117124354-llCY1450/_baton-20221117124354-llCY1450.yml
 ## *dropped: FALSE
 ## 
 ## Contents of baton...
 ## *datasets: c(&quot;dog_name.csv&quot;, &quot;dog_names_raw.rds&quot;)
 ## *datasets: c(TRUE, TRUE)
-## *datasets: c("2022-11-17 10:21:16", "2022-11-17 10:21:17")</code></pre>
+## *datasets: c("2022-11-17 12:44:16", "2022-11-17 12:44:17")</code></pre>
 </div>
 <div id="wrap-up" class="section level2">
 <h2>Wrap up…</h2>
