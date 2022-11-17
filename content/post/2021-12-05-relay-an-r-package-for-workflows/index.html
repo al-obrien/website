@@ -1,0 +1,372 @@
+---
+title: '{relay}: an R Package for workflows'
+author: al-obrien
+date: '2022-11-17'
+slug: relay-package
+categories: []
+draft: false
+tags:
+  - R
+  - Package
+subtitle: ''
+summary: ''
+authors: [al-obrien]
+lastmod: '2022-11-17T12:23:09-07:00'
+featured: no
+image:
+  caption: '[Photo by Ehimetalor Akhere Unuabona on Unsplash](https://unsplash.com/photos/5GcXfGEXBgI)'
+  focal_point: ''
+  preview_only: yes
+projects: []
+codefolding_show: show
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+
+
+<p>If I was being presumptuous, I would assume that the R programming language is primarily used for scripting tasks, especially in the field of Public Health. The R language is definitely capable of more complex tasks but, in terms of day-to-day use, creating scripts is most commonplace. Part of this is because R excels in this area, making it very easy for data analysts and epidemiologists to create reports quickly without the requirement to deeply understand software engineering principles and concepts. This is a good thing, making R very accessible.</p>
+<p>There comes a point when you write an R script that is incredibly useful; this popularity soon demands more attention on not just <em>what</em> the scripts is doing but <em>how</em> it is run. Essentially, the code is being formalized and moving from development to production. Often there are relatively simple actions that can make this a less painful experience. At this point, being aware of some common software engineering principles is often necessary. Thankfully, this is a rather saturated area of development, so there are an abundance of tools available.</p>
+<div id="workflow-managment" class="section level2">
+<h2>Workflow managment</h2>
+<p>As with most software, workflow management tools vary in complexity and purpose. <a href="https://airflow.apache.org/">Apache Airflow</a> provides an open source option and is common among the Python community. The R package <a href="https://github.com/ropensci/targets">{targets}</a> provides a similar solution to its respective community. There are also seemingly endless options specific for code tracing and logging; just a sample of these for R include: <a href="https://github.com/ryapric/loggit">{loggit}</a>, <a href="https://github.com/zatonovo/futile.logger">{futile.logger}</a>, <a href="https://github.com/elbersb/tidylog">{tidylog}</a>, and <a href="https://github.com/markvanderloo/lumberjack">{lumberjack}</a>. When I required this functionality, instead of using the existing solutions, I decided to create something new :man_shrugging:.</p>
+</div>
+<div id="what-is-relay" class="section level2">
+<h2>What is {relay}?</h2>
+<p><a href="https://github.com/al-obrien/relay">{relay}</a> is an R package for tracking workflows and their content. The original purpose of {relay} was to provide an easy method for scheduled RMarkdown files to be tied together and tracked. It grew to have a more general purpose with workflow organization and logging features that strikes a compromise in flexibility and structure. Considering the options already available, the existence of {relay} may seem unnecessary to those familiar with other frameworks. Creating {relay} made sense for our workflows given the team’s coding experience and the desire to continue to code as flexibly as possible. Getting started with {relay} should be as quick as basic logging but provide a more formal structure seen in more robust workflow management tools like {targets}. As such, {relay} may be a suitable alternative or middle ground for specific use-cases or perhaps used in conjunction with other workflow management and logging tools.</p>
+<p>As the name suggests, {relay} invokes the image of a relay race. In order to track a particular process in an R script, a <em>baton</em> is created. After the particular step is complete, the <em>baton</em> is passed off and subsequently grabbed by any remaining steps in the process. As many <em>batons</em> as is sensible can be created to properly monitor scripts of interest.</p>
+<p>The batons are <strong>S3</strong> class objects with an associated YAML file which contain metadata (internal details from system), logbook, and content (workflow details from user). Since {relay} uses a YAML file and not just R objects, any software that can parse YAML files could use this information created from the R workflow. One can then conceive of workflows that may start in R and then inspected by and continued in python.</p>
+<p>For additional information, take a look at the project README on <a href="https://github.com/al-obrien/relay">GitHub</a>.</p>
+</div>
+<div id="relay-in-action" class="section level2">
+<h2>{relay} in action</h2>
+<div id="a-workflow-with-dogs" class="section level3">
+<h3>A workflow with dogs</h3>
+<p>To showcase {relay}, we will use it to monitor a very important workflow: extracting, parsing and reviewing dog names. We will be using the {rvest} package and a web-site to scrape a collection of dog names separated by gender and sorted alphabetically. For the sake of time, I will not explain the usage of {rvest} and instead focus on showcasing how {relay} monitors the workflow. If you are interested, check out the <a href="https://rvest.tidyverse.org/">{rvest}</a> package website to learn more.</p>
+<p><img src="https://media.giphy.com/media/FnsbzAybylCs8/giphy-downsized.gif" /></p>
+<p>First we load {relay} and other required packages, installing as necessary, and set our URL for dog names to a variable for safe keeping.</p>
+<pre class="r"><code>remotes::install_github(&#39;al-obrien/relay&#39;) # Run once
+library(relay)
+library(rvest)
+library(magrittr)
+
+# Base URL for dog names
+base_url &lt;- &#39;https://www.mera-petfood.com/en/dog/dogs-companion/&#39;</code></pre>
+</div>
+<div id="start-the-relay" class="section level3">
+<h3>Start the relay!</h3>
+<p><img src="https://media.giphy.com/media/6Z3D5t31ZdoNW/giphy.gif" /></p>
+<p>Create the baton to track the workflow, by default it will create this baton in a temporary folder. Typically though, it would be preferable to assign to a more convenient location.</p>
+<pre class="r"><code>dog_baton &lt;- create_baton()</code></pre>
+<p>What does the baton contain? Well, let’s summarize some default details of our baton.</p>
+<pre class="r"><code>summary(dog_baton)</code></pre>
+<pre><code>## 
+## Metadata of baton...
+## *id: 20221117094354-llCY1450
+## *referee: TRACE
+## *relay_type: COMPETITION
+## *relay_start: 2022-11-17 09-43-54
+## *relay_finish: NA
+## *all_grabs:
+## *all_passes:
+## *pass_complete: FALSE
+## *passes_completed: 0
+## *location:
+## C:\...\RtmpKanqll/_baton-20221117094354-llCY1450.yml
+## *dropped: FALSE
+## 
+## Contents of baton...
+## *No contents.</code></pre>
+<p>A unique ID is provided to the baton and a time-stamp of when the baton was created (i.e. the relay start time). Details on other metadata available are found here: <code>help(create_baton)</code>. Currently, no <code>content</code> is in the bundle; however, as the workflow progresses, we may find some content should be captured in a structured way. We will add content later once we get going. In addition to baton content, we can also do some basic logging.</p>
+</div>
+<div id="using-the-log-book" class="section level3">
+<h3>Using the log-book</h3>
+<p>The relay has begun and we want to log a message for our future selves to review. This is achieved by accessing the log-book. By setting the <em>referee</em> we can control what threshold of content will enter the baton’s logbook.</p>
+<pre class="r"><code># Set threshold for the baton to capture messages or higher priority
+set_referee(dog_baton, &#39;MESSAGE&#39;)</code></pre>
+<pre class="r"><code># Write the important message (default is &#39;MESSAGE&#39;)
+write_logbook(dog_baton, &#39;Starting my dog workflow!&#39;)
+
+# Will be ignored
+write_logbook(dog_baton, &#39;Checking a trace message&#39;, msg_type = &#39;TRACE&#39;)</code></pre>
+<p>Let’s quickly review what is in the baton’s log-book!</p>
+<pre class="r"><code>read_logbook(dog_baton)</code></pre>
+<pre><code>## [1] &quot;Pass [0] 2022-11-17 09:43:54 [MESSAGE] Starting my dog workflow!&quot;</code></pre>
+<p>The output probably looks like a familiar format, with the time-stamp, message type, and content listed. {relay} also includes the ‘pass’ under which the message was written. In this instance, the baton was just made, no pass was made yet, so it occurred during <em>Pass [0]</em>.</p>
+</div>
+<div id="pass-the-baton" class="section level3">
+<h3>Pass the baton</h3>
+<p>Now, let’s fetch the dog names (a-z) from our data source. Once completed, we will write another log message and then <em>pass</em> the baton. A baton can be <em>passed</em> and <em>grabbed</em> as often as we like; however, this action typically delineates essential components of the code. We can think of this like checkpoints in the workflow, where one operation is ‘passing off’ to the subsequent steps. If a checkpoint fails, we will know because that pass will be incomplete. In our example, we ‘encapsulate’ the web scraping step by <em>passing</em> the baton at the end.</p>
+<pre class="r"><code># Read a-z pages of dog names
+dog_page &lt;- paste0(&#39;dog-names-&#39;, letters)
+dog_names &lt;- lapply(dog_page, function(x) read_html(paste0(base_url, x)))</code></pre>
+<pre class="r"><code># Pass the baton after the process has completed
+write_logbook(dog_baton, paste0(&#39;Dog pages (n: &#39;, length(dog_names), &#39;) a-z fetched.&#39;))
+dog_baton &lt;- pass_baton(dog_baton)</code></pre>
+<p>Let’s take a quick peek at our metadata again. We will see that is has been passed once successfully.</p>
+<pre class="r"><code>relay::read_metadata(dog_baton, subset =  c(&#39;relay_start&#39;, &#39;all_passes&#39;, &#39;pass_complete&#39;))</code></pre>
+<pre><code>## $relay_start
+## [1] &quot;2022-11-17 09-43-54&quot;
+## 
+## $all_passes
+## [1] &quot;2022-11-17 09-44-36&quot;
+## 
+## $pass_complete
+## [1] TRUE</code></pre>
+</div>
+<div id="grab-the-baton" class="section level3">
+<h3>Grab the baton</h3>
+<p>We now want to continue working with our freshly fetched (pun intended) dog names. To continue using {relay}, we grab the previously passed baton.</p>
+<pre class="r"><code># The next &#39;player&#39; in the relay grabs the baton previously passed
+dog_baton &lt;- grab_baton(dog_baton)</code></pre>
+<p>Using a helper function for some basic parsing, we create our dog names data-set.</p>
+<pre class="r"><code># Helper function to parse the page content
+extract_both_gender &lt;- function(names) {
+  tmp_list &lt;- html_elements(names, &#39;.list-eight-col&#39;) 
+  tmp_list &lt;- lapply(tmp_list, function(x) html_text(html_elements(x, &#39;li&#39;)))
+
+  return(data.frame(&#39;gender&#39; = c(rep(&#39;male&#39;, length(tmp_list[[1]])),
+                                 rep(&#39;female&#39;, length(tmp_list[[2]]))),
+                    &#39;name&#39; = c(tmp_list[[1]], tmp_list[[2]])))
+}
+
+# Bind all pages together to one dataset and create new column
+dog_names_df &lt;- do.call(rbind, lapply(dog_names, extract_both_gender))
+dog_names_df$starts_with &lt;- substr(dog_names_df$name, 1, 1)
+
+write_logbook(dog_baton, paste0(&#39;Dog name dataset created (nrows: &#39;, nrow(dog_names), &#39;).&#39;))</code></pre>
+<p>With our dog name data in hand, we can now do some basic analysis…</p>
+<pre class="r"><code># Count dog names by gender
+n_gender &lt;- tapply(dog_names_df$name, dog_names_df$gender, NROW)
+dog_table &lt;- knitr::kable(n_gender, col.names = &#39;Count (n)&#39;, caption = &#39;Number of dog names by gender.&#39;) %&gt;%
+  kableExtra::scroll_box(box_css = &quot;&quot;,
+                         extra_css = &#39;overflow-x: auto; width: 50%&#39;)
+dog_table</code></pre>
+<div style="overflow-x: auto; width: 50%">
+<table>
+<caption>
+<span id="tab:unnamed-chunk-12">Table 1: </span>Number of dog names by gender.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Count (n)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+female
+</td>
+<td style="text-align:right;">
+3991
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+male
+</td>
+<td style="text-align:right;">
+5732
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<pre class="r"><code># Count by starting character
+N_st_char &lt;- tapply(dog_names_df$gender, dog_names_df$starts_with, NROW)
+N_st_char_sorted &lt;- sort(N_st_char, decreasing = TRUE)
+barplot(N_st_char_sorted, 
+        cex.names = .7,
+        xlab = &#39;Dog name starts with...&#39;, 
+        ylab = &#39;Count (n)&#39;,
+        col = &#39;lightblue&#39;,
+        border = FALSE)</code></pre>
+<div class="figure"><span id="fig:unnamed-chunk-13"></span>
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-13-1.png" alt="Number of dog names starting with a particular letter." width="672" />
+<p class="caption">
+Figure 1: Number of dog names starting with a particular letter.
+</p>
+</div>
+<p>Excellent! Most dog names start with the letter ‘A’ and there are quite a few more male dog names when compared to female (in this particular list anyway). We have also logged the efforts to discover this along the way.</p>
+</div>
+</div>
+<div id="bundling-up-with-relay" class="section level2">
+<h2>Bundling up with {relay}</h2>
+<p><img src="https://media.giphy.com/media/3Hw2z62ewK4rm/giphy.gif" /></p>
+<p>Our workflow, albeit basic, now has several objects. We may start to realize that having many inputs, R objects, and outputs is becoming unwieldy. {relay} provides several helper-functions to assist in organizing more complex workflows. The main operation is to create a <em>bundle</em> of content. There are some benefits in bundling data, code, and metadata in a single location. For one, it allows the entire set to be zipped and shared as a (mainly) reproducible environment. If the workflow is repeated on a schedule, then each instance can be isolated as independent sets.</p>
+<p>Even if we only want to run our dog name workflow once, let’s still place all relevant output files in a bundle. First, we use the existing <em>baton</em> (dog_baton) as a parameter to <code>create_bundle()</code> and save it under a temporary directory. We use the <code>tree</code> parameter to assign a nested ‘outputs’ folder. We then relocate the baton to inside the bundle (which follows a similar naming convention) using a dedicated helper function. Various other helper and utility functions are available (often acting as thin wrappers) to make moving files a bit easier (e.g., <code>quick_copy()</code>, <code>copy_files()</code>, <code>copy_dir()</code>, <code>load_batch()</code>).</p>
+<pre class="r"><code># Assign a temporary spot
+temp_wd &lt;- tempdir()
+
+# Make a bundle to place baton and other details
+bundled_baton &lt;- create_bundle(dog_baton, dir = temp_wd, tree = &#39;outputs&#39;)
+dog_baton &lt;- relay:::relocate_baton(dog_baton, bundled_baton)</code></pre>
+<p>We could have also created a bundle right from the start by setting <code>bundled = TRUE</code>!</p>
+<pre class="r"><code>bundled_baton &lt;- create_baton(bundled = TRUE, bundle_params = list(dir = temp_wd, tree = NULL))</code></pre>
+<p>Since we adore all things about dogs, we feel attached to this data and must save it persistently. We do so by writing <code>dog_names_df</code> to a CSV file and the raw extract <code>dog_names</code> as a RDS file within the bundle.</p>
+<pre class="r"><code># Write data.frame to the bundle under outputs
+out_path &lt;- file.path(bundled_baton, &#39;outputs&#39;, &#39;dog_name.csv&#39;)
+write.csv(dog_names_df, out_path, row.names = FALSE)
+
+# Save raw extract too
+saveRDS(dog_names, file.path(bundled_baton, &#39;outputs&#39;, &#39;dog_names_raw.rds&#39;))
+
+# Check the bundle structure
+fs::dir_tree(bundled_baton)</code></pre>
+</div>
+<div id="add-baton-content" class="section level2">
+<h2>Add baton content</h2>
+<p>With our basic workflow now complete, we perform one final pass but this time we add some content to the baton. In this example I use <code>vapply()</code> but other may prefer the <code>purrr</code> family. We add vectors that confirm the data existence and creation times. We also see the final baton has stamped as ‘complete’ and performed two passes. This can be useful for scripts depdenent on this process; they can read the metadata in the baton and confirm it was completed successfully and that all the necessary data is available (and ‘fresh’). Since we are using a YAML file for the baton, it is easy for another process to parse the content fields (as compared to the log-book).</p>
+<pre class="r"><code>data_names &lt;- c(&#39;dog_name.csv&#39;, &#39;dog_names_raw.rds&#39;)
+
+# Create some information about the data to include in the bundle
+existence &lt;- vapply(data_names,
+                    function(x) file.exists(paste0(bundled_baton, &#39;/outputs/&#39;, x)),
+                    logical(1),
+                    USE.NAMES = FALSE)
+
+creation_times &lt;- vapply(data_names,
+                         function(x) as.character(file.info(paste0(bundled_baton, &#39;/outputs/&#39;, x))$ctime),
+                         character(1),
+                         USE.NAMES = FALSE)
+
+# Define content of baton to save to YAML in addition to metadata (nested lists)
+baton_content &lt;- list(datasets = list(names = data_names,
+                                      existence = existence,
+                                      creation_times = creation_times))
+
+# Perform final pass with the custom content added
+dog_baton &lt;- pass_baton(dog_baton, content = baton_content)
+summary(dog_baton)</code></pre>
+<pre><code>## 
+## Metadata of baton...
+## *id: 20221117094354-llCY1450
+## *referee: MESSAGE
+## *relay_type: COMPETITION
+## *relay_start: 2022-11-17 09-43-54
+## *relay_finish: 2022-11-17 09-44-37
+## *all_grabs: 2022-11-17 09-44-36
+## *all_passes: 2022-11-17 09-44-36
+## *all_passes: 2022-11-17 09-44-37
+## *pass_complete: TRUE
+## *passes_completed: 2
+## *location:
+## C:\...\RtmpKanqll\_bundle-20221117094354-llCY1450/_baton-20221117094354-llCY1450.yml
+## *dropped: FALSE
+## 
+## Contents of baton...
+## *datasets: c(&quot;dog_name.csv&quot;, &quot;dog_names_raw.rds&quot;)
+## *datasets: c(FALSE, FALSE)
+## *datasets: c(NA, NA)</code></pre>
+</div>
+<div id="wrap-up" class="section level2">
+<h2>Wrap up…</h2>
+<p>We have used {relay} to provide various logging details and to help organize aspects of our workflow to discover facts about dog names. Hopefully this, rather contrived, example provides a good overview that encourages you to give {relay} a try in your next project, be it about dogs or not (perhaps cats…)!</p>
+<p>The code below shows an uninterrupted example of the dog name workflow discussed above.</p>
+<pre class="r"><code>#------------------#
+# Libraries
+#------------------#
+library(rvest)
+library(relay)
+library(magrittr)
+
+
+#------------------#
+# Init baton &amp; params
+#------------------#
+
+# Create baton for process and et threshold for the baton
+dog_baton &lt;- create_baton()
+set_referee(dog_baton, &#39;MESSAGE&#39;)
+write_logbook(dog_baton, &#39;Starting my dog workflow!&#39;)
+
+# Helper function to extract dog names by gender
+extract_both_gender &lt;- function(names) {
+  tmp_list &lt;- rvest::html_elements(names, &#39;.list-eight-col&#39;) 
+  tmp_list &lt;- lapply(tmp_list, function(x) rvest::html_text(rvest::html_elements(x, &#39;li&#39;)))
+
+  return(data.frame(&#39;gender&#39; = c(rep(&#39;male&#39;, length(tmp_list[[1]])),
+                                 rep(&#39;female&#39;, length(tmp_list[[2]]))),
+                    &#39;name&#39; = c(tmp_list[[1]], tmp_list[[2]])))
+}
+
+# Base URL for dog names
+base_url &lt;- &#39;https://www.mera-petfood.com/en/dog/dogs-companion/&#39;
+
+
+#------------------#
+# Web scrape
+#------------------#
+
+# Pull all dog names
+dog_page &lt;- paste0(&#39;dog-names-&#39;, letters)
+dog_names &lt;- lapply(dog_page, function(x) read_html(paste0(base_url, x)))
+
+
+#------------------#
+# Parse and create df
+#------------------#
+
+# Bind all pages together to one dataset and create new column
+dog_names_df &lt;- do.call(rbind, lapply(dog_names, extract_both_gender))
+dog_names_df$starts_with &lt;- substr(dog_names_df$name, 1, 1)
+
+write_logbook(dog_baton, &#39;Dog name dataset created (nrows: &#39; (nrow(dog_names)), &#39;).&#39;)
+
+
+#------------------#
+# Analyze
+#------------------#
+
+# Count dog names by gender
+n_gender &lt;- tapply(dog_names_df$name, dog_names_df$gender, NROW)
+dog_table &lt;- knitr::kable(n_gender, col.names = &#39;Count (n)&#39;, caption = &#39;Number of dog names by gender.&#39;)
+
+# Count by starting character
+N_st_char &lt;- tapply(dog_names_df$gender, dog_names_df$starts_with, NROW)
+N_st_char_sorted &lt;- sort(N_st_char, decreasing = TRUE)
+barplot(N_st_char_sorted, 
+        cex.names = .7,
+        xlab = &#39;Dog name starts with...&#39;, 
+        ylab = &#39;Count (n)&#39;,
+        col = &#39;lightblue&#39;,
+        border = FALSE)
+dog_plot &lt;- recordPlot()
+
+#------------------#
+# Outputs &amp; finish
+#------------------#
+
+# Write data.frame to the bundle under outputs
+out_path &lt;- file.path(bundled_baton, &#39;outputs&#39;, &#39;dog_name.csv&#39;)
+write.csv(dog_names_df, out_path, row.names = FALSE)
+
+# Save raw extract too
+saveRDS(dog_names, file.path(bundled_baton, &#39;outputs&#39;, &#39;dog_name_raw.rds&#39;))
+
+data_names &lt;- c(&#39;dog_name.csv&#39;, &#39;dog_names_raw.rds&#39;)
+
+# Create some information about the data to include in the bundle
+existence &lt;- vapply(data_names,
+                    function(x) file.exists(paste0(bundled_baton, &#39;/outputs/&#39;, x)),
+                    logical(1),
+                    USE.NAMES = FALSE)
+
+creation_times &lt;- vapply(data_names,
+                         function(x) as.character(file.info(paste0(bundled_baton, &#39;/outputs/&#39;, x))$ctime),
+                         character(1),
+                         USE.NAMES = FALSE)
+
+# Define content of baton to save to YAML in addition to metadata (nested lists)
+baton_content &lt;- list(datasets = list(names = data_names,
+                                      existence = existence,
+                                      creation_times = creation_times))
+
+# Perform final pass with the custom content added
+dog_baton &lt;- pass_baton(dog_baton, content = baton_content)</code></pre>
+</div>
