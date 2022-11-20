@@ -221,7 +221,7 @@ fs::dir_tree(bundled_baton)</code></pre>
 </div>
 <div id="add-baton-content" class="section level2">
 <h2>Add baton content</h2>
-<p>With our basic workflow now complete, we perform one final pass but this time we add some content to the baton. In this example I use <code>vapply()</code> but other may prefer the <code>purrr</code> family. We add vectors that confirm the data existence and creation times. We also see the final baton has stamped as ‘complete’ and performed two passes. This can be useful for scripts depdenent on this process; they can read the metadata in the baton and confirm it was completed successfully and that all the necessary data is available (and ‘fresh’). Since we are using a YAML file for the baton, it is easy for another process to parse the content fields (as compared to the log-book).</p>
+<p>With our basic workflow now complete, we perform one final pass but this time we add some content to the baton. In this example I use <code>vapply()</code> but others may prefer the <code>purrr</code> family. We add vectors that confirm the data existence and creation times. We also see the final baton was stamped as ‘complete’ and performed two passes. This can be useful for scripts dependent on this process; they can read the metadata in the baton and confirm it was completed successfully and that all the necessary data is available (and ‘fresh’). Since we are using a YAML file for the baton, it is easy for another process to parse the content fields (as compared to the log-book).</p>
 <pre class="r"><code>data_names &lt;- c(&#39;dog_name.csv&#39;, &#39;dog_names_raw.rds&#39;)
 
 # Create some information about the data to include in the bundle

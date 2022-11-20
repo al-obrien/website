@@ -214,7 +214,7 @@ fs::dir_tree(bundled_baton)
 
 ## Add baton content
 
-With our basic workflow now complete, we perform one final pass but this time we add some content to the baton. In this example I use `vapply()` but other may prefer the `purrr` family. We add vectors that confirm the data existence and creation times. We also see the final baton has stamped as 'complete' and performed two passes. This can be useful for scripts depdenent on this process; they can read the metadata in the baton and confirm it was completed successfully and that all the necessary data is available (and 'fresh'). Since we are using a YAML file for the baton, it is easy for another process to parse the content fields (as compared to the log-book).
+With our basic workflow now complete, we perform one final pass but this time we add some content to the baton. In this example I use `vapply()` but others may prefer the `purrr` family. We add vectors that confirm the data existence and creation times. We also see the final baton was stamped as 'complete' and performed two passes. This can be useful for scripts dependent on this process; they can read the metadata in the baton and confirm it was completed successfully and that all the necessary data is available (and 'fresh'). Since we are using a YAML file for the baton, it is easy for another process to parse the content fields (as compared to the log-book).
 
 ```{r, warning = FALSE}
 data_names <- c('dog_name.csv', 'dog_names_raw.rds')
