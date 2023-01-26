@@ -36,7 +36,7 @@ Surveillance provides a critical function to the health care system by providing
 
 Now that we have a general understanding of health surveillance and how data flows across systems, let's use some data from this process to create figures and identify STI trends! All figures created below are sourced from the aforementioned publicly accessible data in the Alberta [*Interactive Health Data Application*](http://www.ahw.gov.ab.ca/IHDA_Retrieval/).
 
-> For those interested, **R** code used to create the figures are included in the post but are hidden by default; select *show* to expose the code blocks.
+> For those interested, **R** code used to create the figures are included in the post but are hidden by default; select *code* to reveal the block.
 
 ```{r data_loads, results = FALSE}
 # Load libraries of interest
