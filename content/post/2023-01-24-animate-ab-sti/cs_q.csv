@@ -1,0 +1,1231 @@
+Geography,Year,Disease Name,Case Counts
+AB,2019Q1,Early Congenital Syphilis,7.0
+AB,2019Q1,Syphilitic Stillbirth,3.0
+AB,2019Q2,Early Congenital Syphilis,14.0
+AB,2019Q2,Syphilitic Stillbirth,4.0
+AB,2019Q3,Early Congenital Syphilis,6.0
+AB,2019Q3,Syphilitic Stillbirth,4.0
+AB,2019Q4,Early Congenital Syphilis,4.0
+AB,2019Q4,Syphilitic Stillbirth,3.0
+AB,2020Q1,Early Congenital Syphilis,10.0
+AB,2020Q1,Syphilitic Stillbirth,0.0
+AB,2020Q2,Early Congenital Syphilis,10.0
+AB,2020Q2,Syphilitic Stillbirth,7.0
+AB,2020Q3,Early Congenital Syphilis,7.0
+AB,2020Q3,Syphilitic Stillbirth,1.0
+AB,2020Q4,Early Congenital Syphilis,16.0
+AB,2020Q4,Syphilitic Stillbirth,5.0
+AB,2021Q1,Early Congenital Syphilis,14.0
+AB,2021Q1,Syphilitic Stillbirth,6.0
+AB,2021Q2,Early Congenital Syphilis,13.0
+AB,2021Q2,Syphilitic Stillbirth,1.0
+AB,2021Q3,Early Congenital Syphilis,18.0
+AB,2021Q3,Syphilitic Stillbirth,2.0
+AB,2021Q4,Early Congenital Syphilis,16.0
+AB,2021Q4,Syphilitic Stillbirth,2.0
+AB,2022Q1,Early Congenital Syphilis,16.0
+AB,2022Q1,Syphilitic Stillbirth,0.0
+AB,2022Q2,Early Congenital Syphilis,21.0
+AB,2022Q2,Syphilitic Stillbirth,2.0
+AB,2022Q3,Early Congenital Syphilis,17.0
+AB,2022Q3,Syphilitic Stillbirth,6.0
+Z1,2019Q1,Early Congenital Syphilis,0.0
+Z1,2019Q1,Syphilitic Stillbirth,0.0
+Z1,2019Q2,Early Congenital Syphilis,1.0
+Z1,2019Q2,Syphilitic Stillbirth,0.0
+Z1,2019Q3,Early Congenital Syphilis,0.0
+Z1,2019Q3,Syphilitic Stillbirth,0.0
+Z1,2019Q4,Early Congenital Syphilis,0.0
+Z1,2019Q4,Syphilitic Stillbirth,0.0
+Z1,2020Q1,Early Congenital Syphilis,0.0
+Z1,2020Q1,Syphilitic Stillbirth,0.0
+Z1,2020Q2,Early Congenital Syphilis,0.0
+Z1,2020Q2,Syphilitic Stillbirth,0.0
+Z1,2020Q3,Early Congenital Syphilis,0.0
+Z1,2020Q3,Syphilitic Stillbirth,0.0
+Z1,2020Q4,Early Congenital Syphilis,0.0
+Z1,2020Q4,Syphilitic Stillbirth,0.0
+Z1,2021Q1,Early Congenital Syphilis,1.0
+Z1,2021Q1,Syphilitic Stillbirth,0.0
+Z1,2021Q2,Early Congenital Syphilis,0.0
+Z1,2021Q2,Syphilitic Stillbirth,0.0
+Z1,2021Q3,Early Congenital Syphilis,1.0
+Z1,2021Q3,Syphilitic Stillbirth,0.0
+Z1,2021Q4,Early Congenital Syphilis,0.0
+Z1,2021Q4,Syphilitic Stillbirth,0.0
+Z1,2022Q1,Early Congenital Syphilis,2.0
+Z1,2022Q1,Syphilitic Stillbirth,0.0
+Z1,2022Q2,Early Congenital Syphilis,0.0
+Z1,2022Q2,Syphilitic Stillbirth,0.0
+Z1,2022Q3,Early Congenital Syphilis,0.0
+Z1,2022Q3,Syphilitic Stillbirth,1.0
+Z2,2019Q1,Early Congenital Syphilis,0.0
+Z2,2019Q1,Syphilitic Stillbirth,0.0
+Z2,2019Q2,Early Congenital Syphilis,1.0
+Z2,2019Q2,Syphilitic Stillbirth,0.0
+Z2,2019Q3,Early Congenital Syphilis,0.0
+Z2,2019Q3,Syphilitic Stillbirth,0.0
+Z2,2019Q4,Early Congenital Syphilis,0.0
+Z2,2019Q4,Syphilitic Stillbirth,0.0
+Z2,2020Q1,Early Congenital Syphilis,0.0
+Z2,2020Q1,Syphilitic Stillbirth,0.0
+Z2,2020Q2,Early Congenital Syphilis,1.0
+Z2,2020Q2,Syphilitic Stillbirth,0.0
+Z2,2020Q3,Early Congenital Syphilis,0.0
+Z2,2020Q3,Syphilitic Stillbirth,0.0
+Z2,2020Q4,Early Congenital Syphilis,1.0
+Z2,2020Q4,Syphilitic Stillbirth,0.0
+Z2,2021Q1,Early Congenital Syphilis,1.0
+Z2,2021Q1,Syphilitic Stillbirth,2.0
+Z2,2021Q2,Early Congenital Syphilis,0.0
+Z2,2021Q2,Syphilitic Stillbirth,0.0
+Z2,2021Q3,Early Congenital Syphilis,4.0
+Z2,2021Q3,Syphilitic Stillbirth,0.0
+Z2,2021Q4,Early Congenital Syphilis,5.0
+Z2,2021Q4,Syphilitic Stillbirth,0.0
+Z2,2022Q1,Early Congenital Syphilis,2.0
+Z2,2022Q1,Syphilitic Stillbirth,0.0
+Z2,2022Q2,Early Congenital Syphilis,2.0
+Z2,2022Q2,Syphilitic Stillbirth,1.0
+Z2,2022Q3,Early Congenital Syphilis,1.0
+Z2,2022Q3,Syphilitic Stillbirth,0.0
+Z3,2019Q1,Early Congenital Syphilis,0.0
+Z3,2019Q1,Syphilitic Stillbirth,0.0
+Z3,2019Q2,Early Congenital Syphilis,2.0
+Z3,2019Q2,Syphilitic Stillbirth,0.0
+Z3,2019Q3,Early Congenital Syphilis,2.0
+Z3,2019Q3,Syphilitic Stillbirth,0.0
+Z3,2019Q4,Early Congenital Syphilis,2.0
+Z3,2019Q4,Syphilitic Stillbirth,0.0
+Z3,2020Q1,Early Congenital Syphilis,2.0
+Z3,2020Q1,Syphilitic Stillbirth,0.0
+Z3,2020Q2,Early Congenital Syphilis,1.0
+Z3,2020Q2,Syphilitic Stillbirth,2.0
+Z3,2020Q3,Early Congenital Syphilis,0.0
+Z3,2020Q3,Syphilitic Stillbirth,0.0
+Z3,2020Q4,Early Congenital Syphilis,1.0
+Z3,2020Q4,Syphilitic Stillbirth,0.0
+Z3,2021Q1,Early Congenital Syphilis,1.0
+Z3,2021Q1,Syphilitic Stillbirth,1.0
+Z3,2021Q2,Early Congenital Syphilis,2.0
+Z3,2021Q2,Syphilitic Stillbirth,0.0
+Z3,2021Q3,Early Congenital Syphilis,3.0
+Z3,2021Q3,Syphilitic Stillbirth,0.0
+Z3,2021Q4,Early Congenital Syphilis,2.0
+Z3,2021Q4,Syphilitic Stillbirth,1.0
+Z3,2022Q1,Early Congenital Syphilis,1.0
+Z3,2022Q1,Syphilitic Stillbirth,0.0
+Z3,2022Q2,Early Congenital Syphilis,5.0
+Z3,2022Q2,Syphilitic Stillbirth,0.0
+Z3,2022Q3,Early Congenital Syphilis,1.0
+Z3,2022Q3,Syphilitic Stillbirth,1.0
+Z4,2019Q1,Early Congenital Syphilis,3.0
+Z4,2019Q1,Syphilitic Stillbirth,2.0
+Z4,2019Q2,Early Congenital Syphilis,8.0
+Z4,2019Q2,Syphilitic Stillbirth,3.0
+Z4,2019Q3,Early Congenital Syphilis,4.0
+Z4,2019Q3,Syphilitic Stillbirth,2.0
+Z4,2019Q4,Early Congenital Syphilis,2.0
+Z4,2019Q4,Syphilitic Stillbirth,1.0
+Z4,2020Q1,Early Congenital Syphilis,7.0
+Z4,2020Q1,Syphilitic Stillbirth,0.0
+Z4,2020Q2,Early Congenital Syphilis,7.0
+Z4,2020Q2,Syphilitic Stillbirth,4.0
+Z4,2020Q3,Early Congenital Syphilis,2.0
+Z4,2020Q3,Syphilitic Stillbirth,0.0
+Z4,2020Q4,Early Congenital Syphilis,1.0
+Z4,2020Q4,Syphilitic Stillbirth,2.0
+Z4,2021Q1,Early Congenital Syphilis,4.0
+Z4,2021Q1,Syphilitic Stillbirth,1.0
+Z4,2021Q2,Early Congenital Syphilis,6.0
+Z4,2021Q2,Syphilitic Stillbirth,1.0
+Z4,2021Q3,Early Congenital Syphilis,6.0
+Z4,2021Q3,Syphilitic Stillbirth,1.0
+Z4,2021Q4,Early Congenital Syphilis,5.0
+Z4,2021Q4,Syphilitic Stillbirth,0.0
+Z4,2022Q1,Early Congenital Syphilis,5.0
+Z4,2022Q1,Syphilitic Stillbirth,0.0
+Z4,2022Q2,Early Congenital Syphilis,9.0
+Z4,2022Q2,Syphilitic Stillbirth,0.0
+Z4,2022Q3,Early Congenital Syphilis,10.0
+Z4,2022Q3,Syphilitic Stillbirth,3.0
+Z5,2019Q1,Early Congenital Syphilis,4.0
+Z5,2019Q1,Syphilitic Stillbirth,1.0
+Z5,2019Q2,Early Congenital Syphilis,2.0
+Z5,2019Q2,Syphilitic Stillbirth,1.0
+Z5,2019Q3,Early Congenital Syphilis,0.0
+Z5,2019Q3,Syphilitic Stillbirth,2.0
+Z5,2019Q4,Early Congenital Syphilis,0.0
+Z5,2019Q4,Syphilitic Stillbirth,2.0
+Z5,2020Q1,Early Congenital Syphilis,1.0
+Z5,2020Q1,Syphilitic Stillbirth,0.0
+Z5,2020Q2,Early Congenital Syphilis,1.0
+Z5,2020Q2,Syphilitic Stillbirth,1.0
+Z5,2020Q3,Early Congenital Syphilis,5.0
+Z5,2020Q3,Syphilitic Stillbirth,1.0
+Z5,2020Q4,Early Congenital Syphilis,13.0
+Z5,2020Q4,Syphilitic Stillbirth,3.0
+Z5,2021Q1,Early Congenital Syphilis,7.0
+Z5,2021Q1,Syphilitic Stillbirth,2.0
+Z5,2021Q2,Early Congenital Syphilis,5.0
+Z5,2021Q2,Syphilitic Stillbirth,0.0
+Z5,2021Q3,Early Congenital Syphilis,4.0
+Z5,2021Q3,Syphilitic Stillbirth,1.0
+Z5,2021Q4,Early Congenital Syphilis,4.0
+Z5,2021Q4,Syphilitic Stillbirth,1.0
+Z5,2022Q1,Early Congenital Syphilis,6.0
+Z5,2022Q1,Syphilitic Stillbirth,0.0
+Z5,2022Q2,Early Congenital Syphilis,5.0
+Z5,2022Q2,Syphilitic Stillbirth,1.0
+Z5,2022Q3,Early Congenital Syphilis,4.0
+Z5,2022Q3,Syphilitic Stillbirth,1.0
+Z1.1,2019Q1,Early Congenital Syphilis,0.0
+Z1.1,2019Q1,Syphilitic Stillbirth,0.0
+Z1.1,2019Q2,Early Congenital Syphilis,0.0
+Z1.1,2019Q2,Syphilitic Stillbirth,0.0
+Z1.1,2019Q3,Early Congenital Syphilis,0.0
+Z1.1,2019Q3,Syphilitic Stillbirth,0.0
+Z1.1,2019Q4,Early Congenital Syphilis,0.0
+Z1.1,2019Q4,Syphilitic Stillbirth,0.0
+Z1.1,2020Q1,Early Congenital Syphilis,0.0
+Z1.1,2020Q1,Syphilitic Stillbirth,0.0
+Z1.1,2020Q2,Early Congenital Syphilis,0.0
+Z1.1,2020Q2,Syphilitic Stillbirth,0.0
+Z1.1,2020Q3,Early Congenital Syphilis,0.0
+Z1.1,2020Q3,Syphilitic Stillbirth,0.0
+Z1.1,2020Q4,Early Congenital Syphilis,0.0
+Z1.1,2020Q4,Syphilitic Stillbirth,0.0
+Z1.1,2021Q1,Early Congenital Syphilis,0.0
+Z1.1,2021Q1,Syphilitic Stillbirth,0.0
+Z1.1,2021Q2,Early Congenital Syphilis,0.0
+Z1.1,2021Q2,Syphilitic Stillbirth,0.0
+Z1.1,2021Q3,Early Congenital Syphilis,0.0
+Z1.1,2021Q3,Syphilitic Stillbirth,0.0
+Z1.1,2021Q4,Early Congenital Syphilis,0.0
+Z1.1,2021Q4,Syphilitic Stillbirth,0.0
+Z1.1,2022Q1,Early Congenital Syphilis,1.0
+Z1.1,2022Q1,Syphilitic Stillbirth,0.0
+Z1.1,2022Q2,Early Congenital Syphilis,0.0
+Z1.1,2022Q2,Syphilitic Stillbirth,0.0
+Z1.1,2022Q3,Early Congenital Syphilis,0.0
+Z1.1,2022Q3,Syphilitic Stillbirth,1.0
+Z1.2,2019Q1,Early Congenital Syphilis,0.0
+Z1.2,2019Q1,Syphilitic Stillbirth,0.0
+Z1.2,2019Q2,Early Congenital Syphilis,0.0
+Z1.2,2019Q2,Syphilitic Stillbirth,0.0
+Z1.2,2019Q3,Early Congenital Syphilis,0.0
+Z1.2,2019Q3,Syphilitic Stillbirth,0.0
+Z1.2,2019Q4,Early Congenital Syphilis,0.0
+Z1.2,2019Q4,Syphilitic Stillbirth,0.0
+Z1.2,2020Q1,Early Congenital Syphilis,0.0
+Z1.2,2020Q1,Syphilitic Stillbirth,0.0
+Z1.2,2020Q2,Early Congenital Syphilis,0.0
+Z1.2,2020Q2,Syphilitic Stillbirth,0.0
+Z1.2,2020Q3,Early Congenital Syphilis,0.0
+Z1.2,2020Q3,Syphilitic Stillbirth,0.0
+Z1.2,2020Q4,Early Congenital Syphilis,0.0
+Z1.2,2020Q4,Syphilitic Stillbirth,0.0
+Z1.2,2021Q1,Early Congenital Syphilis,0.0
+Z1.2,2021Q1,Syphilitic Stillbirth,0.0
+Z1.2,2021Q2,Early Congenital Syphilis,0.0
+Z1.2,2021Q2,Syphilitic Stillbirth,0.0
+Z1.2,2021Q3,Early Congenital Syphilis,0.0
+Z1.2,2021Q3,Syphilitic Stillbirth,0.0
+Z1.2,2021Q4,Early Congenital Syphilis,0.0
+Z1.2,2021Q4,Syphilitic Stillbirth,0.0
+Z1.2,2022Q1,Early Congenital Syphilis,1.0
+Z1.2,2022Q1,Syphilitic Stillbirth,0.0
+Z1.2,2022Q2,Early Congenital Syphilis,0.0
+Z1.2,2022Q2,Syphilitic Stillbirth,0.0
+Z1.2,2022Q3,Early Congenital Syphilis,0.0
+Z1.2,2022Q3,Syphilitic Stillbirth,0.0
+Z1.3,2019Q1,Early Congenital Syphilis,0.0
+Z1.3,2019Q1,Syphilitic Stillbirth,0.0
+Z1.3,2019Q2,Early Congenital Syphilis,0.0
+Z1.3,2019Q2,Syphilitic Stillbirth,0.0
+Z1.3,2019Q3,Early Congenital Syphilis,0.0
+Z1.3,2019Q3,Syphilitic Stillbirth,0.0
+Z1.3,2019Q4,Early Congenital Syphilis,0.0
+Z1.3,2019Q4,Syphilitic Stillbirth,0.0
+Z1.3,2020Q1,Early Congenital Syphilis,0.0
+Z1.3,2020Q1,Syphilitic Stillbirth,0.0
+Z1.3,2020Q2,Early Congenital Syphilis,0.0
+Z1.3,2020Q2,Syphilitic Stillbirth,0.0
+Z1.3,2020Q3,Early Congenital Syphilis,0.0
+Z1.3,2020Q3,Syphilitic Stillbirth,0.0
+Z1.3,2020Q4,Early Congenital Syphilis,0.0
+Z1.3,2020Q4,Syphilitic Stillbirth,0.0
+Z1.3,2021Q1,Early Congenital Syphilis,0.0
+Z1.3,2021Q1,Syphilitic Stillbirth,0.0
+Z1.3,2021Q2,Early Congenital Syphilis,0.0
+Z1.3,2021Q2,Syphilitic Stillbirth,0.0
+Z1.3,2021Q3,Early Congenital Syphilis,0.0
+Z1.3,2021Q3,Syphilitic Stillbirth,0.0
+Z1.3,2021Q4,Early Congenital Syphilis,0.0
+Z1.3,2021Q4,Syphilitic Stillbirth,0.0
+Z1.3,2022Q1,Early Congenital Syphilis,0.0
+Z1.3,2022Q1,Syphilitic Stillbirth,0.0
+Z1.3,2022Q2,Early Congenital Syphilis,0.0
+Z1.3,2022Q2,Syphilitic Stillbirth,0.0
+Z1.3,2022Q3,Early Congenital Syphilis,0.0
+Z1.3,2022Q3,Syphilitic Stillbirth,0.0
+Z1.4,2019Q1,Early Congenital Syphilis,0.0
+Z1.4,2019Q1,Syphilitic Stillbirth,0.0
+Z1.4,2019Q2,Early Congenital Syphilis,1.0
+Z1.4,2019Q2,Syphilitic Stillbirth,0.0
+Z1.4,2019Q3,Early Congenital Syphilis,0.0
+Z1.4,2019Q3,Syphilitic Stillbirth,0.0
+Z1.4,2019Q4,Early Congenital Syphilis,0.0
+Z1.4,2019Q4,Syphilitic Stillbirth,0.0
+Z1.4,2020Q1,Early Congenital Syphilis,0.0
+Z1.4,2020Q1,Syphilitic Stillbirth,0.0
+Z1.4,2020Q2,Early Congenital Syphilis,0.0
+Z1.4,2020Q2,Syphilitic Stillbirth,0.0
+Z1.4,2020Q3,Early Congenital Syphilis,0.0
+Z1.4,2020Q3,Syphilitic Stillbirth,0.0
+Z1.4,2020Q4,Early Congenital Syphilis,0.0
+Z1.4,2020Q4,Syphilitic Stillbirth,0.0
+Z1.4,2021Q1,Early Congenital Syphilis,0.0
+Z1.4,2021Q1,Syphilitic Stillbirth,0.0
+Z1.4,2021Q2,Early Congenital Syphilis,0.0
+Z1.4,2021Q2,Syphilitic Stillbirth,0.0
+Z1.4,2021Q3,Early Congenital Syphilis,0.0
+Z1.4,2021Q3,Syphilitic Stillbirth,0.0
+Z1.4,2021Q4,Early Congenital Syphilis,0.0
+Z1.4,2021Q4,Syphilitic Stillbirth,0.0
+Z1.4,2022Q1,Early Congenital Syphilis,0.0
+Z1.4,2022Q1,Syphilitic Stillbirth,0.0
+Z1.4,2022Q2,Early Congenital Syphilis,0.0
+Z1.4,2022Q2,Syphilitic Stillbirth,0.0
+Z1.4,2022Q3,Early Congenital Syphilis,0.0
+Z1.4,2022Q3,Syphilitic Stillbirth,0.0
+Z1.5,2019Q1,Early Congenital Syphilis,0.0
+Z1.5,2019Q1,Syphilitic Stillbirth,0.0
+Z1.5,2019Q2,Early Congenital Syphilis,0.0
+Z1.5,2019Q2,Syphilitic Stillbirth,0.0
+Z1.5,2019Q3,Early Congenital Syphilis,0.0
+Z1.5,2019Q3,Syphilitic Stillbirth,0.0
+Z1.5,2019Q4,Early Congenital Syphilis,0.0
+Z1.5,2019Q4,Syphilitic Stillbirth,0.0
+Z1.5,2020Q1,Early Congenital Syphilis,0.0
+Z1.5,2020Q1,Syphilitic Stillbirth,0.0
+Z1.5,2020Q2,Early Congenital Syphilis,0.0
+Z1.5,2020Q2,Syphilitic Stillbirth,0.0
+Z1.5,2020Q3,Early Congenital Syphilis,0.0
+Z1.5,2020Q3,Syphilitic Stillbirth,0.0
+Z1.5,2020Q4,Early Congenital Syphilis,0.0
+Z1.5,2020Q4,Syphilitic Stillbirth,0.0
+Z1.5,2021Q1,Early Congenital Syphilis,1.0
+Z1.5,2021Q1,Syphilitic Stillbirth,0.0
+Z1.5,2021Q2,Early Congenital Syphilis,0.0
+Z1.5,2021Q2,Syphilitic Stillbirth,0.0
+Z1.5,2021Q3,Early Congenital Syphilis,1.0
+Z1.5,2021Q3,Syphilitic Stillbirth,0.0
+Z1.5,2021Q4,Early Congenital Syphilis,0.0
+Z1.5,2021Q4,Syphilitic Stillbirth,0.0
+Z1.5,2022Q1,Early Congenital Syphilis,0.0
+Z1.5,2022Q1,Syphilitic Stillbirth,0.0
+Z1.5,2022Q2,Early Congenital Syphilis,0.0
+Z1.5,2022Q2,Syphilitic Stillbirth,0.0
+Z1.5,2022Q3,Early Congenital Syphilis,0.0
+Z1.5,2022Q3,Syphilitic Stillbirth,0.0
+Z2.1,2019Q1,Early Congenital Syphilis,0.0
+Z2.1,2019Q1,Syphilitic Stillbirth,0.0
+Z2.1,2019Q2,Early Congenital Syphilis,0.0
+Z2.1,2019Q2,Syphilitic Stillbirth,0.0
+Z2.1,2019Q3,Early Congenital Syphilis,0.0
+Z2.1,2019Q3,Syphilitic Stillbirth,0.0
+Z2.1,2019Q4,Early Congenital Syphilis,0.0
+Z2.1,2019Q4,Syphilitic Stillbirth,0.0
+Z2.1,2020Q1,Early Congenital Syphilis,0.0
+Z2.1,2020Q1,Syphilitic Stillbirth,0.0
+Z2.1,2020Q2,Early Congenital Syphilis,0.0
+Z2.1,2020Q2,Syphilitic Stillbirth,0.0
+Z2.1,2020Q3,Early Congenital Syphilis,0.0
+Z2.1,2020Q3,Syphilitic Stillbirth,0.0
+Z2.1,2020Q4,Early Congenital Syphilis,0.0
+Z2.1,2020Q4,Syphilitic Stillbirth,0.0
+Z2.1,2021Q1,Early Congenital Syphilis,1.0
+Z2.1,2021Q1,Syphilitic Stillbirth,0.0
+Z2.1,2021Q2,Early Congenital Syphilis,0.0
+Z2.1,2021Q2,Syphilitic Stillbirth,0.0
+Z2.1,2021Q3,Early Congenital Syphilis,0.0
+Z2.1,2021Q3,Syphilitic Stillbirth,0.0
+Z2.1,2021Q4,Early Congenital Syphilis,1.0
+Z2.1,2021Q4,Syphilitic Stillbirth,0.0
+Z2.1,2022Q1,Early Congenital Syphilis,0.0
+Z2.1,2022Q1,Syphilitic Stillbirth,0.0
+Z2.1,2022Q2,Early Congenital Syphilis,0.0
+Z2.1,2022Q2,Syphilitic Stillbirth,0.0
+Z2.1,2022Q3,Early Congenital Syphilis,0.0
+Z2.1,2022Q3,Syphilitic Stillbirth,0.0
+Z2.2,2019Q1,Early Congenital Syphilis,0.0
+Z2.2,2019Q1,Syphilitic Stillbirth,0.0
+Z2.2,2019Q2,Early Congenital Syphilis,0.0
+Z2.2,2019Q2,Syphilitic Stillbirth,0.0
+Z2.2,2019Q3,Early Congenital Syphilis,0.0
+Z2.2,2019Q3,Syphilitic Stillbirth,0.0
+Z2.2,2019Q4,Early Congenital Syphilis,0.0
+Z2.2,2019Q4,Syphilitic Stillbirth,0.0
+Z2.2,2020Q1,Early Congenital Syphilis,0.0
+Z2.2,2020Q1,Syphilitic Stillbirth,0.0
+Z2.2,2020Q2,Early Congenital Syphilis,0.0
+Z2.2,2020Q2,Syphilitic Stillbirth,0.0
+Z2.2,2020Q3,Early Congenital Syphilis,0.0
+Z2.2,2020Q3,Syphilitic Stillbirth,0.0
+Z2.2,2020Q4,Early Congenital Syphilis,0.0
+Z2.2,2020Q4,Syphilitic Stillbirth,0.0
+Z2.2,2021Q1,Early Congenital Syphilis,0.0
+Z2.2,2021Q1,Syphilitic Stillbirth,0.0
+Z2.2,2021Q2,Early Congenital Syphilis,0.0
+Z2.2,2021Q2,Syphilitic Stillbirth,0.0
+Z2.2,2021Q3,Early Congenital Syphilis,0.0
+Z2.2,2021Q3,Syphilitic Stillbirth,0.0
+Z2.2,2021Q4,Early Congenital Syphilis,1.0
+Z2.2,2021Q4,Syphilitic Stillbirth,0.0
+Z2.2,2022Q1,Early Congenital Syphilis,0.0
+Z2.2,2022Q1,Syphilitic Stillbirth,0.0
+Z2.2,2022Q2,Early Congenital Syphilis,0.0
+Z2.2,2022Q2,Syphilitic Stillbirth,0.0
+Z2.2,2022Q3,Early Congenital Syphilis,0.0
+Z2.2,2022Q3,Syphilitic Stillbirth,0.0
+Z2.3,2019Q1,Early Congenital Syphilis,0.0
+Z2.3,2019Q1,Syphilitic Stillbirth,0.0
+Z2.3,2019Q2,Early Congenital Syphilis,0.0
+Z2.3,2019Q2,Syphilitic Stillbirth,0.0
+Z2.3,2019Q3,Early Congenital Syphilis,0.0
+Z2.3,2019Q3,Syphilitic Stillbirth,0.0
+Z2.3,2019Q4,Early Congenital Syphilis,0.0
+Z2.3,2019Q4,Syphilitic Stillbirth,0.0
+Z2.3,2020Q1,Early Congenital Syphilis,0.0
+Z2.3,2020Q1,Syphilitic Stillbirth,0.0
+Z2.3,2020Q2,Early Congenital Syphilis,0.0
+Z2.3,2020Q2,Syphilitic Stillbirth,0.0
+Z2.3,2020Q3,Early Congenital Syphilis,0.0
+Z2.3,2020Q3,Syphilitic Stillbirth,0.0
+Z2.3,2020Q4,Early Congenital Syphilis,1.0
+Z2.3,2020Q4,Syphilitic Stillbirth,0.0
+Z2.3,2021Q1,Early Congenital Syphilis,0.0
+Z2.3,2021Q1,Syphilitic Stillbirth,1.0
+Z2.3,2021Q2,Early Congenital Syphilis,0.0
+Z2.3,2021Q2,Syphilitic Stillbirth,0.0
+Z2.3,2021Q3,Early Congenital Syphilis,2.0
+Z2.3,2021Q3,Syphilitic Stillbirth,0.0
+Z2.3,2021Q4,Early Congenital Syphilis,1.0
+Z2.3,2021Q4,Syphilitic Stillbirth,0.0
+Z2.3,2022Q1,Early Congenital Syphilis,1.0
+Z2.3,2022Q1,Syphilitic Stillbirth,0.0
+Z2.3,2022Q2,Early Congenital Syphilis,2.0
+Z2.3,2022Q2,Syphilitic Stillbirth,0.0
+Z2.3,2022Q3,Early Congenital Syphilis,1.0
+Z2.3,2022Q3,Syphilitic Stillbirth,0.0
+Z2.4,2019Q1,Early Congenital Syphilis,0.0
+Z2.4,2019Q1,Syphilitic Stillbirth,0.0
+Z2.4,2019Q2,Early Congenital Syphilis,1.0
+Z2.4,2019Q2,Syphilitic Stillbirth,0.0
+Z2.4,2019Q3,Early Congenital Syphilis,0.0
+Z2.4,2019Q3,Syphilitic Stillbirth,0.0
+Z2.4,2019Q4,Early Congenital Syphilis,0.0
+Z2.4,2019Q4,Syphilitic Stillbirth,0.0
+Z2.4,2020Q1,Early Congenital Syphilis,0.0
+Z2.4,2020Q1,Syphilitic Stillbirth,0.0
+Z2.4,2020Q2,Early Congenital Syphilis,1.0
+Z2.4,2020Q2,Syphilitic Stillbirth,0.0
+Z2.4,2020Q3,Early Congenital Syphilis,0.0
+Z2.4,2020Q3,Syphilitic Stillbirth,0.0
+Z2.4,2020Q4,Early Congenital Syphilis,0.0
+Z2.4,2020Q4,Syphilitic Stillbirth,0.0
+Z2.4,2021Q1,Early Congenital Syphilis,0.0
+Z2.4,2021Q1,Syphilitic Stillbirth,1.0
+Z2.4,2021Q2,Early Congenital Syphilis,0.0
+Z2.4,2021Q2,Syphilitic Stillbirth,0.0
+Z2.4,2021Q3,Early Congenital Syphilis,1.0
+Z2.4,2021Q3,Syphilitic Stillbirth,0.0
+Z2.4,2021Q4,Early Congenital Syphilis,2.0
+Z2.4,2021Q4,Syphilitic Stillbirth,0.0
+Z2.4,2022Q1,Early Congenital Syphilis,1.0
+Z2.4,2022Q1,Syphilitic Stillbirth,0.0
+Z2.4,2022Q2,Early Congenital Syphilis,0.0
+Z2.4,2022Q2,Syphilitic Stillbirth,1.0
+Z2.4,2022Q3,Early Congenital Syphilis,0.0
+Z2.4,2022Q3,Syphilitic Stillbirth,0.0
+Z2.5,2019Q1,Early Congenital Syphilis,0.0
+Z2.5,2019Q1,Syphilitic Stillbirth,0.0
+Z2.5,2019Q2,Early Congenital Syphilis,0.0
+Z2.5,2019Q2,Syphilitic Stillbirth,0.0
+Z2.5,2019Q3,Early Congenital Syphilis,0.0
+Z2.5,2019Q3,Syphilitic Stillbirth,0.0
+Z2.5,2019Q4,Early Congenital Syphilis,0.0
+Z2.5,2019Q4,Syphilitic Stillbirth,0.0
+Z2.5,2020Q1,Early Congenital Syphilis,0.0
+Z2.5,2020Q1,Syphilitic Stillbirth,0.0
+Z2.5,2020Q2,Early Congenital Syphilis,0.0
+Z2.5,2020Q2,Syphilitic Stillbirth,0.0
+Z2.5,2020Q3,Early Congenital Syphilis,0.0
+Z2.5,2020Q3,Syphilitic Stillbirth,0.0
+Z2.5,2020Q4,Early Congenital Syphilis,0.0
+Z2.5,2020Q4,Syphilitic Stillbirth,0.0
+Z2.5,2021Q1,Early Congenital Syphilis,0.0
+Z2.5,2021Q1,Syphilitic Stillbirth,0.0
+Z2.5,2021Q2,Early Congenital Syphilis,0.0
+Z2.5,2021Q2,Syphilitic Stillbirth,0.0
+Z2.5,2021Q3,Early Congenital Syphilis,1.0
+Z2.5,2021Q3,Syphilitic Stillbirth,0.0
+Z2.5,2021Q4,Early Congenital Syphilis,0.0
+Z2.5,2021Q4,Syphilitic Stillbirth,0.0
+Z2.5,2022Q1,Early Congenital Syphilis,0.0
+Z2.5,2022Q1,Syphilitic Stillbirth,0.0
+Z2.5,2022Q2,Early Congenital Syphilis,0.0
+Z2.5,2022Q2,Syphilitic Stillbirth,0.0
+Z2.5,2022Q3,Early Congenital Syphilis,0.0
+Z2.5,2022Q3,Syphilitic Stillbirth,0.0
+Z2.6,2019Q1,Early Congenital Syphilis,0.0
+Z2.6,2019Q1,Syphilitic Stillbirth,0.0
+Z2.6,2019Q2,Early Congenital Syphilis,0.0
+Z2.6,2019Q2,Syphilitic Stillbirth,0.0
+Z2.6,2019Q3,Early Congenital Syphilis,0.0
+Z2.6,2019Q3,Syphilitic Stillbirth,0.0
+Z2.6,2019Q4,Early Congenital Syphilis,0.0
+Z2.6,2019Q4,Syphilitic Stillbirth,0.0
+Z2.6,2020Q1,Early Congenital Syphilis,0.0
+Z2.6,2020Q1,Syphilitic Stillbirth,0.0
+Z2.6,2020Q2,Early Congenital Syphilis,0.0
+Z2.6,2020Q2,Syphilitic Stillbirth,0.0
+Z2.6,2020Q3,Early Congenital Syphilis,0.0
+Z2.6,2020Q3,Syphilitic Stillbirth,0.0
+Z2.6,2020Q4,Early Congenital Syphilis,0.0
+Z2.6,2020Q4,Syphilitic Stillbirth,0.0
+Z2.6,2021Q1,Early Congenital Syphilis,0.0
+Z2.6,2021Q1,Syphilitic Stillbirth,0.0
+Z2.6,2021Q2,Early Congenital Syphilis,0.0
+Z2.6,2021Q2,Syphilitic Stillbirth,0.0
+Z2.6,2021Q3,Early Congenital Syphilis,0.0
+Z2.6,2021Q3,Syphilitic Stillbirth,0.0
+Z2.6,2021Q4,Early Congenital Syphilis,0.0
+Z2.6,2021Q4,Syphilitic Stillbirth,0.0
+Z2.6,2022Q1,Early Congenital Syphilis,0.0
+Z2.6,2022Q1,Syphilitic Stillbirth,0.0
+Z2.6,2022Q2,Early Congenital Syphilis,0.0
+Z2.6,2022Q2,Syphilitic Stillbirth,0.0
+Z2.6,2022Q3,Early Congenital Syphilis,0.0
+Z2.6,2022Q3,Syphilitic Stillbirth,0.0
+Z2.7,2019Q1,Early Congenital Syphilis,0.0
+Z2.7,2019Q1,Syphilitic Stillbirth,0.0
+Z2.7,2019Q2,Early Congenital Syphilis,0.0
+Z2.7,2019Q2,Syphilitic Stillbirth,0.0
+Z2.7,2019Q3,Early Congenital Syphilis,0.0
+Z2.7,2019Q3,Syphilitic Stillbirth,0.0
+Z2.7,2019Q4,Early Congenital Syphilis,0.0
+Z2.7,2019Q4,Syphilitic Stillbirth,0.0
+Z2.7,2020Q1,Early Congenital Syphilis,0.0
+Z2.7,2020Q1,Syphilitic Stillbirth,0.0
+Z2.7,2020Q2,Early Congenital Syphilis,0.0
+Z2.7,2020Q2,Syphilitic Stillbirth,0.0
+Z2.7,2020Q3,Early Congenital Syphilis,0.0
+Z2.7,2020Q3,Syphilitic Stillbirth,0.0
+Z2.7,2020Q4,Early Congenital Syphilis,0.0
+Z2.7,2020Q4,Syphilitic Stillbirth,0.0
+Z2.7,2021Q1,Early Congenital Syphilis,0.0
+Z2.7,2021Q1,Syphilitic Stillbirth,0.0
+Z2.7,2021Q2,Early Congenital Syphilis,0.0
+Z2.7,2021Q2,Syphilitic Stillbirth,0.0
+Z2.7,2021Q3,Early Congenital Syphilis,0.0
+Z2.7,2021Q3,Syphilitic Stillbirth,0.0
+Z2.7,2021Q4,Early Congenital Syphilis,0.0
+Z2.7,2021Q4,Syphilitic Stillbirth,0.0
+Z2.7,2022Q1,Early Congenital Syphilis,0.0
+Z2.7,2022Q1,Syphilitic Stillbirth,0.0
+Z2.7,2022Q2,Early Congenital Syphilis,0.0
+Z2.7,2022Q2,Syphilitic Stillbirth,0.0
+Z2.7,2022Q3,Early Congenital Syphilis,0.0
+Z2.7,2022Q3,Syphilitic Stillbirth,0.0
+Z3.1,2019Q1,Early Congenital Syphilis,0.0
+Z3.1,2019Q1,Syphilitic Stillbirth,0.0
+Z3.1,2019Q2,Early Congenital Syphilis,0.0
+Z3.1,2019Q2,Syphilitic Stillbirth,0.0
+Z3.1,2019Q3,Early Congenital Syphilis,0.0
+Z3.1,2019Q3,Syphilitic Stillbirth,0.0
+Z3.1,2019Q4,Early Congenital Syphilis,0.0
+Z3.1,2019Q4,Syphilitic Stillbirth,0.0
+Z3.1,2020Q1,Early Congenital Syphilis,1.0
+Z3.1,2020Q1,Syphilitic Stillbirth,0.0
+Z3.1,2020Q2,Early Congenital Syphilis,1.0
+Z3.1,2020Q2,Syphilitic Stillbirth,0.0
+Z3.1,2020Q3,Early Congenital Syphilis,0.0
+Z3.1,2020Q3,Syphilitic Stillbirth,0.0
+Z3.1,2020Q4,Early Congenital Syphilis,0.0
+Z3.1,2020Q4,Syphilitic Stillbirth,0.0
+Z3.1,2021Q1,Early Congenital Syphilis,1.0
+Z3.1,2021Q1,Syphilitic Stillbirth,0.0
+Z3.1,2021Q2,Early Congenital Syphilis,1.0
+Z3.1,2021Q2,Syphilitic Stillbirth,0.0
+Z3.1,2021Q3,Early Congenital Syphilis,0.0
+Z3.1,2021Q3,Syphilitic Stillbirth,0.0
+Z3.1,2021Q4,Early Congenital Syphilis,0.0
+Z3.1,2021Q4,Syphilitic Stillbirth,1.0
+Z3.1,2022Q1,Early Congenital Syphilis,0.0
+Z3.1,2022Q1,Syphilitic Stillbirth,0.0
+Z3.1,2022Q2,Early Congenital Syphilis,0.0
+Z3.1,2022Q2,Syphilitic Stillbirth,0.0
+Z3.1,2022Q3,Early Congenital Syphilis,0.0
+Z3.1,2022Q3,Syphilitic Stillbirth,1.0
+Z3.2,2019Q1,Early Congenital Syphilis,0.0
+Z3.2,2019Q1,Syphilitic Stillbirth,0.0
+Z3.2,2019Q2,Early Congenital Syphilis,0.0
+Z3.2,2019Q2,Syphilitic Stillbirth,0.0
+Z3.2,2019Q3,Early Congenital Syphilis,0.0
+Z3.2,2019Q3,Syphilitic Stillbirth,0.0
+Z3.2,2019Q4,Early Congenital Syphilis,0.0
+Z3.2,2019Q4,Syphilitic Stillbirth,0.0
+Z3.2,2020Q1,Early Congenital Syphilis,0.0
+Z3.2,2020Q1,Syphilitic Stillbirth,0.0
+Z3.2,2020Q2,Early Congenital Syphilis,0.0
+Z3.2,2020Q2,Syphilitic Stillbirth,0.0
+Z3.2,2020Q3,Early Congenital Syphilis,0.0
+Z3.2,2020Q3,Syphilitic Stillbirth,0.0
+Z3.2,2020Q4,Early Congenital Syphilis,0.0
+Z3.2,2020Q4,Syphilitic Stillbirth,0.0
+Z3.2,2021Q1,Early Congenital Syphilis,0.0
+Z3.2,2021Q1,Syphilitic Stillbirth,0.0
+Z3.2,2021Q2,Early Congenital Syphilis,0.0
+Z3.2,2021Q2,Syphilitic Stillbirth,0.0
+Z3.2,2021Q3,Early Congenital Syphilis,0.0
+Z3.2,2021Q3,Syphilitic Stillbirth,0.0
+Z3.2,2021Q4,Early Congenital Syphilis,0.0
+Z3.2,2021Q4,Syphilitic Stillbirth,0.0
+Z3.2,2022Q1,Early Congenital Syphilis,0.0
+Z3.2,2022Q1,Syphilitic Stillbirth,0.0
+Z3.2,2022Q2,Early Congenital Syphilis,0.0
+Z3.2,2022Q2,Syphilitic Stillbirth,0.0
+Z3.2,2022Q3,Early Congenital Syphilis,0.0
+Z3.2,2022Q3,Syphilitic Stillbirth,0.0
+Z3.3,2019Q1,Early Congenital Syphilis,0.0
+Z3.3,2019Q1,Syphilitic Stillbirth,0.0
+Z3.3,2019Q2,Early Congenital Syphilis,0.0
+Z3.3,2019Q2,Syphilitic Stillbirth,0.0
+Z3.3,2019Q3,Early Congenital Syphilis,0.0
+Z3.3,2019Q3,Syphilitic Stillbirth,0.0
+Z3.3,2019Q4,Early Congenital Syphilis,0.0
+Z3.3,2019Q4,Syphilitic Stillbirth,0.0
+Z3.3,2020Q1,Early Congenital Syphilis,0.0
+Z3.3,2020Q1,Syphilitic Stillbirth,0.0
+Z3.3,2020Q2,Early Congenital Syphilis,0.0
+Z3.3,2020Q2,Syphilitic Stillbirth,0.0
+Z3.3,2020Q3,Early Congenital Syphilis,0.0
+Z3.3,2020Q3,Syphilitic Stillbirth,0.0
+Z3.3,2020Q4,Early Congenital Syphilis,0.0
+Z3.3,2020Q4,Syphilitic Stillbirth,0.0
+Z3.3,2021Q1,Early Congenital Syphilis,0.0
+Z3.3,2021Q1,Syphilitic Stillbirth,0.0
+Z3.3,2021Q2,Early Congenital Syphilis,0.0
+Z3.3,2021Q2,Syphilitic Stillbirth,0.0
+Z3.3,2021Q3,Early Congenital Syphilis,0.0
+Z3.3,2021Q3,Syphilitic Stillbirth,0.0
+Z3.3,2021Q4,Early Congenital Syphilis,0.0
+Z3.3,2021Q4,Syphilitic Stillbirth,0.0
+Z3.3,2022Q1,Early Congenital Syphilis,0.0
+Z3.3,2022Q1,Syphilitic Stillbirth,0.0
+Z3.3,2022Q2,Early Congenital Syphilis,0.0
+Z3.3,2022Q2,Syphilitic Stillbirth,0.0
+Z3.3,2022Q3,Early Congenital Syphilis,0.0
+Z3.3,2022Q3,Syphilitic Stillbirth,0.0
+Z3.4,2019Q1,Early Congenital Syphilis,0.0
+Z3.4,2019Q1,Syphilitic Stillbirth,0.0
+Z3.4,2019Q2,Early Congenital Syphilis,2.0
+Z3.4,2019Q2,Syphilitic Stillbirth,0.0
+Z3.4,2019Q3,Early Congenital Syphilis,1.0
+Z3.4,2019Q3,Syphilitic Stillbirth,0.0
+Z3.4,2019Q4,Early Congenital Syphilis,2.0
+Z3.4,2019Q4,Syphilitic Stillbirth,0.0
+Z3.4,2020Q1,Early Congenital Syphilis,1.0
+Z3.4,2020Q1,Syphilitic Stillbirth,0.0
+Z3.4,2020Q2,Early Congenital Syphilis,0.0
+Z3.4,2020Q2,Syphilitic Stillbirth,1.0
+Z3.4,2020Q3,Early Congenital Syphilis,0.0
+Z3.4,2020Q3,Syphilitic Stillbirth,0.0
+Z3.4,2020Q4,Early Congenital Syphilis,0.0
+Z3.4,2020Q4,Syphilitic Stillbirth,0.0
+Z3.4,2021Q1,Early Congenital Syphilis,0.0
+Z3.4,2021Q1,Syphilitic Stillbirth,1.0
+Z3.4,2021Q2,Early Congenital Syphilis,1.0
+Z3.4,2021Q2,Syphilitic Stillbirth,0.0
+Z3.4,2021Q3,Early Congenital Syphilis,3.0
+Z3.4,2021Q3,Syphilitic Stillbirth,0.0
+Z3.4,2021Q4,Early Congenital Syphilis,1.0
+Z3.4,2021Q4,Syphilitic Stillbirth,0.0
+Z3.4,2022Q1,Early Congenital Syphilis,1.0
+Z3.4,2022Q1,Syphilitic Stillbirth,0.0
+Z3.4,2022Q2,Early Congenital Syphilis,4.0
+Z3.4,2022Q2,Syphilitic Stillbirth,0.0
+Z3.4,2022Q3,Early Congenital Syphilis,0.0
+Z3.4,2022Q3,Syphilitic Stillbirth,0.0
+Z3.5,2019Q1,Early Congenital Syphilis,0.0
+Z3.5,2019Q1,Syphilitic Stillbirth,0.0
+Z3.5,2019Q2,Early Congenital Syphilis,0.0
+Z3.5,2019Q2,Syphilitic Stillbirth,0.0
+Z3.5,2019Q3,Early Congenital Syphilis,0.0
+Z3.5,2019Q3,Syphilitic Stillbirth,0.0
+Z3.5,2019Q4,Early Congenital Syphilis,0.0
+Z3.5,2019Q4,Syphilitic Stillbirth,0.0
+Z3.5,2020Q1,Early Congenital Syphilis,0.0
+Z3.5,2020Q1,Syphilitic Stillbirth,0.0
+Z3.5,2020Q2,Early Congenital Syphilis,0.0
+Z3.5,2020Q2,Syphilitic Stillbirth,0.0
+Z3.5,2020Q3,Early Congenital Syphilis,0.0
+Z3.5,2020Q3,Syphilitic Stillbirth,0.0
+Z3.5,2020Q4,Early Congenital Syphilis,0.0
+Z3.5,2020Q4,Syphilitic Stillbirth,0.0
+Z3.5,2021Q1,Early Congenital Syphilis,0.0
+Z3.5,2021Q1,Syphilitic Stillbirth,0.0
+Z3.5,2021Q2,Early Congenital Syphilis,0.0
+Z3.5,2021Q2,Syphilitic Stillbirth,0.0
+Z3.5,2021Q3,Early Congenital Syphilis,0.0
+Z3.5,2021Q3,Syphilitic Stillbirth,0.0
+Z3.5,2021Q4,Early Congenital Syphilis,0.0
+Z3.5,2021Q4,Syphilitic Stillbirth,0.0
+Z3.5,2022Q1,Early Congenital Syphilis,0.0
+Z3.5,2022Q1,Syphilitic Stillbirth,0.0
+Z3.5,2022Q2,Early Congenital Syphilis,0.0
+Z3.5,2022Q2,Syphilitic Stillbirth,0.0
+Z3.5,2022Q3,Early Congenital Syphilis,0.0
+Z3.5,2022Q3,Syphilitic Stillbirth,0.0
+Z3.6,2019Q1,Early Congenital Syphilis,0.0
+Z3.6,2019Q1,Syphilitic Stillbirth,0.0
+Z3.6,2019Q2,Early Congenital Syphilis,0.0
+Z3.6,2019Q2,Syphilitic Stillbirth,0.0
+Z3.6,2019Q3,Early Congenital Syphilis,1.0
+Z3.6,2019Q3,Syphilitic Stillbirth,0.0
+Z3.6,2019Q4,Early Congenital Syphilis,0.0
+Z3.6,2019Q4,Syphilitic Stillbirth,0.0
+Z3.6,2020Q1,Early Congenital Syphilis,0.0
+Z3.6,2020Q1,Syphilitic Stillbirth,0.0
+Z3.6,2020Q2,Early Congenital Syphilis,0.0
+Z3.6,2020Q2,Syphilitic Stillbirth,0.0
+Z3.6,2020Q3,Early Congenital Syphilis,0.0
+Z3.6,2020Q3,Syphilitic Stillbirth,0.0
+Z3.6,2020Q4,Early Congenital Syphilis,0.0
+Z3.6,2020Q4,Syphilitic Stillbirth,0.0
+Z3.6,2021Q1,Early Congenital Syphilis,0.0
+Z3.6,2021Q1,Syphilitic Stillbirth,0.0
+Z3.6,2021Q2,Early Congenital Syphilis,0.0
+Z3.6,2021Q2,Syphilitic Stillbirth,0.0
+Z3.6,2021Q3,Early Congenital Syphilis,0.0
+Z3.6,2021Q3,Syphilitic Stillbirth,0.0
+Z3.6,2021Q4,Early Congenital Syphilis,1.0
+Z3.6,2021Q4,Syphilitic Stillbirth,0.0
+Z3.6,2022Q1,Early Congenital Syphilis,0.0
+Z3.6,2022Q1,Syphilitic Stillbirth,0.0
+Z3.6,2022Q2,Early Congenital Syphilis,0.0
+Z3.6,2022Q2,Syphilitic Stillbirth,0.0
+Z3.6,2022Q3,Early Congenital Syphilis,0.0
+Z3.6,2022Q3,Syphilitic Stillbirth,0.0
+Z3.7,2019Q1,Early Congenital Syphilis,0.0
+Z3.7,2019Q1,Syphilitic Stillbirth,0.0
+Z3.7,2019Q2,Early Congenital Syphilis,0.0
+Z3.7,2019Q2,Syphilitic Stillbirth,0.0
+Z3.7,2019Q3,Early Congenital Syphilis,0.0
+Z3.7,2019Q3,Syphilitic Stillbirth,0.0
+Z3.7,2019Q4,Early Congenital Syphilis,0.0
+Z3.7,2019Q4,Syphilitic Stillbirth,0.0
+Z3.7,2020Q1,Early Congenital Syphilis,0.0
+Z3.7,2020Q1,Syphilitic Stillbirth,0.0
+Z3.7,2020Q2,Early Congenital Syphilis,0.0
+Z3.7,2020Q2,Syphilitic Stillbirth,1.0
+Z3.7,2020Q3,Early Congenital Syphilis,0.0
+Z3.7,2020Q3,Syphilitic Stillbirth,0.0
+Z3.7,2020Q4,Early Congenital Syphilis,1.0
+Z3.7,2020Q4,Syphilitic Stillbirth,0.0
+Z3.7,2021Q1,Early Congenital Syphilis,0.0
+Z3.7,2021Q1,Syphilitic Stillbirth,0.0
+Z3.7,2021Q2,Early Congenital Syphilis,0.0
+Z3.7,2021Q2,Syphilitic Stillbirth,0.0
+Z3.7,2021Q3,Early Congenital Syphilis,0.0
+Z3.7,2021Q3,Syphilitic Stillbirth,0.0
+Z3.7,2021Q4,Early Congenital Syphilis,0.0
+Z3.7,2021Q4,Syphilitic Stillbirth,0.0
+Z3.7,2022Q1,Early Congenital Syphilis,0.0
+Z3.7,2022Q1,Syphilitic Stillbirth,0.0
+Z3.7,2022Q2,Early Congenital Syphilis,1.0
+Z3.7,2022Q2,Syphilitic Stillbirth,0.0
+Z3.7,2022Q3,Early Congenital Syphilis,1.0
+Z3.7,2022Q3,Syphilitic Stillbirth,0.0
+Z4.1,2019Q1,Early Congenital Syphilis,0.0
+Z4.1,2019Q1,Syphilitic Stillbirth,0.0
+Z4.1,2019Q2,Early Congenital Syphilis,0.0
+Z4.1,2019Q2,Syphilitic Stillbirth,2.0
+Z4.1,2019Q3,Early Congenital Syphilis,2.0
+Z4.1,2019Q3,Syphilitic Stillbirth,2.0
+Z4.1,2019Q4,Early Congenital Syphilis,2.0
+Z4.1,2019Q4,Syphilitic Stillbirth,1.0
+Z4.1,2020Q1,Early Congenital Syphilis,0.0
+Z4.1,2020Q1,Syphilitic Stillbirth,0.0
+Z4.1,2020Q2,Early Congenital Syphilis,1.0
+Z4.1,2020Q2,Syphilitic Stillbirth,1.0
+Z4.1,2020Q3,Early Congenital Syphilis,1.0
+Z4.1,2020Q3,Syphilitic Stillbirth,0.0
+Z4.1,2020Q4,Early Congenital Syphilis,0.0
+Z4.1,2020Q4,Syphilitic Stillbirth,0.0
+Z4.1,2021Q1,Early Congenital Syphilis,0.0
+Z4.1,2021Q1,Syphilitic Stillbirth,0.0
+Z4.1,2021Q2,Early Congenital Syphilis,2.0
+Z4.1,2021Q2,Syphilitic Stillbirth,0.0
+Z4.1,2021Q3,Early Congenital Syphilis,1.0
+Z4.1,2021Q3,Syphilitic Stillbirth,0.0
+Z4.1,2021Q4,Early Congenital Syphilis,1.0
+Z4.1,2021Q4,Syphilitic Stillbirth,0.0
+Z4.1,2022Q1,Early Congenital Syphilis,2.0
+Z4.1,2022Q1,Syphilitic Stillbirth,0.0
+Z4.1,2022Q2,Early Congenital Syphilis,3.0
+Z4.1,2022Q2,Syphilitic Stillbirth,0.0
+Z4.1,2022Q3,Early Congenital Syphilis,3.0
+Z4.1,2022Q3,Syphilitic Stillbirth,2.0
+Z4.2,2019Q1,Early Congenital Syphilis,3.0
+Z4.2,2019Q1,Syphilitic Stillbirth,2.0
+Z4.2,2019Q2,Early Congenital Syphilis,7.0
+Z4.2,2019Q2,Syphilitic Stillbirth,1.0
+Z4.2,2019Q3,Early Congenital Syphilis,1.0
+Z4.2,2019Q3,Syphilitic Stillbirth,0.0
+Z4.2,2019Q4,Early Congenital Syphilis,0.0
+Z4.2,2019Q4,Syphilitic Stillbirth,0.0
+Z4.2,2020Q1,Early Congenital Syphilis,4.0
+Z4.2,2020Q1,Syphilitic Stillbirth,0.0
+Z4.2,2020Q2,Early Congenital Syphilis,4.0
+Z4.2,2020Q2,Syphilitic Stillbirth,2.0
+Z4.2,2020Q3,Early Congenital Syphilis,1.0
+Z4.2,2020Q3,Syphilitic Stillbirth,0.0
+Z4.2,2020Q4,Early Congenital Syphilis,1.0
+Z4.2,2020Q4,Syphilitic Stillbirth,1.0
+Z4.2,2021Q1,Early Congenital Syphilis,3.0
+Z4.2,2021Q1,Syphilitic Stillbirth,0.0
+Z4.2,2021Q2,Early Congenital Syphilis,2.0
+Z4.2,2021Q2,Syphilitic Stillbirth,0.0
+Z4.2,2021Q3,Early Congenital Syphilis,4.0
+Z4.2,2021Q3,Syphilitic Stillbirth,1.0
+Z4.2,2021Q4,Early Congenital Syphilis,3.0
+Z4.2,2021Q4,Syphilitic Stillbirth,0.0
+Z4.2,2022Q1,Early Congenital Syphilis,2.0
+Z4.2,2022Q1,Syphilitic Stillbirth,0.0
+Z4.2,2022Q2,Early Congenital Syphilis,3.0
+Z4.2,2022Q2,Syphilitic Stillbirth,0.0
+Z4.2,2022Q3,Early Congenital Syphilis,5.0
+Z4.2,2022Q3,Syphilitic Stillbirth,0.0
+Z4.3,2019Q1,Early Congenital Syphilis,0.0
+Z4.3,2019Q1,Syphilitic Stillbirth,0.0
+Z4.3,2019Q2,Early Congenital Syphilis,1.0
+Z4.3,2019Q2,Syphilitic Stillbirth,0.0
+Z4.3,2019Q3,Early Congenital Syphilis,0.0
+Z4.3,2019Q3,Syphilitic Stillbirth,0.0
+Z4.3,2019Q4,Early Congenital Syphilis,0.0
+Z4.3,2019Q4,Syphilitic Stillbirth,0.0
+Z4.3,2020Q1,Early Congenital Syphilis,1.0
+Z4.3,2020Q1,Syphilitic Stillbirth,0.0
+Z4.3,2020Q2,Early Congenital Syphilis,1.0
+Z4.3,2020Q2,Syphilitic Stillbirth,0.0
+Z4.3,2020Q3,Early Congenital Syphilis,0.0
+Z4.3,2020Q3,Syphilitic Stillbirth,0.0
+Z4.3,2020Q4,Early Congenital Syphilis,0.0
+Z4.3,2020Q4,Syphilitic Stillbirth,1.0
+Z4.3,2021Q1,Early Congenital Syphilis,0.0
+Z4.3,2021Q1,Syphilitic Stillbirth,1.0
+Z4.3,2021Q2,Early Congenital Syphilis,1.0
+Z4.3,2021Q2,Syphilitic Stillbirth,1.0
+Z4.3,2021Q3,Early Congenital Syphilis,0.0
+Z4.3,2021Q3,Syphilitic Stillbirth,0.0
+Z4.3,2021Q4,Early Congenital Syphilis,0.0
+Z4.3,2021Q4,Syphilitic Stillbirth,0.0
+Z4.3,2022Q1,Early Congenital Syphilis,0.0
+Z4.3,2022Q1,Syphilitic Stillbirth,0.0
+Z4.3,2022Q2,Early Congenital Syphilis,2.0
+Z4.3,2022Q2,Syphilitic Stillbirth,0.0
+Z4.3,2022Q3,Early Congenital Syphilis,0.0
+Z4.3,2022Q3,Syphilitic Stillbirth,1.0
+Z4.4,2019Q1,Early Congenital Syphilis,0.0
+Z4.4,2019Q1,Syphilitic Stillbirth,0.0
+Z4.4,2019Q2,Early Congenital Syphilis,0.0
+Z4.4,2019Q2,Syphilitic Stillbirth,0.0
+Z4.4,2019Q3,Early Congenital Syphilis,1.0
+Z4.4,2019Q3,Syphilitic Stillbirth,0.0
+Z4.4,2019Q4,Early Congenital Syphilis,0.0
+Z4.4,2019Q4,Syphilitic Stillbirth,0.0
+Z4.4,2020Q1,Early Congenital Syphilis,0.0
+Z4.4,2020Q1,Syphilitic Stillbirth,0.0
+Z4.4,2020Q2,Early Congenital Syphilis,0.0
+Z4.4,2020Q2,Syphilitic Stillbirth,0.0
+Z4.4,2020Q3,Early Congenital Syphilis,0.0
+Z4.4,2020Q3,Syphilitic Stillbirth,0.0
+Z4.4,2020Q4,Early Congenital Syphilis,0.0
+Z4.4,2020Q4,Syphilitic Stillbirth,0.0
+Z4.4,2021Q1,Early Congenital Syphilis,0.0
+Z4.4,2021Q1,Syphilitic Stillbirth,0.0
+Z4.4,2021Q2,Early Congenital Syphilis,0.0
+Z4.4,2021Q2,Syphilitic Stillbirth,0.0
+Z4.4,2021Q3,Early Congenital Syphilis,1.0
+Z4.4,2021Q3,Syphilitic Stillbirth,0.0
+Z4.4,2021Q4,Early Congenital Syphilis,1.0
+Z4.4,2021Q4,Syphilitic Stillbirth,0.0
+Z4.4,2022Q1,Early Congenital Syphilis,0.0
+Z4.4,2022Q1,Syphilitic Stillbirth,0.0
+Z4.4,2022Q2,Early Congenital Syphilis,0.0
+Z4.4,2022Q2,Syphilitic Stillbirth,0.0
+Z4.4,2022Q3,Early Congenital Syphilis,0.0
+Z4.4,2022Q3,Syphilitic Stillbirth,0.0
+Z4.5,2019Q1,Early Congenital Syphilis,0.0
+Z4.5,2019Q1,Syphilitic Stillbirth,0.0
+Z4.5,2019Q2,Early Congenital Syphilis,0.0
+Z4.5,2019Q2,Syphilitic Stillbirth,0.0
+Z4.5,2019Q3,Early Congenital Syphilis,0.0
+Z4.5,2019Q3,Syphilitic Stillbirth,0.0
+Z4.5,2019Q4,Early Congenital Syphilis,0.0
+Z4.5,2019Q4,Syphilitic Stillbirth,0.0
+Z4.5,2020Q1,Early Congenital Syphilis,0.0
+Z4.5,2020Q1,Syphilitic Stillbirth,0.0
+Z4.5,2020Q2,Early Congenital Syphilis,0.0
+Z4.5,2020Q2,Syphilitic Stillbirth,1.0
+Z4.5,2020Q3,Early Congenital Syphilis,0.0
+Z4.5,2020Q3,Syphilitic Stillbirth,0.0
+Z4.5,2020Q4,Early Congenital Syphilis,0.0
+Z4.5,2020Q4,Syphilitic Stillbirth,0.0
+Z4.5,2021Q1,Early Congenital Syphilis,0.0
+Z4.5,2021Q1,Syphilitic Stillbirth,0.0
+Z4.5,2021Q2,Early Congenital Syphilis,0.0
+Z4.5,2021Q2,Syphilitic Stillbirth,0.0
+Z4.5,2021Q3,Early Congenital Syphilis,0.0
+Z4.5,2021Q3,Syphilitic Stillbirth,0.0
+Z4.5,2021Q4,Early Congenital Syphilis,0.0
+Z4.5,2021Q4,Syphilitic Stillbirth,0.0
+Z4.5,2022Q1,Early Congenital Syphilis,0.0
+Z4.5,2022Q1,Syphilitic Stillbirth,0.0
+Z4.5,2022Q2,Early Congenital Syphilis,0.0
+Z4.5,2022Q2,Syphilitic Stillbirth,0.0
+Z4.5,2022Q3,Early Congenital Syphilis,0.0
+Z4.5,2022Q3,Syphilitic Stillbirth,0.0
+Z4.6,2019Q1,Early Congenital Syphilis,0.0
+Z4.6,2019Q1,Syphilitic Stillbirth,0.0
+Z4.6,2019Q2,Early Congenital Syphilis,0.0
+Z4.6,2019Q2,Syphilitic Stillbirth,0.0
+Z4.6,2019Q3,Early Congenital Syphilis,0.0
+Z4.6,2019Q3,Syphilitic Stillbirth,0.0
+Z4.6,2019Q4,Early Congenital Syphilis,0.0
+Z4.6,2019Q4,Syphilitic Stillbirth,0.0
+Z4.6,2020Q1,Early Congenital Syphilis,0.0
+Z4.6,2020Q1,Syphilitic Stillbirth,0.0
+Z4.6,2020Q2,Early Congenital Syphilis,1.0
+Z4.6,2020Q2,Syphilitic Stillbirth,0.0
+Z4.6,2020Q3,Early Congenital Syphilis,0.0
+Z4.6,2020Q3,Syphilitic Stillbirth,0.0
+Z4.6,2020Q4,Early Congenital Syphilis,0.0
+Z4.6,2020Q4,Syphilitic Stillbirth,0.0
+Z4.6,2021Q1,Early Congenital Syphilis,0.0
+Z4.6,2021Q1,Syphilitic Stillbirth,0.0
+Z4.6,2021Q2,Early Congenital Syphilis,1.0
+Z4.6,2021Q2,Syphilitic Stillbirth,0.0
+Z4.6,2021Q3,Early Congenital Syphilis,0.0
+Z4.6,2021Q3,Syphilitic Stillbirth,0.0
+Z4.6,2021Q4,Early Congenital Syphilis,0.0
+Z4.6,2021Q4,Syphilitic Stillbirth,0.0
+Z4.6,2022Q1,Early Congenital Syphilis,0.0
+Z4.6,2022Q1,Syphilitic Stillbirth,0.0
+Z4.6,2022Q2,Early Congenital Syphilis,1.0
+Z4.6,2022Q2,Syphilitic Stillbirth,0.0
+Z4.6,2022Q3,Early Congenital Syphilis,0.0
+Z4.6,2022Q3,Syphilitic Stillbirth,0.0
+Z4.7,2019Q1,Early Congenital Syphilis,0.0
+Z4.7,2019Q1,Syphilitic Stillbirth,0.0
+Z4.7,2019Q2,Early Congenital Syphilis,0.0
+Z4.7,2019Q2,Syphilitic Stillbirth,0.0
+Z4.7,2019Q3,Early Congenital Syphilis,0.0
+Z4.7,2019Q3,Syphilitic Stillbirth,0.0
+Z4.7,2019Q4,Early Congenital Syphilis,0.0
+Z4.7,2019Q4,Syphilitic Stillbirth,0.0
+Z4.7,2020Q1,Early Congenital Syphilis,1.0
+Z4.7,2020Q1,Syphilitic Stillbirth,0.0
+Z4.7,2020Q2,Early Congenital Syphilis,0.0
+Z4.7,2020Q2,Syphilitic Stillbirth,0.0
+Z4.7,2020Q3,Early Congenital Syphilis,0.0
+Z4.7,2020Q3,Syphilitic Stillbirth,0.0
+Z4.7,2020Q4,Early Congenital Syphilis,0.0
+Z4.7,2020Q4,Syphilitic Stillbirth,0.0
+Z4.7,2021Q1,Early Congenital Syphilis,0.0
+Z4.7,2021Q1,Syphilitic Stillbirth,0.0
+Z4.7,2021Q2,Early Congenital Syphilis,0.0
+Z4.7,2021Q2,Syphilitic Stillbirth,0.0
+Z4.7,2021Q3,Early Congenital Syphilis,0.0
+Z4.7,2021Q3,Syphilitic Stillbirth,0.0
+Z4.7,2021Q4,Early Congenital Syphilis,0.0
+Z4.7,2021Q4,Syphilitic Stillbirth,0.0
+Z4.7,2022Q1,Early Congenital Syphilis,0.0
+Z4.7,2022Q1,Syphilitic Stillbirth,0.0
+Z4.7,2022Q2,Early Congenital Syphilis,0.0
+Z4.7,2022Q2,Syphilitic Stillbirth,0.0
+Z4.7,2022Q3,Early Congenital Syphilis,2.0
+Z4.7,2022Q3,Syphilitic Stillbirth,0.0
+Z4.8,2019Q1,Early Congenital Syphilis,0.0
+Z4.8,2019Q1,Syphilitic Stillbirth,0.0
+Z4.8,2019Q2,Early Congenital Syphilis,0.0
+Z4.8,2019Q2,Syphilitic Stillbirth,0.0
+Z4.8,2019Q3,Early Congenital Syphilis,0.0
+Z4.8,2019Q3,Syphilitic Stillbirth,0.0
+Z4.8,2019Q4,Early Congenital Syphilis,0.0
+Z4.8,2019Q4,Syphilitic Stillbirth,0.0
+Z4.8,2020Q1,Early Congenital Syphilis,1.0
+Z4.8,2020Q1,Syphilitic Stillbirth,0.0
+Z4.8,2020Q2,Early Congenital Syphilis,0.0
+Z4.8,2020Q2,Syphilitic Stillbirth,0.0
+Z4.8,2020Q3,Early Congenital Syphilis,0.0
+Z4.8,2020Q3,Syphilitic Stillbirth,0.0
+Z4.8,2020Q4,Early Congenital Syphilis,0.0
+Z4.8,2020Q4,Syphilitic Stillbirth,0.0
+Z4.8,2021Q1,Early Congenital Syphilis,1.0
+Z4.8,2021Q1,Syphilitic Stillbirth,0.0
+Z4.8,2021Q2,Early Congenital Syphilis,0.0
+Z4.8,2021Q2,Syphilitic Stillbirth,0.0
+Z4.8,2021Q3,Early Congenital Syphilis,0.0
+Z4.8,2021Q3,Syphilitic Stillbirth,0.0
+Z4.8,2021Q4,Early Congenital Syphilis,0.0
+Z4.8,2021Q4,Syphilitic Stillbirth,0.0
+Z4.8,2022Q1,Early Congenital Syphilis,1.0
+Z4.8,2022Q1,Syphilitic Stillbirth,0.0
+Z4.8,2022Q2,Early Congenital Syphilis,0.0
+Z4.8,2022Q2,Syphilitic Stillbirth,0.0
+Z4.8,2022Q3,Early Congenital Syphilis,0.0
+Z4.8,2022Q3,Syphilitic Stillbirth,0.0
+Z4.9,2019Q1,Early Congenital Syphilis,0.0
+Z4.9,2019Q1,Syphilitic Stillbirth,0.0
+Z4.9,2019Q2,Early Congenital Syphilis,0.0
+Z4.9,2019Q2,Syphilitic Stillbirth,0.0
+Z4.9,2019Q3,Early Congenital Syphilis,0.0
+Z4.9,2019Q3,Syphilitic Stillbirth,0.0
+Z4.9,2019Q4,Early Congenital Syphilis,0.0
+Z4.9,2019Q4,Syphilitic Stillbirth,0.0
+Z4.9,2020Q1,Early Congenital Syphilis,0.0
+Z4.9,2020Q1,Syphilitic Stillbirth,0.0
+Z4.9,2020Q2,Early Congenital Syphilis,0.0
+Z4.9,2020Q2,Syphilitic Stillbirth,0.0
+Z4.9,2020Q3,Early Congenital Syphilis,0.0
+Z4.9,2020Q3,Syphilitic Stillbirth,0.0
+Z4.9,2020Q4,Early Congenital Syphilis,0.0
+Z4.9,2020Q4,Syphilitic Stillbirth,0.0
+Z4.9,2021Q1,Early Congenital Syphilis,0.0
+Z4.9,2021Q1,Syphilitic Stillbirth,0.0
+Z4.9,2021Q2,Early Congenital Syphilis,0.0
+Z4.9,2021Q2,Syphilitic Stillbirth,0.0
+Z4.9,2021Q3,Early Congenital Syphilis,0.0
+Z4.9,2021Q3,Syphilitic Stillbirth,0.0
+Z4.9,2021Q4,Early Congenital Syphilis,0.0
+Z4.9,2021Q4,Syphilitic Stillbirth,0.0
+Z4.9,2022Q1,Early Congenital Syphilis,0.0
+Z4.9,2022Q1,Syphilitic Stillbirth,0.0
+Z4.9,2022Q2,Early Congenital Syphilis,0.0
+Z4.9,2022Q2,Syphilitic Stillbirth,0.0
+Z4.9,2022Q3,Early Congenital Syphilis,0.0
+Z4.9,2022Q3,Syphilitic Stillbirth,0.0
+Z5.1,2019Q1,Early Congenital Syphilis,0.0
+Z5.1,2019Q1,Syphilitic Stillbirth,0.0
+Z5.1,2019Q2,Early Congenital Syphilis,0.0
+Z5.1,2019Q2,Syphilitic Stillbirth,0.0
+Z5.1,2019Q3,Early Congenital Syphilis,0.0
+Z5.1,2019Q3,Syphilitic Stillbirth,0.0
+Z5.1,2019Q4,Early Congenital Syphilis,0.0
+Z5.1,2019Q4,Syphilitic Stillbirth,0.0
+Z5.1,2020Q1,Early Congenital Syphilis,0.0
+Z5.1,2020Q1,Syphilitic Stillbirth,0.0
+Z5.1,2020Q2,Early Congenital Syphilis,0.0
+Z5.1,2020Q2,Syphilitic Stillbirth,0.0
+Z5.1,2020Q3,Early Congenital Syphilis,0.0
+Z5.1,2020Q3,Syphilitic Stillbirth,0.0
+Z5.1,2020Q4,Early Congenital Syphilis,2.0
+Z5.1,2020Q4,Syphilitic Stillbirth,1.0
+Z5.1,2021Q1,Early Congenital Syphilis,1.0
+Z5.1,2021Q1,Syphilitic Stillbirth,0.0
+Z5.1,2021Q2,Early Congenital Syphilis,0.0
+Z5.1,2021Q2,Syphilitic Stillbirth,0.0
+Z5.1,2021Q3,Early Congenital Syphilis,0.0
+Z5.1,2021Q3,Syphilitic Stillbirth,0.0
+Z5.1,2021Q4,Early Congenital Syphilis,0.0
+Z5.1,2021Q4,Syphilitic Stillbirth,0.0
+Z5.1,2022Q1,Early Congenital Syphilis,0.0
+Z5.1,2022Q1,Syphilitic Stillbirth,0.0
+Z5.1,2022Q2,Early Congenital Syphilis,0.0
+Z5.1,2022Q2,Syphilitic Stillbirth,0.0
+Z5.1,2022Q3,Early Congenital Syphilis,0.0
+Z5.1,2022Q3,Syphilitic Stillbirth,0.0
+Z5.2,2019Q1,Early Congenital Syphilis,2.0
+Z5.2,2019Q1,Syphilitic Stillbirth,1.0
+Z5.2,2019Q2,Early Congenital Syphilis,1.0
+Z5.2,2019Q2,Syphilitic Stillbirth,1.0
+Z5.2,2019Q3,Early Congenital Syphilis,0.0
+Z5.2,2019Q3,Syphilitic Stillbirth,1.0
+Z5.2,2019Q4,Early Congenital Syphilis,0.0
+Z5.2,2019Q4,Syphilitic Stillbirth,1.0
+Z5.2,2020Q1,Early Congenital Syphilis,0.0
+Z5.2,2020Q1,Syphilitic Stillbirth,0.0
+Z5.2,2020Q2,Early Congenital Syphilis,0.0
+Z5.2,2020Q2,Syphilitic Stillbirth,1.0
+Z5.2,2020Q3,Early Congenital Syphilis,1.0
+Z5.2,2020Q3,Syphilitic Stillbirth,0.0
+Z5.2,2020Q4,Early Congenital Syphilis,5.0
+Z5.2,2020Q4,Syphilitic Stillbirth,1.0
+Z5.2,2021Q1,Early Congenital Syphilis,4.0
+Z5.2,2021Q1,Syphilitic Stillbirth,1.0
+Z5.2,2021Q2,Early Congenital Syphilis,4.0
+Z5.2,2021Q2,Syphilitic Stillbirth,0.0
+Z5.2,2021Q3,Early Congenital Syphilis,2.0
+Z5.2,2021Q3,Syphilitic Stillbirth,1.0
+Z5.2,2021Q4,Early Congenital Syphilis,1.0
+Z5.2,2021Q4,Syphilitic Stillbirth,0.0
+Z5.2,2022Q1,Early Congenital Syphilis,2.0
+Z5.2,2022Q1,Syphilitic Stillbirth,0.0
+Z5.2,2022Q2,Early Congenital Syphilis,4.0
+Z5.2,2022Q2,Syphilitic Stillbirth,1.0
+Z5.2,2022Q3,Early Congenital Syphilis,1.0
+Z5.2,2022Q3,Syphilitic Stillbirth,0.0
+Z5.3,2019Q1,Early Congenital Syphilis,0.0
+Z5.3,2019Q1,Syphilitic Stillbirth,0.0
+Z5.3,2019Q2,Early Congenital Syphilis,0.0
+Z5.3,2019Q2,Syphilitic Stillbirth,0.0
+Z5.3,2019Q3,Early Congenital Syphilis,0.0
+Z5.3,2019Q3,Syphilitic Stillbirth,0.0
+Z5.3,2019Q4,Early Congenital Syphilis,0.0
+Z5.3,2019Q4,Syphilitic Stillbirth,0.0
+Z5.3,2020Q1,Early Congenital Syphilis,0.0
+Z5.3,2020Q1,Syphilitic Stillbirth,0.0
+Z5.3,2020Q2,Early Congenital Syphilis,1.0
+Z5.3,2020Q2,Syphilitic Stillbirth,0.0
+Z5.3,2020Q3,Early Congenital Syphilis,1.0
+Z5.3,2020Q3,Syphilitic Stillbirth,0.0
+Z5.3,2020Q4,Early Congenital Syphilis,1.0
+Z5.3,2020Q4,Syphilitic Stillbirth,0.0
+Z5.3,2021Q1,Early Congenital Syphilis,0.0
+Z5.3,2021Q1,Syphilitic Stillbirth,0.0
+Z5.3,2021Q2,Early Congenital Syphilis,0.0
+Z5.3,2021Q2,Syphilitic Stillbirth,0.0
+Z5.3,2021Q3,Early Congenital Syphilis,0.0
+Z5.3,2021Q3,Syphilitic Stillbirth,0.0
+Z5.3,2021Q4,Early Congenital Syphilis,0.0
+Z5.3,2021Q4,Syphilitic Stillbirth,0.0
+Z5.3,2022Q1,Early Congenital Syphilis,0.0
+Z5.3,2022Q1,Syphilitic Stillbirth,0.0
+Z5.3,2022Q2,Early Congenital Syphilis,0.0
+Z5.3,2022Q2,Syphilitic Stillbirth,0.0
+Z5.3,2022Q3,Early Congenital Syphilis,1.0
+Z5.3,2022Q3,Syphilitic Stillbirth,1.0
+Z5.4,2019Q1,Early Congenital Syphilis,1.0
+Z5.4,2019Q1,Syphilitic Stillbirth,0.0
+Z5.4,2019Q2,Early Congenital Syphilis,0.0
+Z5.4,2019Q2,Syphilitic Stillbirth,0.0
+Z5.4,2019Q3,Early Congenital Syphilis,0.0
+Z5.4,2019Q3,Syphilitic Stillbirth,1.0
+Z5.4,2019Q4,Early Congenital Syphilis,0.0
+Z5.4,2019Q4,Syphilitic Stillbirth,1.0
+Z5.4,2020Q1,Early Congenital Syphilis,1.0
+Z5.4,2020Q1,Syphilitic Stillbirth,0.0
+Z5.4,2020Q2,Early Congenital Syphilis,0.0
+Z5.4,2020Q2,Syphilitic Stillbirth,0.0
+Z5.4,2020Q3,Early Congenital Syphilis,2.0
+Z5.4,2020Q3,Syphilitic Stillbirth,1.0
+Z5.4,2020Q4,Early Congenital Syphilis,5.0
+Z5.4,2020Q4,Syphilitic Stillbirth,1.0
+Z5.4,2021Q1,Early Congenital Syphilis,1.0
+Z5.4,2021Q1,Syphilitic Stillbirth,1.0
+Z5.4,2021Q2,Early Congenital Syphilis,1.0
+Z5.4,2021Q2,Syphilitic Stillbirth,0.0
+Z5.4,2021Q3,Early Congenital Syphilis,2.0
+Z5.4,2021Q3,Syphilitic Stillbirth,0.0
+Z5.4,2021Q4,Early Congenital Syphilis,1.0
+Z5.4,2021Q4,Syphilitic Stillbirth,1.0
+Z5.4,2022Q1,Early Congenital Syphilis,3.0
+Z5.4,2022Q1,Syphilitic Stillbirth,0.0
+Z5.4,2022Q2,Early Congenital Syphilis,1.0
+Z5.4,2022Q2,Syphilitic Stillbirth,0.0
+Z5.4,2022Q3,Early Congenital Syphilis,1.0
+Z5.4,2022Q3,Syphilitic Stillbirth,0.0
+Z5.5,2019Q1,Early Congenital Syphilis,1.0
+Z5.5,2019Q1,Syphilitic Stillbirth,0.0
+Z5.5,2019Q2,Early Congenital Syphilis,1.0
+Z5.5,2019Q2,Syphilitic Stillbirth,0.0
+Z5.5,2019Q3,Early Congenital Syphilis,0.0
+Z5.5,2019Q3,Syphilitic Stillbirth,0.0
+Z5.5,2019Q4,Early Congenital Syphilis,0.0
+Z5.5,2019Q4,Syphilitic Stillbirth,0.0
+Z5.5,2020Q1,Early Congenital Syphilis,0.0
+Z5.5,2020Q1,Syphilitic Stillbirth,0.0
+Z5.5,2020Q2,Early Congenital Syphilis,0.0
+Z5.5,2020Q2,Syphilitic Stillbirth,0.0
+Z5.5,2020Q3,Early Congenital Syphilis,0.0
+Z5.5,2020Q3,Syphilitic Stillbirth,0.0
+Z5.5,2020Q4,Early Congenital Syphilis,0.0
+Z5.5,2020Q4,Syphilitic Stillbirth,0.0
+Z5.5,2021Q1,Early Congenital Syphilis,0.0
+Z5.5,2021Q1,Syphilitic Stillbirth,0.0
+Z5.5,2021Q2,Early Congenital Syphilis,0.0
+Z5.5,2021Q2,Syphilitic Stillbirth,0.0
+Z5.5,2021Q3,Early Congenital Syphilis,0.0
+Z5.5,2021Q3,Syphilitic Stillbirth,0.0
+Z5.5,2021Q4,Early Congenital Syphilis,0.0
+Z5.5,2021Q4,Syphilitic Stillbirth,0.0
+Z5.5,2022Q1,Early Congenital Syphilis,0.0
+Z5.5,2022Q1,Syphilitic Stillbirth,0.0
+Z5.5,2022Q2,Early Congenital Syphilis,0.0
+Z5.5,2022Q2,Syphilitic Stillbirth,0.0
+Z5.5,2022Q3,Early Congenital Syphilis,0.0
+Z5.5,2022Q3,Syphilitic Stillbirth,0.0
+Z5.6,2019Q1,Early Congenital Syphilis,0.0
+Z5.6,2019Q1,Syphilitic Stillbirth,0.0
+Z5.6,2019Q2,Early Congenital Syphilis,0.0
+Z5.6,2019Q2,Syphilitic Stillbirth,0.0
+Z5.6,2019Q3,Early Congenital Syphilis,0.0
+Z5.6,2019Q3,Syphilitic Stillbirth,0.0
+Z5.6,2019Q4,Early Congenital Syphilis,0.0
+Z5.6,2019Q4,Syphilitic Stillbirth,0.0
+Z5.6,2020Q1,Early Congenital Syphilis,0.0
+Z5.6,2020Q1,Syphilitic Stillbirth,0.0
+Z5.6,2020Q2,Early Congenital Syphilis,0.0
+Z5.6,2020Q2,Syphilitic Stillbirth,0.0
+Z5.6,2020Q3,Early Congenital Syphilis,1.0
+Z5.6,2020Q3,Syphilitic Stillbirth,0.0
+Z5.6,2020Q4,Early Congenital Syphilis,0.0
+Z5.6,2020Q4,Syphilitic Stillbirth,0.0
+Z5.6,2021Q1,Early Congenital Syphilis,0.0
+Z5.6,2021Q1,Syphilitic Stillbirth,0.0
+Z5.6,2021Q2,Early Congenital Syphilis,0.0
+Z5.6,2021Q2,Syphilitic Stillbirth,0.0
+Z5.6,2021Q3,Early Congenital Syphilis,0.0
+Z5.6,2021Q3,Syphilitic Stillbirth,0.0
+Z5.6,2021Q4,Early Congenital Syphilis,1.0
+Z5.6,2021Q4,Syphilitic Stillbirth,0.0
+Z5.6,2022Q1,Early Congenital Syphilis,0.0
+Z5.6,2022Q1,Syphilitic Stillbirth,0.0
+Z5.6,2022Q2,Early Congenital Syphilis,0.0
+Z5.6,2022Q2,Syphilitic Stillbirth,0.0
+Z5.6,2022Q3,Early Congenital Syphilis,0.0
+Z5.6,2022Q3,Syphilitic Stillbirth,0.0
+Z5.7,2019Q1,Early Congenital Syphilis,0.0
+Z5.7,2019Q1,Syphilitic Stillbirth,0.0
+Z5.7,2019Q2,Early Congenital Syphilis,0.0
+Z5.7,2019Q2,Syphilitic Stillbirth,0.0
+Z5.7,2019Q3,Early Congenital Syphilis,0.0
+Z5.7,2019Q3,Syphilitic Stillbirth,0.0
+Z5.7,2019Q4,Early Congenital Syphilis,0.0
+Z5.7,2019Q4,Syphilitic Stillbirth,0.0
+Z5.7,2020Q1,Early Congenital Syphilis,0.0
+Z5.7,2020Q1,Syphilitic Stillbirth,0.0
+Z5.7,2020Q2,Early Congenital Syphilis,0.0
+Z5.7,2020Q2,Syphilitic Stillbirth,0.0
+Z5.7,2020Q3,Early Congenital Syphilis,0.0
+Z5.7,2020Q3,Syphilitic Stillbirth,0.0
+Z5.7,2020Q4,Early Congenital Syphilis,0.0
+Z5.7,2020Q4,Syphilitic Stillbirth,0.0
+Z5.7,2021Q1,Early Congenital Syphilis,1.0
+Z5.7,2021Q1,Syphilitic Stillbirth,0.0
+Z5.7,2021Q2,Early Congenital Syphilis,0.0
+Z5.7,2021Q2,Syphilitic Stillbirth,0.0
+Z5.7,2021Q3,Early Congenital Syphilis,0.0
+Z5.7,2021Q3,Syphilitic Stillbirth,0.0
+Z5.7,2021Q4,Early Congenital Syphilis,1.0
+Z5.7,2021Q4,Syphilitic Stillbirth,0.0
+Z5.7,2022Q1,Early Congenital Syphilis,1.0
+Z5.7,2022Q1,Syphilitic Stillbirth,0.0
+Z5.7,2022Q2,Early Congenital Syphilis,0.0
+Z5.7,2022Q2,Syphilitic Stillbirth,0.0
+Z5.7,2022Q3,Early Congenital Syphilis,1.0
+Z5.7,2022Q3,Syphilitic Stillbirth,0.0

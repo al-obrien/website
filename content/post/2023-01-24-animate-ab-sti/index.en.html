@@ -1,0 +1,273 @@
+---
+title: 'Animating STI trends in Alberta, Canada'
+author: al-obrien
+date: '2023-01-24'
+slug: animate-ab-sti
+categories: []
+tags:
+  - R
+  - geospatial
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2023-01-25T23:55:08-07:00'
+featured: no
+image:
+  caption: '[Photo by Reproductive Health Supplies Coalition on Unsplash](https://unsplash.com/@rhsupplies)'
+  focal_point: ''
+  preview_only: yes
+projects: []
+codefolding_show: hide
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<blockquote>
+<p>This post was created in addition to wider content presented for the Telus World of Science <a href="https://telusworldofscienceedmonton.ca/explore/experiences/?category=Event"><strong>Dark Matters</strong> event</a>.</p>
+</blockquote>
+<p>In the summer of 2019 Alberta declared a Syphilis outbreak, with reported cases exceeding 2,000 that year. Syphilis is not the only example of rising Sexually Transmitted Infections (STIs) in the province, gonorrhea is also on the rise. This information is publicly available online via <a href="http://www.ahw.gov.ab.ca/IHDA_Retrieval/">data portals</a> and <a href="https://open.alberta.ca/dataset/c6850032-20d3-4845-a465-568ed7e61b7c">reports</a>.</p>
+<div id="health-surveillance" class="section level2">
+<h2>Health Surveillance</h2>
+<p>Surveillance provides a critical function to the health care system by providing evidence and feedback on performance. Additionally, surveillance can leverage information from healthcare touch-points to understand population level trends. If we pause for a moment, we can appreciate the effort required to collect, organize, and deliver data. A basic example of how health information travels from primary care to surveillance systems is presented below.</p>
+<div class="figure">
+<img src="Generic_Alberta_Dataflows.png" alt="" />
+<p class="caption"><em>Health Data flow chart.</em></p>
+</div>
+<p>Now that we have a general understanding of health surveillance and how data flows across systems, let’s use some data from this process to create figures and identify STI trends! All figures created below are sourced from the aforementioned publicly accessible data in the Alberta <a href="http://www.ahw.gov.ab.ca/IHDA_Retrieval/"><em>Interactive Health Data Application</em></a>.</p>
+<blockquote>
+<p>For those interested, <strong>R</strong> code used to create the figures are included in the post but are hidden by default; select <em>show</em> to expose the code blocks.</p>
+</blockquote>
+<pre class="r"><code># Load libraries of interest
+library(sf)
+library(data.table)
+library(ggplot2)
+library(gganimate) # Have {av} installed as well for backend
+library(stringr)
+
+# Load annual STI data
+sti_annual &lt;- fread(&#39;sti_annual.csv&#39;)
+
+# Load Congenital Syphilis Q data
+cs_q &lt;- fread(&#39;cs_q.csv&#39;)
+
+# Load STI Q data
+sti_q &lt;- fread(&#39;sti_q_sz.csv&#39;)
+
+# Load Shape Files (previously saved as binary files after loading from sf::st_read())
+szone_shp &lt;- readRDS(&#39;szone_shp.rds&#39;) |&gt; rmapshaper::ms_simplify(.022, keep_shapes = T)</code></pre>
+</div>
+<div id="the-burn-returns" class="section level2">
+<h2>The burn returns…</h2>
+<p>Although the number of reported STIs has fluctuate since the turn of the century, recent years have exerpienced a sharp increase. Alberta recently exceeded a case rate of 70 and 100 per 100,000 for infectious syphilis and gonorrhea, respectively. The animation below highlights this trend…</p>
+<pre class="r"><code># Subset data from IHDA annual STI data
+sti_annual_subset &lt;- sti_annual[Geography == &#39;AB&#39; &amp; 
+                                Age == &#39;ALL&#39; &amp; # Keep only totals for age
+                                Sex == &#39;BOTH&#39; &amp; # Keep only totals for gender
+                                `Disease Name` %chin% c(&#39;Infectious syphilis&#39;,
+                                                        &#39;Gonorrhea&#39;,
+                                                        &#39;Non-infectious syphilis&#39;),]
+# Create static version of plot
+graph_rate &lt;- ggplot(data = sti_annual_subset, 
+                     mapping = aes(x = Year, y = `Crude Rate`, color = `Disease Name`)) +
+  geom_line() +
+  geom_point() +
+  theme_minimal() + 
+  theme(legend.position = &#39;top&#39;, 
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.title = element_blank()) +
+  scale_color_brewer(palette = &#39;Set1&#39;) +
+  ylab(&#39;Crude Rate (per 100k)&#39;) +
+  xlab(&#39;Year of Diagnosis&#39;)
+
+# Animate
+graph_rate_animated &lt;- animate(graph_rate + 
+                                 transition_reveal(Year) +
+                                 labs(caption = &quot;Year: {frame_along}&quot;),
+                               renderer = magick_renderer(),
+                               nframes = 200, 
+                               width = 850, height = 575, 
+                               res = 150)</code></pre>
+<div class="figure"><span id="fig:unnamed-chunk-1"></span>
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-1-1.gif" alt="Rates of gonorrhea and syphilis in Alberta from 2000 to 2021." width="100%" />
+<p class="caption">
+Figure 1: Rates of gonorrhea and syphilis in Alberta from 2000 to 2021.
+</p>
+</div>
+<p>Same figure again, but static…</p>
+<div class="figure"><span id="fig:unnamed-chunk-2"></span>
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-2-1.png" alt="Rates of gonorrhea and syphilis in Alberta from 2000 to 2021." width="100%" />
+<p class="caption">
+Figure 2: Rates of gonorrhea and syphilis in Alberta from 2000 to 2021.
+</p>
+</div>
+</div>
+<div id="demographic-transitions" class="section level2">
+<h2>Demographic transitions</h2>
+<p>We can also observe a clear transition in the proportion of cases among age groups and between genders over the last two decades. Most notably, you can see the proportion of females making up a larger fraction of reported infectious syphilis cases in recent years. This raises concerns about subsequent increases in congenital syphilis for women of child-bearing age.</p>
+<pre class="r"><code># Subset data from IHDA annual STI data
+sti_annual_subset_ag &lt;- sti_annual[Geography == &#39;AB&#39; &amp; 
+                                   Age != &#39;ALL&#39; &amp; 
+                                   Sex != &#39;BOTH&#39; &amp;  
+                                  `Disease Name` %chin% c(&#39;Infectious syphilis&#39;,
+                                                          &#39;Gonorrhea&#39;),]
+
+# Merge in totals, assign better names after merge step
+sti_annual_subset_ag &lt;- sti_annual_subset[,c(&#39;Disease Name&#39;, &#39;Year&#39;, &#39;Cases&#39;)
+                                          ][sti_annual_subset_ag, on = c(&#39;Disease Name&#39;, &#39;Year&#39;)]
+
+setnames(sti_annual_subset_ag, c(&#39;i.Cases&#39;, &#39;Cases&#39;), c(&#39;Cases&#39;, &#39;Total Cases&#39;))
+
+# Calculate prop
+sti_annual_subset_ag[, Proportion := round(100 * Cases / `Total Cases`, 2)]
+
+# Change Category names
+sti_annual_subset_ag[, Sex := str_to_title(Sex)]
+
+# Create static age gender plot for 2015 and 2021
+age_group_plot_static &lt;- lapply(c(2015, 2021),
+                                function(x) {
+                                  ggplot(sti_annual_subset_ag[Year == x], 
+                                         aes(Age, Proportion, fill = Sex)) +
+                                    geom_col() +
+                                    facet_wrap(~`Disease Name`) +
+                                    ylab(&#39;Proportion of cases&#39;) +
+                                    theme_minimal() + 
+                                    theme(legend.position = &#39;top&#39;, 
+                                          legend.title = element_blank(),
+                                          panel.grid.major.x = element_blank(),
+                                          axis.text.x = element_text(angle = -90, vjust = 0.5)) +
+                                    scale_fill_brewer(palette = &#39;Set1&#39;) +
+                                    labs(caption = paste0(&quot;Year: &quot;, x))
+                                }
+                              )
+
+
+# Create animated plot for all years available
+age_group_plot_animated &lt;- ggplot(sti_annual_subset_ag, 
+                         aes(Age, Proportion, fill = Sex)) + 
+  geom_col() +
+  facet_wrap(~`Disease Name`) +
+  theme_minimal() + 
+  theme(legend.position = &#39;top&#39;, 
+        panel.grid.major.x = element_blank(),
+        legend.title = element_blank(),
+        axis.text.x = element_text(angle = -90, vjust = 0.5)) +
+  scale_fill_brewer(palette = &#39;Set1&#39;) +
+  transition_time(Year) +
+  labs(caption = &quot;Year: {frame_time}&quot;)
+  
+age_group_plot_animated &lt;- animate(age_group_plot_animated,
+                                   nframes = 200, 
+                                   renderer = magick_renderer(),
+                                   width = 850, height = 675, 
+                                   res = 150)</code></pre>
+<div class="figure"><span id="fig:unnamed-chunk-3"></span>
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.gif" alt="Propotion of cases in Alberta by disease by age and gender from 2000 to 2021." width="100%" />
+<p class="caption">
+Figure 3: Propotion of cases in Alberta by disease by age and gender from 2000 to 2021.
+</p>
+</div>
+<div class="figure"><span id="fig:unnamed-chunk-4"></span>
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-4-1.png" alt="Propotion of cases in Alberta by disease by age and gender for **2015**." width="100%" />
+<p class="caption">
+Figure 4: Propotion of cases in Alberta by disease by age and gender for <strong>2015</strong>.
+</p>
+</div>
+<div class="figure"><span id="fig:unnamed-chunk-5"></span>
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-5-1.png" alt="Propotion of cases in Alberta by disease by age and gender for **2021**." width="100%" />
+<p class="caption">
+Figure 5: Propotion of cases in Alberta by disease by age and gender for <strong>2021</strong>.
+</p>
+</div>
+</div>
+<div id="geospatial-trends-over-time" class="section level2">
+<h2>Geospatial trends over time</h2>
+<p>To understand the spread of STIs, we can use the preliminary quarterly data by Sub-Zone (Alberta Health Service regions that divide Alberta into 35 areas). The animated maps below show case counts for gonorrhea, infectious syphilis, and congenital syphilis since 2019. Pay attention to the region size as well as legend scale across each map.</p>
+<pre class="r"><code># Congential syphilis by sub-zone and yearly quarter
+cs_q_map_data &lt;- cs_q[, .(&#39;Cases (n)&#39; = sum(`Case Counts`)), by = .(Geography, Year)
+                      ][!Geography %chin% c(&#39;AB&#39;, paste0(&#39;Z&#39;, 1:5))]
+cs_q_map_data[, &#39;Disease Name&#39; := &#39;Congenital Syphilis&#39;]
+
+# Other STIs by sub-zone and yearly quarter
+sti_q_map_data &lt;- sti_q[Age == &#39;ALL&#39; &amp;
+                        Sex == &#39;BOTH&#39; &amp;
+                        `Disease Name` %chin% c(&#39;Infectious Syphilis&#39;, &#39;Non-infectious Syphilis&#39;, &#39;Gonorrhea&#39;),
+                        .(&#39;Cases (n)&#39; = sum(`Case Counts`)), 
+                        by = .(Geography, Year, `Disease Name`)]
+
+# Combine all STI data together
+sti_q_map_data &lt;- rbindlist(list(sti_q_map_data, cs_q_map_data), use.names = TRUE)
+
+# Create factor from quarters
+sti_q_map_data &lt;- sti_q_map_data[, Date := factor(Year)]
+sti_q_map_data[`Cases (n)` == 0, `Cases (n)`:= NA_real_]
+
+# Link to shp file
+sti_q_shp &lt;- merge(szone_shp, 
+                   sti_q_map_data,
+                   by.y = &#39;Geography&#39;,
+                   by.x = &#39;SZONE_CODE&#39;)
+
+# Create list of animated STI plots
+color_pal &lt;- rev(RColorBrewer::brewer.pal(n = 11, name = &#39;RdYlGn&#39;))[c(3,5,7,9,10,11)]
+sti_map_list &lt;- lapply(unique(sti_q_shp$`Disease Name`),
+                       function(x) {
+                         ggplot(subset(sti_q_shp, `Disease Name` == x),
+                                aes(fill = `Cases (n)`)) +
+                           geom_sf() +
+                           scale_fill_gradientn(colours = color_pal, na.value = &#39;lightgrey&#39;, limits=c(1, NA)) +
+                           scale_x_continuous(expand=c(0,0)) +
+                           scale_y_continuous(expand=c(0,0)) +
+                           theme_void() +
+                           theme(plot.title = element_text(hjust = 0.5, face = &#39;bold&#39;, margin = margin(b = 3)),
+                                 plot.margin=grid::unit(c(1,0,0,0), &quot;mm&quot;),
+                                 plot.background = element_blank(), 
+                                 panel.background = element_blank(),
+                                 strip.background = element_rect(fill = &#39;#00aad2&#39;,
+                                                                 color = &#39;white&#39;),
+                                 strip.text = element_text(color = &#39;white&#39;, 
+                                                           face = &#39;bold&#39;,
+                                                           margin = margin(t = 4, b = 4))) +
+                           transition_states(Date) +
+                           labs(caption = &quot;Yearly Quarter: {closest_state}&quot;, title = x)
+                       })
+
+# Create the animations for each disease
+sti_map_list &lt;- lapply(sti_map_list, function(x) animate(x,
+                                                         renderer = magick_renderer(),
+                                                         nframes = 150,
+                                                         width = 475,
+                                                         height = 750, 
+                                                         res = 150))</code></pre>
+<p>The majority of gonorrhea cases, unsurprisingly, are in metropolitan areas. However, there are upticks in several northern regions.</p>
+<div class="figure"><span id="fig:unnamed-chunk-7"></span>
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-7-1.gif" alt="Case counts of gonorrhea by quarter from 2019 to 2022. Grey represents 0 cases."  />
+<p class="caption">
+Figure 6: Case counts of gonorrhea by quarter from 2019 to 2022. Grey represents 0 cases.
+</p>
+</div>
+<p>The trends for infectious syphilis are similar to gonorrhea, though more pronounced. We also observe congenital syphilis cases reported both in large cities as well as many rural areas (especially in the North).</p>
+<div class="figure"><span id="fig:unnamed-chunk-8"></span>
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-8-1.gif" alt="Case counts of infectious syphilis by quarter from 2019 to 2022. Grey represents 0 cases."  />
+<p class="caption">
+Figure 7: Case counts of infectious syphilis by quarter from 2019 to 2022. Grey represents 0 cases.
+</p>
+</div>
+<div class="figure"><span id="fig:unnamed-chunk-9"></span>
+<img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-9-1.gif" alt="Case counts of congenital syphilis by quarter from 2019 to 2022. Grey represents 0 cases."  />
+<p class="caption">
+Figure 8: Case counts of congenital syphilis by quarter from 2019 to 2022. Grey represents 0 cases.
+</p>
+</div>
+</div>
+<div id="resources" class="section level2">
+<h2>Resources</h2>
+<ol style="list-style-type: decimal">
+<li><a href="https://open.alberta.ca/dataset/c6850032-20d3-4845-a465-568ed7e61b7c">Alberta STI &amp; HIV Annual Reports</a></li>
+<li><a href="http://www.ahw.gov.ab.ca/IHDA_Retrieval/">Alberta Health Data</a></li>
+<li><a href="https://www.canada.ca/en/public-health/services/infectious-diseases/sexual-health-sexually-transmitted-infections/reports-publications.html">Federal STI Reports</a></li>
+<li><a href="https://gganimate.com/">Animating ggplot2</a></li>
+</ol>
+</div>
