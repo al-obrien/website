@@ -32,7 +32,7 @@ In the summer of 2019 Alberta declared a Syphilis outbreak, with reported cases 
 
 Surveillance provides a critical function to the health care system by providing evidence and feedback on performance. Additionally, surveillance can leverage information from healthcare touch-points to understand population level trends. If we pause for a moment, we can appreciate the effort required to collect, organize, and deliver data. A basic example of how health information travels from primary care to surveillance systems is presented below.
 
-![*Health Data flow chart.*](Generic_Alberta_Dataflows.png)
+![*Health data flow chart.*](Generic_Alberta_Dataflows.png)
 
 Now that we have a general understanding of health surveillance and how data flows across systems, let's use some data from this process to create figures and identify STI trends! All figures created below are sourced from the aforementioned publicly accessible data in the Alberta [*Interactive Health Data Application*](http://www.ahw.gov.ab.ca/IHDA_Retrieval/).
 
