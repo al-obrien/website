@@ -10,7 +10,7 @@ tags:
   - brms
   - STAN
   - simulation
-summary: ''
+summary: 'This post is is the first of two parts. The focus here is on introducing a scenario and generating a simulated dataset, which is subsequently used for Bayesian interrupted time series modeling'
 authors: []
 lastmod: '2023-04-23T17:55:41-06:00'
 featured: no
@@ -22,7 +22,7 @@ projects: []
 codefolding_show: show
 ---
 
-```{css, echo = FALSE, include = FALSE}
+```{css, echo = FALSE, include = TRUE}
 /* Allow long formulas to have a scroll bar added */
 mjx-container {
   overflow-x: auto;
