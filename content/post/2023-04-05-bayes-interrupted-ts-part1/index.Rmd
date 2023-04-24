@@ -178,7 +178,7 @@ custom_harmonic <- function(steps = 1:12, k = 1, sinA = 1 , cosA = 1, period = 1
 
 <img src="https://media.giphy.com/media/kc0kqKNFu7v35gPkwB/giphy.gif"/>
 
-At this point you may be asking yourself, "how did we got down a rabbit hole on Fourier series?" Take comfort that the details, in this case, do not really matter. The main idea is we just want to decide on a pattern for seasonality and we are spoiled for choice. After we plot some of the available options using the helper functions it will become clearer. Below we look at four possible options.
+At this point you may be asking yourself, "how did we get down a rabbit hole on Fourier series?" Take comfort that the details, in this case, do not really matter. The main idea is we just want to decide on a pattern for seasonality and we are spoiled for choice. After we plot some of the available options using the helper functions it will become clearer. Below we look at four possible options.
 
 ```{r, fig.cap= 'Possible patterns of the seasonal trend influencing case rates.'}
 # Higher resolution time for a smoother curve

@@ -152,7 +152,7 @@ custom_harmonic &lt;- function(steps = 1:12, k = 1, sinA = 1 , cosA = 1, period 
   return(rowSums(sin_v + cos_v))
 }</code></pre>
 <p><img src="https://media.giphy.com/media/kc0kqKNFu7v35gPkwB/giphy.gif"/></p>
-<p>At this point you may be asking yourself, “how did we got down a rabbit hole on Fourier series?” Take comfort that the details, in this case, do not really matter. The main idea is we just want to decide on a pattern for seasonality and we are spoiled for choice. After we plot some of the available options using the helper functions it will become clearer. Below we look at four possible options.</p>
+<p>At this point you may be asking yourself, “how did we get down a rabbit hole on Fourier series?” Take comfort that the details, in this case, do not really matter. The main idea is we just want to decide on a pattern for seasonality and we are spoiled for choice. After we plot some of the available options using the helper functions it will become clearer. Below we look at four possible options.</p>
 <pre class="r"><code># Higher resolution time for a smoother curve
 time_steps &lt;- sort(months_int_v)
 time_steps &lt;- seq(time_steps[1], time_steps[12], by = 0.1)
