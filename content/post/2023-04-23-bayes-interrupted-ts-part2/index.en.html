@@ -39,7 +39,7 @@ mjx-container {
 </blockquote>
 <div id="recap" class="section level2">
 <h2>Recap</h2>
-<p>In this post we continue our journey using Bayesian Interrupted Time Series (ITS) analysis to understand the impact of <em>Drug X</em> on a novel infection. Previously, we prepared a simulated dataset depicting a disease intervention scenario. By creating the dataset, we know the generative process which makes it easier to understand how well various models will fit to the data sample. If you missed the first post and are interested in how the data for this part was simulated, you can jump there <a href="post/bayes-interrupted-ts-part1/">now</a>. If not, let us proceed with Bayesian modelling! As before, we will first set our seed variable and load some necessary libraries.</p>
+<p>In this post we continue our journey using Bayesian Interrupted Time Series (ITS) analysis to understand the impact of <em>Drug X</em> on a novel infection. Previously, we prepared a simulated dataset depicting a disease intervention scenario. By creating the dataset, we know the generative process which makes it easier to understand how well various models will fit to the data sample. If you missed the first post and are interested in how the data for this part was simulated, you can jump there <a href="/post/bayes-interrupted-ts-part1/">now</a>. If not, let us proceed with Bayesian modelling! As before, we will first set our seed variable and load some necessary libraries.</p>
 <pre class="r"><code># Assign seed for R and to later BRM fits
 seed_value &lt;- 145
 set.seed(seed_value)
@@ -695,7 +695,7 @@ Figure 14: Distribution of posterior samples of the level parameter model_level_
 </div>
 <div id="compare-predictions" class="section level2">
 <h2>Compare predictions</h2>
-<p>We have come quite a long way and we may have forgotten that our dataset was simulated from a known set of values. Now we will have the chance to see how well our preferred model (<code>model_level_slope_season_s</code>) estimated the actual generative process. If you have forgotten what that was, feel free to take a peek in the <a href="post/bayes-interrupted-ts-part1/#simulate-outcome-cases">previous post</a>.</p>
+<p>We have come quite a long way and we may have forgotten that our dataset was simulated from a known set of values. Now we will have the chance to see how well our preferred model (<code>model_level_slope_season_s</code>) estimated the actual generative process. If you have forgotten what that was, feel free to take a peek in the <a href="/post/bayes-interrupted-ts-part1/#simulate-outcome-cases">previous post</a>.</p>
 <p>In an <a href="#posterior-predictive-checks">earlier section</a>, we already had a look at how <code>model_level_slope_season_s</code> estimated seasonal effects. Although not perfect, it did pick up the dip in Summer and rise in Autumn.</p>
 <p>We also want to know how well this model estimated the main trend, level change, and slope change following the intervention. Again, the model is not perfect, but it does get quite close!</p>
 <pre class="r"><code>knitr::kable(data.frame(Parameter = c(&#39;alpha (Intercept)&#39;, &#39;main_trend&#39;, &#39;event_trend (slope)&#39;, &#39;after_trend (level)&#39;),

@@ -73,7 +73,7 @@ ggplot_its_pred <- function(plot) {
 
 ## Recap
 
-In this post we continue our journey using Bayesian Interrupted Time Series (ITS) analysis to understand the impact of *Drug X* on a novel infection. Previously, we prepared a simulated dataset depicting a disease intervention scenario. By creating the dataset, we know the generative process which makes it easier to understand how well various models will fit to the data sample. If you missed the first post and are interested in how the data for this part was simulated, you can jump there [now](post/bayes-interrupted-ts-part1/). If not, let us proceed with Bayesian modelling! As before, we will first set our seed variable and load some necessary libraries. 
+In this post we continue our journey using Bayesian Interrupted Time Series (ITS) analysis to understand the impact of *Drug X* on a novel infection. Previously, we prepared a simulated dataset depicting a disease intervention scenario. By creating the dataset, we know the generative process which makes it easier to understand how well various models will fit to the data sample. If you missed the first post and are interested in how the data for this part was simulated, you can jump there [now](/post/bayes-interrupted-ts-part1/). If not, let us proceed with Bayesian modelling! As before, we will first set our seed variable and load some necessary libraries. 
 
 ```{r}
 # Assign seed for R and to later BRM fits
@@ -734,7 +734,7 @@ abline(v = 0, col = 'grey20', lty = 'dashed')
 
 ## Compare predictions 
 
-We have come quite a long way and we may have forgotten that our dataset was simulated from a known set of values. Now we will have the chance to see how well our preferred model (`model_level_slope_season_s`) estimated the actual generative process. If you have forgotten what that was, feel free to take a peek in the [previous post](post/bayes-interrupted-ts-part1/#simulate-outcome-cases). 
+We have come quite a long way and we may have forgotten that our dataset was simulated from a known set of values. Now we will have the chance to see how well our preferred model (`model_level_slope_season_s`) estimated the actual generative process. If you have forgotten what that was, feel free to take a peek in the [previous post](/post/bayes-interrupted-ts-part1/#simulate-outcome-cases). 
 
 In an [earlier section](#posterior-predictive-checks), we already had a look at how `model_level_slope_season_s` estimated seasonal effects. Although not perfect, it did pick up the dip in Summer and rise in Autumn. 
 
