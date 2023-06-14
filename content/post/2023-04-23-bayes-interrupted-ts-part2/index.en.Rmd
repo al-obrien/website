@@ -389,7 +389,7 @@ plotB <- as.data.frame(predict(model_time_season, probs = c(0.05, 0.95))) |>
 gridExtra::grid.arrange(plotA, plotB, nrow = 2)
 ```
 
-Without considering any other factors, the first model with just `time` as a predictor does not perform well, expecting a slow decrease in cases. The second model with `month` included fairs a bit better, capturing some of the seasonal components. The performance of both models is, as expected, poor. This is in part due to the lack of information about the intervention and its influence on case counts.  
+Without considering any other factors, the first model with just `time` as a predictor does not perform well, expecting a slow decrease in cases. The second model with `month` included fares a bit better, capturing some of the seasonal components. The performance of both models is, as expected, poor. This is in part due to the lack of information about the intervention and its influence on case counts.  
 
 ### Compare impact models
 
@@ -686,7 +686,7 @@ compare_table <- readRDS('compare_table.rds')
 compare_table
 ```
 
-The results of the comparison are in reference to the model with the highest **ELPD**. After seeing the earlier plots, it is probably unsurprising that the best fit is `model_level_slope_season_s`, which has the spline term for seasonal effects. 
+The results of the comparison are in reference to the model with the highest **ELPD**. After seeing the earlier plots and excluding the AR model, it is probably unsurprising that the best fit is `model_level_slope_season_s`, which has the spline term for seasonal effects. 
 
 ## Hypothesis testing
 

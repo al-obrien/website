@@ -212,7 +212,7 @@ gridExtra::grid.arrange(plotA, plotB, nrow = 2)</code></pre>
 Figure 3: Compare dataset to predictions sampled from the posterior distribution of each model. Panel A shows values for the time-only model, whereas panel B shows results from the time and month model.
 </p>
 </div>
-<p>Without considering any other factors, the first model with just <code>time</code> as a predictor does not perform well, expecting a slow decrease in cases. The second model with <code>month</code> included fairs a bit better, capturing some of the seasonal components. The performance of both models is, as expected, poor. This is in part due to the lack of information about the intervention and its influence on case counts.</p>
+<p>Without considering any other factors, the first model with just <code>time</code> as a predictor does not perform well, expecting a slow decrease in cases. The second model with <code>month</code> included fares a bit better, capturing some of the seasonal components. The performance of both models is, as expected, poor. This is in part due to the lack of information about the intervention and its influence on case counts.</p>
 </div>
 <div id="compare-impact-models" class="section level3">
 <h3>Compare impact models</h3>
@@ -556,7 +556,7 @@ compare_table</code></pre>
 ## model_level                 -367.2      73.4 
 ## model_time                  -464.6     114.8 
 ## model_null                  -472.8     116.8</code></pre>
-<p>The results of the comparison are in reference to the model with the highest <strong>ELPD</strong>. After seeing the earlier plots, it is probably unsurprising that the best fit is <code>model_level_slope_season_s</code>, which has the spline term for seasonal effects.</p>
+<p>The results of the comparison are in reference to the model with the highest <strong>ELPD</strong>. After seeing the earlier plots and excluding the AR model, it is probably unsurprising that the best fit is <code>model_level_slope_season_s</code>, which has the spline term for seasonal effects.</p>
 </div>
 <div id="hypothesis-testing" class="section level2">
 <h2>Hypothesis testing</h2>
