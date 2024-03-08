@@ -30,7 +30,7 @@ social:
   link: https://www.linkedin.com/in/allen-o-brien-25763382/?originalSubdomain=ca
 - icon: google-scholar
   icon_pack: ai
-  link: https://scholar.google.com/citations?user=ExLNVw8AAAAJ&hl=en&oi=aoJ
+  link: https://scholar.google.com/citations?user=evm1i3MAAAAJ&hl=en
 - icon: github
   icon_pack: fab
   link: https://github.com/al-obrien/website
