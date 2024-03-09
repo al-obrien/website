@@ -29,7 +29,7 @@ This post is a kind reminder to myself that, in many scenarios, it is easy to im
 
 The following example may not have great practical utility, nor be it the most optimized, but it does a good job showcasing the similarities between raw R and code written with Rcpp.
 
-Imagine for the moment you are a data analyst that has been provided a vector of data. You want to perform a selective operation based upon the values in this vector. The values above zero will undergo a square root, whereas those zero and below will be raised to the power of two and then square rooted. As a piece-wise function in math jargon, this looks like:
+Imagine for the moment you are a data analyst who has been provided a vector of data. You want to perform a selective operation based upon the values in this vector. The values above zero will undergo a square root, whereas those zero and below will be raised to the power of two and then square rooted. As a piece-wise function in math jargon, this looks like:
 
 $$
 f(x) = \begin{cases}
@@ -38,7 +38,7 @@ f(x) = \begin{cases}
 \end{cases}
 $$
 
-However, you are uncertain as to what coding approach is most efficient and want to test out some options. Before we start defining the functions we must first must load some packages and set the seed...
+However, you are uncertain as to what coding approach is most efficient and want to test out some options. Before we start defining the functions we must first load some packages and set the seed...
 ```{r, warning=FALSE}
 set.seed(9054)
 library(Rcpp)

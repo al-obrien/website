@@ -30,14 +30,14 @@ projects: []
 <div id="example" class="section level2">
 <h2>Example</h2>
 <p>The following example may not have great practical utility, nor be it the most optimized, but it does a good job showcasing the similarities between raw R and code written with Rcpp.</p>
-<p>Imagine for the moment you are a data analyst that has been provided a vector of data. You want to perform a selective operation based upon the values in this vector. The values above zero will undergo a square root, whereas those zero and below will be raised to the power of two and then square rooted. As a piece-wise function in math jargon, this looks like:</p>
+<p>Imagine for the moment you are a data analyst who has been provided a vector of data. You want to perform a selective operation based upon the values in this vector. The values above zero will undergo a square root, whereas those zero and below will be raised to the power of two and then square rooted. As a piece-wise function in math jargon, this looks like:</p>
 <p><span class="math display">\[
 f(x) = \begin{cases}
 \sqrt{x} &amp; :  x &gt; 0 \\
 \sqrt{x^2} &amp; : x \leq 0 \\
 \end{cases}
 \]</span></p>
-<p>However, you are uncertain as to what coding approach is most efficient and want to test out some options. Before we start defining the functions we must first must load some packages and set the seed…</p>
+<p>However, you are uncertain as to what coding approach is most efficient and want to test out some options. Before we start defining the functions we must first load some packages and set the seed…</p>
 <pre class="r"><code>set.seed(9054)
 library(Rcpp)
 library(microbenchmark)
@@ -134,11 +134,11 @@ cpp_benchmark &lt;- microbenchmark(rcpp = rcpp_loop(my_vec),
 print(cpp_benchmark, order = &#39;median&#39;)</code></pre>
 <pre><code>## Unit: microseconds
 ##       expr    min     lq      mean  median     uq     max neval
-##       rcpp  418.6  434.5  508.5652  445.30  513.1  3750.1   250
-##  r_fifelse 1748.3 1855.5 2214.8552 1919.60 2116.7 11512.0   250
-##      r_vec 2038.9 2139.8 2964.0936 2212.00 2767.7 47931.1   250
-##   r_ifelse 2849.8 3014.2 3810.2104 3156.25 3915.4 11845.0   250
-##     r_loop 7677.6 7740.0 7844.0692 7804.55 7863.4 10247.0   250</code></pre>
+##       rcpp  421.0  445.3  541.5432  474.65  525.5  4442.3   250
+##  r_fifelse 1712.2 1867.1 2265.2816 1974.15 2152.8  7827.6   250
+##      r_vec 2079.3 2268.6 3243.7660 2617.30 2919.8 55034.8   250
+##   r_ifelse 2904.2 3174.9 4144.4700 3744.00 4076.6  9514.2   250
+##     r_loop 7694.0 7819.9 7956.5692 7893.70 7981.9 10615.7   250</code></pre>
 <p>When sorted by the median run time across replications for each function we get a range from ~500 microseconds to ~8000 microseconds. Although the table is nice, it is easier to see the differences between replications and each function when presented in a plot.</p>
 <pre class="r"><code>boxplot(cpp_benchmark, log = TRUE, outline = TRUE)</code></pre>
 <div class="figure"><span id="fig:unnamed-chunk-6"></span>
