@@ -79,7 +79,7 @@ rmarkdown::paged_table(data_trmt[,"text", drop = FALSE], options = list(rownames
 
 ## Saying hello to a Llama
 
-With this dataset, we want to summarise the treatment details and extract specific information about **drugs used as well as their dosage and frequency**. First, we grab an open source model: *llama3.2:latest*. At time of writing this is (relatively) new model that is neither too big nor too small and in its description is suitable for instruction following and summarization.
+With this dataset, we want to summarise the treatment details and extract specific information about **drugs used as well as their dosage and frequency**. First, we grab an open source model: *llama3.2:latest*. At time of writing this is a (relatively) new model that is neither too big nor too small and, in its description, is suitable for instruction following and summarization.
 
 ```{r, eval = FALSE}
 pull('llama3.2')

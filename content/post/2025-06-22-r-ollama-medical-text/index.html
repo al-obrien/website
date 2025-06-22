@@ -75,7 +75,7 @@ rmarkdown::paged_table(data_trmt[,&quot;text&quot;, drop = FALSE], options = lis
 </div>
 <div id="saying-hello-to-a-llama" class="section level2">
 <h2>Saying hello to a Llama</h2>
-<p>With this dataset, we want to summarise the treatment details and extract specific information about <strong>drugs used as well as their dosage and frequency</strong>. First, we grab an open source model: <em>llama3.2:latest</em>. At time of writing this is (relatively) new model that is neither too big nor too small and in its description is suitable for instruction following and summarization.</p>
+<p>With this dataset, we want to summarise the treatment details and extract specific information about <strong>drugs used as well as their dosage and frequency</strong>. First, we grab an open source model: <em>llama3.2:latest</em>. At time of writing this is a (relatively) new model that is neither too big nor too small and, in its description, is suitable for instruction following and summarization.</p>
 <pre class="r"><code>pull(&#39;llama3.2&#39;)</code></pre>
 <p>Now we make sure the model is listed and we can connect to it.</p>
 <pre class="r"><code>list_models()
