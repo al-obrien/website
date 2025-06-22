@@ -1,0 +1,100 @@
+row_id,DRUG,DOSE,FREQ,text
+1,amoxicillin,875mg,qd 7 days,amoxi clave 875 mg for 7 days
+2,valacyclovir,1g,BID for 10 days,valacyclovir 1 g PO BID for 10 days (A-I)
+3,,,,"Attempted contact, but could not locate"
+4,,,,See notes
+5,ceftriaxone,250 mg,single,ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII)
+5,azithromycin,1 g,single,ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII)
+6,benzathine penicillin g,2.4 mu,single dose,Long-acting benzathine penicillin G 2.4 mu (Bicillin L-A) IM as a single dose (A-II;C-II for HIV-infected)
+7,azithromycin,2g,single,azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)
+7,gemifloxacin,320mg,single,azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)
+8,benzathine penicillin g,2.4 mu,weekly,Long-acting benzathine penicillin G 2.4 mu (Bicillin L-A) IM weekly for 3 consecutive weeks (A-II)
+9,azithromycin,2g,single dose,azithromycin* 2 g PO as a single dose (AI) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+9,gentamicin,240mg,separate 3-mL injections,azithromycin* 2 g PO as a single dose (AI) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+10,azithromycin,,,"Due to resistance to azithromycin, was not provided as monothearpy, was provided in addition to gentamicin"
+10,gentamicin,,,"Due to resistance to azithromycin, was not provided as monothearpy, was provided in addition to gentamicin"
+11,azithromycin,2g,single,azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (BII)
+11,gemifloxacin,320mg,single,azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (BII)
+12,azithromycin,1g,single,azithromycin 1 g PO as a single dose (A-I; AII for eye)
+13,blue pill,,,A handfull of blue pills
+14,cefixime,800mg,single,cefixime 800 mg PO as a single dose (A-I) PLUS azithromycin 1g PO as a single dose (BII)
+14,azithromycin,1g,single,cefixime 800 mg PO as a single dose (A-I) PLUS azithromycin 1g PO as a single dose (BII)
+15,,,,Was treated out of province
+16,famciclovir,250mg,bid,famciclovir 250 mg PO BID (A-I)
+17,doxycycline,100mg,BID for 7 days,doxycycline 100 mg PO BID for 7 days (A-I; A-II for eye)
+18,acyclovir,400mg,tid,acyclovir 400 mg PO TID for 7-10 days (A-III)
+19,amoxicillin,500mg,tid,amoxicillin 500 mg PO TID for 7 days (A-I)
+20,azithromycin,2g,single,azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)
+20,gemifloxacin,320mg,single,azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)
+21,penicillin g,4 mu,q4h,crystalline penicillin G 4 mu IV q4h for 10-14 days (A-II)
+22,cefixime,800mg,single dose,cefixime 800 mg PO as a single dose (A-l) PLUS azithromycin 1 g PO as a single dose (BII)
+22,azithromycin,1g,single dose,cefixime 800 mg PO as a single dose (A-l) PLUS azithromycin 1 g PO as a single dose (BII)
+23,azithromycin,2g,single dose,azithromycin* 2 g PO as a single dose (A-I) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+23,gentamicin,240mg,separate 3-mL injections,azithromycin* 2 g PO as a single dose (A-I) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+24,ciprofloxacin,500mg,BID,cipro 500 bid x 1 wk
+25,levofloxacin,unknown,,levofloxacin dose unknown
+26,acyclovir,400mg,tid,acyclovir 400 mg PO TID initiated at 36 weeks until parturition (A-I)
+27,moxifloxacin,400mg,daily,moxifloxacin 400 mg po daily
+28,benzathine penicillin g,2.4 mu,weekly,Long-acting benzathine penicillin G 2.4 mu (Bicillin L-A) IM weekly for 2 doses (C-III)
+29,acyclovir,400mg,BID,acyclovir 400 mg PO BID (A-I)
+30,doxycycline,100mg,BID,doxycycline 100 mg PO BID for 7 days (A-I)
+31,valacyclovir,500mg,bid,valacyclovir 500 mg PO BID initiated at 36 weeks until parturition (B-I)
+32,unknown,,,unknown medication provided
+33,doxycycline,250mg,,doxycycline 250mg + cefixime 800mg
+33,cefixime,800mg,,doxycycline 250mg + cefixime 800mg
+34,cefixime,800mg,single,cefxime 800 mg single dose PLUS azith 1g as a single dose
+34,azithromycin,1g,single,cefxime 800 mg single dose PLUS azith 1g as a single dose
+35,azithromycin,1g,single,azithromycin* 1 g PO as a single dose (B-I)
+36,moxifloxacin,0.5% 1 drop,qh,moxifloxacin 0.5% 1 drop os every hour x 1 day
+37,valacyclovir,500 mg,BID,valacyclovir 500 mg PO BID for 3 days (B-I)
+37,NA,NA,for 3 days,valacyclovir 500 mg PO BID for 3 days (B-I)
+38,,,,No treatment was provided
+39,,,,Trmt given OOP
+40,azithromycin,2 g,single dose,azithromycin* 2 g PO as a single dose (A-I) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+40,gentamicin,240 mg,separate 3-mL injections,azithromycin* 2 g PO as a single dose (A-I) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+41,famciclovir,125mg,bid,famciclovir 125 mg PO BID for 5 days (B-I)
+42,,,,unable to recall
+43,doxycycline,100.000,,drugs: doxycycline dose: 100.000 dose unit
+44,bicillin,,,refused bicillin treatment
+45,peng,2.4 mu,,peng 2.4 mu
+46,,,,treatment received
+47,cefixime,400mg,qd,cefixime 400 mg po qd x 7 days
+48,valacyclovir,"500mg, 1g","BID, QD",valacyclovir 500 mg PO BID or 1 g PO QD (AI) [for patients with > 9 recurrences per year]
+49,azithromycin,2g,single,azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)
+49,gemifloxacin,320mg,single,azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)
+50,ceftriaxone,250 mg,single dose,"ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII), (B-III for pharyngeal infections)"
+50,azithromycin,1 g,B-III for pharyngeal infections,"ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII), (B-III for pharyngeal infections)"
+51,,,,Lost to follow up
+52,azithromycin,2g,,azithromycin* 2 g PO as a single dose (AI) PLUS gentamicin 240 mg IM in 2 separate 3 mL injections of 40 mg/mL solution (B-II)
+52,gentamicin,240mg,,azithromycin* 2 g PO as a single dose (AI) PLUS gentamicin 240 mg IM in 2 separate 3 mL injections of 40 mg/mL solution (B-II)
+53,azithromycin,1g,single,azithromycin 1 g PO as a single dose (A-II)
+54,azithromycin,,,? azithromycin
+55,white pill,,,Six white and two blue pills
+55,blue pill,,,Six white and two blue pills
+56,valacyclovir,500mg,qd,valacyclovir 500 mg PO QD (A-I) [for patients with < 9 recurrences per year]
+57,ceftriaxone,2g,single dose,ceftriaxone 2 g IV/IM as a single dose (A-II) PLUS azithromycin 1 g PO as a single dose (BII)
+57,azithromycin,1g,single dose,ceftriaxone 2 g IV/IM as a single dose (A-II) PLUS azithromycin 1 g PO as a single dose (BII)
+58,doxycycline,100mg,BID,doxycycline 100 mg PO BID for 7 days (A-II)
+59,doxycycline,100mg,bid for 14 days,doxycycline 100 mg PO BID for 14 days (B-II; C-III for HIV-infected)
+60,acyclovir,800mg,tid x 2 days,acyclovir 800 mg PO TID x 2 days
+61,,,,cream given
+62,cefixime,800 mg,single,"cefixime 800 mg PO as a single dose (A-l for MSM, B-III for pharyngeal infections) PLUS azithromycin 1 g PO as a single dose (B-II for MSM), (B-III) for pharyngeal infections"
+62,azithromycin,1 g,single,"cefixime 800 mg PO as a single dose (A-l for MSM, B-III for pharyngeal infections) PLUS azithromycin 1 g PO as a single dose (B-II for MSM), (B-III) for pharyngeal infections"
+63,azithromycin,2g,single,"Due to pregnancy was not provided azithromycin* 2 g PO as a single dose, was provided cefixime 800 mg PO as a single dose plus azithromycin 1g"
+63,cefixime,800mg,single,"Due to pregnancy was not provided azithromycin* 2 g PO as a single dose, was provided cefixime 800 mg PO as a single dose plus azithromycin 1g"
+64,valacyclovir,1g,qd,valacyclovir 1 g PO QD for 3 days (B-I)
+65,,,,? ceftrix but no record documented of taking it
+66,famciclovir,250 mg,TID for 5 days,famciclovir 250 mg PO TID for 5 days (A-I)
+67,ceftriaxone,2g,daily,ceftriaxone 2g IV daily for 10-14 days (B-II)
+68,benzathine penicillin G,2.4 mu,,"Doxycycline is not recommended for use during pregnancy, provided benzathine penicillin G 2.4 mu"
+68,doxycycline,NA,,"Doxycycline is not recommended for use during pregnancy, provided benzathine penicillin G 2.4 mu"
+69,cefixime,800mg,single,cefixime 800 mg PO as a single dose (A-I) PLUS azithromycin 1g PO as a single dose (BII)
+69,azithromycin,1g,single,cefixime 800 mg PO as a single dose (A-I) PLUS azithromycin 1g PO as a single dose (BII)
+70,azithromycin,1g,single,azithromycin 1 g PO as a single dose (A-I)
+71,doxycycline,100mg,bid for 28 days,doxycycline 100 mg PO BID for 28 days (B-II; C-III for HIV-infected)
+72,penicillin g,4 mu,q4h,penicillin desensitization followed by crystalline penicillin G 4 mu IV q4h for 10-14 days
+72,crystalline penicillin G,NA,NA,penicillin desensitization followed by crystalline penicillin G 4 mu IV q4h for 10-14 days
+73,ciprofloxacin,250mg,initially,cipro 250mg initially
+74,,,,declined treatment
+75,ceftriaxone,250 mg,,ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII)
+75,azithromycin,1 g,,ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII)

@@ -1,0 +1,368 @@
+---
+title: 'Attacking freetext nightmares with aRmed llamas'
+subtitle: 'R and Ollama for medical text data quality and term extraction'
+author: al-obrien
+date: '2025-06-22'
+slug: r-ollama-medical-text
+categories: []
+tags:
+  - R
+  - LLM
+summary: 'Using LLMs to tackle challenges with free text information common in drug treatment data.'
+authors: [al-obrien]
+lastmod: '2025-06-22T10:27:06-06:00'
+featured: no
+image:
+  caption: '[Image generated with AI]'
+  focal_point: ''
+  preview_only: yes
+projects: []
+draft: false
+diagram: true
+codefolding_show: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+source('crt_data.R')
+```
+
+## A Free Text Horror Story
+
+If you have talked to anyone who works with data, you have probably also heard them complain at length about issues related to data quality. Great efforts are taken to improve data "cleanliness", without which, analysis will be flawed and confidence will be weak.
+
+One common type of data element is a multiple choice option. Typically these are predefined categories, which enforces standard formatting (yay!). However, many have a final option for *"Other, describe"*. This allows a data entry clerk to provide an open ended free text description, up to a certain word limit. A free text field, being "free", has few (if any) rules to control formatting and standardization. As a result, it can often become a dumping ground. If someone cannot find a decent choice in the drop down provided, "Other" may be selected and slight deviations from the categories are provided. This can lead to a mess of inputs that make the "Other" field unreliable. It could include transcription errors, typos, overlaps with predefined fields, or defining unknowns in various ways (NA, Unknown, Unsure, etc). 
+
+In public health data systems, free text is a common challenge. There is a whole wealth of research just to parse clinical notes and drug prescription instructions. Many medical forms have inputs with multiple choice options in addition to a "catch all" category for "Other". For example, there may be several predefined treatment categories but an "Other" option is provided in case there is some new combination that is not listed. Ideally, the form would be improved to better organize the inputs and unknown combinations but that is not the messy data world we live in today.
+
+## Enter, Large Language Models (LLMs)
+
+The free text problem is not new and there has been decades of work dedicated to this issue with many options available to address the challenges. Some of these include or are combinations of rule-based solutions (with dictionary searches), fuzzy matching, extensive use of regular expressions, and natural language processing algorithms. However, we are going to see how quickly we can get up and running with a basic use of one of the latest approaches: transformer based LLMs.
+
+We want to use LLMs to perform a common activity in text analysis: **Named Entity Recognition (NER)**. We will provide a set of drug treatment notes and provide instructions for how to identify and extract specific information.
+
+## Objective and expectations
+
+Before we dive in, let's lay out what we want to achieve in this rather introductory example.
+
+Ultimately, we want to use a specific topic area, in this case health data, and analyze text information with minimal effort. As such, we do not anticipate an incredibly robust solution but rather a starting place for understanding. We also, given the domain of health data, want to use a local environment to reduce concerns for data exfiltration. To make it easy to implement we want the solution to be API based so that it is rather coding language agnostic, though we will use R in this worked example. As this is exploring a test case, we want an option that has minimal setup and cost.
+
+These criteria point to using **Ollama** and an open source LLM model such as **Meta's** Llama. Although there are alternatives abound, many of which may be better suited (such as spaCy and tailored models on Hugging face), using **Ollama** was incredibly straight forward in R and did not require knowledge of _torch_. In addition, we are not setting out here to solve recognized challenges problems with LLMs, such as scaling, result consistency, hallucinations, or a number of other well documented concerns. To some this solution may seem overly simplistic, to others complete overkill, but given the low barrier to entry it shows how to get started with LLMs for text analysis activities, such as Named Entity Recognition.
+
+
+## Setup
+
+### Ollama
+
+To begin, we need to have an installation of *Ollama*; this is a rather simple process and basic instructions for all major operating systems are provided on their website: https://ollama.com/download
+
+### R packages
+
+To use *Ollama* from R, we require a few packages, most notably {ollamar}.
+
+```{r}
+library(ollamar)
+library(glue)
+library(httr2)
+library(data.table)
+library(purrr)
+```
+
+## Drug treatment dataset
+
+We will create a dataset based upon suggested drug treatments for several sexually transmitted infections. Although this may sound simple there are numerous complexities. Treatment varies by disease, site of infection, and risk groups (e.g. pregnant, MSM, etc). Furthermore, short hand may be used to describe treatment delivery and dosage such as *BID* (twice a day), *TID* (three times a day), *PO* (oral route), *IV* (intravenous), and *IM* (intramuscular). Consequently, there are many different combinations of treatment and how they are administered. This is further complicated by free text fields, allowing custom treatments to be entered, introducing new abbreviations, as well as data quality problems. 
+
+```{r}
+data_trmt <- create_trmt_data()
+rmarkdown::paged_table(data_trmt[,"text", drop = FALSE], options = list(rownames.print = FALSE))
+```
+
+## Saying hello to a Lama
+
+With this dataset, we want to summarise the treatment details and extract specific information about **drugs used as well as their dosage and frequency**. First, we grab an open source model: *llama3.2:latest*. At time of writing this is (relatively) new model that is neither too big nor too small and in its description is suitable for instruction following and summarization.
+
+```{r, eval = FALSE}
+pull('llama3.2')
+```
+
+Now we make sure the model is listed and we can connect to it.
+
+```{r, eval = FALSE}
+list_models()
+test_connection()
+```
+
+```{r, echo = FALSE, eval = TRUE}
+list_models()
+```
+
+One feature (or challenge) with LLMs, is they can be rather "creative". For consistency in our results, we will tweak the model to be less creative and more deterministic.
+
+```{r}
+search_options('temperature') 
+llm_temp <- 0.2
+```
+
+## Summarise with Ollama
+
+Our first objective is to ask for a summarization of the drug treatment information column, which contains standard treatments as well as free text inputs. To achieve this, we first create a message with the desired instructions (which is easy with the help of `glue()`). This is passed to *llama3.2* and we print the results.
+
+```{r}
+msg_summarise <- create_message(
+  glue(
+    'You are an expert in drug treatments in medicine, summarise the drugs used in the following clinical notes as accurately as possible in under 100 words: 
+    {paste(data_trmt$text, collapse = "\n")}'
+    )
+  )
+
+chat('llama3.2', message = msg_summarise, output = 'text', temperature = llm_temp) |>
+  cat()
+```
+This seems to do a half decent job of summarizing the content but it does vary between runs. Furthermore, if you look closely, with such a basic prompt, it may not organize items in an ideal or consistent way.
+
+## Exploratory examples
+
+Let's continue with our journey and see how the LLM performs with **Named Entity Recognition**. We start with another basic prompt; this is often referred to as a *zero shot prompt* as no prior examples of the task are being given from the user.
+
+```{r}
+sys_prompt <- create_message(
+  "You are an expert in Named Entity Recognition specializing in extracing drug information for medical treatments.",
+  role = 'system'
+  )
+```
+Before we provide it our entire data set, we will try with one sample: *"azithromycin 10mg per day plus doxycyline"*
+
+```{r}
+prompt <- append_message(
+  "Extract the medicinal drug from the following text: 'azithromycin 10mg per day plus doxycyline'",
+  role = 'user',
+  sys_prompt
+  )
+
+chat('llama3.2', prompt, output = 'text', temperature = llm_temp) |> 
+  cat()
+```
+On this basic example, *llama3.2* performed both accurately and consistently. However, the results returned are not in a format that is conducive for further analysis. In other more complex examples, the results may be undesirable and verbose. You could get a response like:
+
+> "Based on the provided text, it is challenging to extract specific medicinal drugs without additional context or information. However, I can suggest some possible approaches..
+
+To receive a more workable output, we need to tell the model to return information in a **structured format**. This is easy to achieve with the `format` parameter, which takes an object that follows a JSON style structure. Below we define a required character field for the drug name.
+
+```{r}
+format_basic <- list(
+  type = "object",
+  required = list("DRUG"),
+  properties = list(
+    DRUG = list(type = "string") # Drug field and data type to return
+  )
+)
+
+chat('llama3.2', prompt, output = 'structured', format = format_basic, temperature = llm_temp)
+```
+We can probably do better than this format. For subsequent analysis in R we probably want the returned values in an array structure to separate each drug.
+
+```{r}
+format_array <- list(
+  type = "object",
+  required = list("DRUG"),
+  properties = list(
+    DRUG = list(
+      type = "array",
+      items = list(type = "string")
+      )
+    )
+  )
+
+chat('llama3.2', prompt, output = 'structured', format =  format_array, temperature = llm_temp)
+```
+
+It is clever enough to return nothing if uncertain and if no valid drug names are provided.
+
+```{r}
+prompt <- append_message(
+  "Extract the medicinal drug from the following text, return nothing if uncertain: 
+  'Was given 3 pills'",
+  role = 'user', sys_prompt
+  )
+chat('llama3.2', prompt, output = 'structured', format = format_array, temperature = llm_temp)
+```
+
+However, this may be inconsistent and  highly dependent upon the prompt so some trial and error is needed. In some cases it will return an unwanted value instead of `NA`. For example, some prompts may return one of the two results:
+
+```{r, echo = FALSE}
+list(DRUG = list())
+```
+```{r, echo = FALSE}
+list(DRUG = 'pills')
+```
+## Extract details
+
+Building upon our basic **NER** example, we will now provide more context via *few shot prompting*. In addition, we will raise the stakes by requesting extraction of more information: DOSE and FREQ.
+
+### Structured format
+
+To obtain a desired output from the prompt, we define a slightly more detailed format, with properties for the drug name (DRUG), dosage (DOSE) and frequency of administration (FREQ). 
+
+```{r}
+format_detailed <- list(
+  type = "object",
+  required = list('ENTRY'),
+  properties = list(
+    ENTRY = list(
+      type = "array",
+      items = list(
+        type = 'object',
+        required = list('DRUG', 'DOSE', 'FREQ'),
+        properties = list(
+          DRUG = list(type = list("string", "null")), 
+          DOSE = list(type = list("string", "null")),
+          FREQ = list(type = list("string", "null"))
+          )
+        )
+      )
+    )
+  )
+```
+
+### New system message
+
+With *few shot prompting*, we provide additional context and examples to orientate the prompt responses. First, we tell *llama3.2* that is must perform text extraction for specific entities. Second, we provide some rules based upon known complications in the data. For example, there are many niche medical terms used which need to be understood for dosage. Lastly, we provide a few of the more difficult examples and how they should be parsed.
+
+```{r}
+sys_prompt_fewshot <-  create_message(
+  role = "system",
+  'You are now an expert in text extraction of medical drug treatment information from clinical notes. There are three types of entities to extract: (1) names of drugs used for medical treatment (DRUG), (2) dose of the drug (DOSE), and (3) the frequency the drug is given for that dose (FREQ).
+  
+  It is important to remember the following when extracting entities:
+  (1) There may be multiple drugs listed in the text.
+  (2) Drugs may be abbreviated or misspelled and should be corrected if there is a confident replacement. If there is no confident replacement, return ["NA"]
+  (3) Generic terms for drugs such as "drug" or "pills" should be replace with ["NA"].
+  (4) Not all drugs identified will have a DOSE or FREQ, if DOSE and FREQ are missing or unknown their values should be ["NA"].
+  (5) Only identify DRUG, DOSE, or FREQ information when there is a confident answer, do not guess. If there is no information (missing, uncertain, or unknown) return the value ["NA"] for each entity.
+  (6) The DRUG, DOSE, and FREQ should always be reported as a complete set. If a DRUG is missing, the DOSE and FREQ should also be missing as ["NA"]. If the drug is unknown, both DOSE and FREQ should return ["NA"]. 
+  (7) Do not extract abbrevations related to the route the drug is administered: such as "PO" for oral administration, "IV" for intravenous, and "IM" intramuscular.
+  (8) Be aware of the following abbreviations for FREQ:  "qh" for "every hour", "q4h" for "every four hours", "QD" for "once daily", "BID" for "twice daily", "TID" for "thrice daily".
+  
+  Input Example 1: "The doctor provided both clindamycin 5ug PO per day for 7 days, and amoxacillin one dosage (A-II)."
+  Output 1: {
+  ENTRY: [
+    {DRUG: "clindamycin", DOSE: "5ug", FREQ: "qd 7 days"},
+    {DRUG: "amoxacillin", DOSE: "one", FREQ: "NA"}
+    ]
+  }
+  
+  Input Example 2: "No treatment was provided, not even amoxacillin."
+  Output 2: {ENTRY: [{DRUG: "NA", DOSE: "NA", FREQ: "NA"}]}
+                 
+  Input Example 3: "amox and pen g was given for BID for 5 days but not clindamycin."
+  Output 3: {
+  ENTRY: [
+    {DRUG: "amoxacillin", DOSE: "NA", FREQ: "BID for 5 days"},
+    {DRUG: "penicillin g", DOSE: "NA", FREQ: "BID for 5 days"}
+    ]
+  }
+                 
+  Input Example 4: "Possibly given treatment but unsure, maybe it was cefixime."
+  Output 4: {ENTRY: [{DRUG: "NA", DOSE: "NA", FREQ: "NA"}]}
+  
+  Input Example 5: "Refused treatment to 5 days BID cipro?"
+  Output 5: {ENTRY: [{DRUG: "NA", DOSE: "NA", FREQ: "NA"}]}
+                 
+  Given the text below, extract the entities for drug (DRUG), dose (DOSE), and frequency (FREQ) and return the result in JSON format. Standardize the output to be in lower case, no special characters, trimmed white space, and spelled correctly.')
+```
+
+### Apply to text 
+
+With the context provided, we now perform the numerous requests for each of the treatment entries. With {glue}, {ollamar}, and {httr2}, this is very easy to do!
+
+```{r}
+# Basic func (lazy and leaky)
+create_chat_req <- function(text) {
+  prompt <- append_message(
+    role = 'user',
+    content = glue('Here is the text to perform the extraction: {text}'),
+    sys_prompt_fewshot
+    )
+  chat('llama3.2', prompt, output = 'req', format = format_detailed, temperature = llm_temp)
+}
+
+reqs <- lapply(data_trmt$text, create_chat_req)
+```
+
+Now send each request in parallel to speed things up and extract in the structured format.
+
+```{r}
+resps <- req_perform_parallel(reqs)
+struc_resps <- lapply(resps, resp_process, 'structured')
+```
+Knowing that LLMs may return unexpected results, we add a check on returned values. In this instance, we want every entry to have 3 values (drug, dose, freq) and in situations where nothing is returned the result should have `NA`/Missing values. For example, this may be a common entry if nothing of interest is found.
+
+```{r, echo = FALSE}
+list(list(ENTRY = list()))
+```
+But this is *actually* what we want returned...
+
+```{r, echo = FALSE}
+list(list(ENTRY = data.frame(DRUG = NA, DOSE = NA, FREQ = NA)))
+```
+
+When a result is not in the expected format we can request a few more attempts before it errors out.
+
+```{r}
+malform_idx <- vector('numeric')
+malform_idx <- which(sapply(struc_resps, \(x) length(x$ENTRY) == 0))
+if(length(malform_idx) > 0 ) {
+  req_attempt <- req_perform_parallel(reqs[malform_idx])
+  req_attempt_struct <- lapply(req_attempt, resp_process, 'structured')
+  fixed_idx <- which(sapply(req_attempt_struct, \(x) length(x$ENTRY) > 0))
+  struc_resps[malform_idx] <- req_attempt_struct[fixed_idx]
+}
+```
+
+For easier analysis we collapse the list of returned results into a `data.frame`.
+
+```{r}
+# Calculate number of entries 
+length_entry <- sapply(struc_resps, \(x) length(pluck(x, 'ENTRY', 1)))
+
+data_trmt_processed <- purrr::list_flatten(struc_resps) |> 
+  purrr::list_rbind()
+```
+
+### Review results and conclusions
+
+With the final results combined, we can now compare them to the raw text inputs. We achieve this with a `merge` on the `row_id`. Where multiple drug entries were found, the row_id is duplicated.
+
+```{r}
+data_trmt_processed$row_id <- rep(seq(1:length(struc_resps)), length_entry)
+data_trmt_processed <- merge(data_trmt_processed, data_trmt, by = 'row_id', all.x = TRUE, all.y = FALSE)
+knitr::kable(data_trmt_processed) |>
+  kableExtra::kable_styling(bootstrap_options = c("hover", "condensed")) |>
+  kableExtra::scroll_box(height = "500px")
+```
+
+How well did the LLM perform compared to our expectations and defined rules?
+
+First the good:
+
+1. It was able to understand negation successfully
+1. It usually ignored treatments when there was uncertainty in the phrasing
+1. In most cases it could extract the multiple possibilities and assign the closest related dosage
+
+... now the less good:
+
+1. Missing values were returned in varying formats
+1. Several different formats were used for identical drugs, often due to confusion over abbreviations
+1. Low confidence in results of FREQ data due to inconsistencies
+1. Returned missing where a valid drug should have been found :(
+
+**Overall**, considering the minimal effort and model used, the results performed better than expected. With a model that is more aware of medical terms, I would expect better performance. Given that free text fields are inherently known for data quality issues, I can foresee methods such as those presented here to be of great benefit in identifying notable data quality problems in text information for human review. 
+
+## References
+
+- [Tutorial on prompting](https://www.promptingguide.ai/)
+- [JSON Schemas](https://json-schema.org/overview/what-is-jsonschema)
+- [JOSS paper on {ollamar}](https://joss.theoj.org/papers/10.21105/joss.07211)
+- [R package {ollamar}](https://hauselin.github.io/ollama-r/)
+- [R pacakge {ellmer}](https://ellmer.tidyverse.org/articles/ellmer.html)
+

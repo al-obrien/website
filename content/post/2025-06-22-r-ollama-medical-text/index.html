@@ -1,0 +1,2028 @@
+---
+title: 'Attacking freetext nightmares with aRmed llamas'
+subtitle: 'R and Ollama for medical text data quality and term extraction'
+author: al-obrien
+date: '2025-06-22'
+slug: r-ollama-medical-text
+categories: []
+tags:
+  - R
+  - LLM
+summary: 'Using LLMs to tackle challenges with free text information common in drug treatment data.'
+authors: [al-obrien]
+lastmod: '2025-06-22T10:27:06-06:00'
+featured: no
+image:
+  caption: '[Image generated with AI]'
+  focal_point: ''
+  preview_only: yes
+projects: []
+draft: false
+diagram: true
+codefolding_show: show
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+<link href="{{< blogdown/postref >}}index_files/pagedtable/css/pagedtable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/pagedtable/js/pagedtable.js"></script>
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+
+
+<div id="a-free-text-horror-story" class="section level2">
+<h2>A Free Text Horror Story</h2>
+<p>If you have talked to anyone who works with data, you have probably also heard them complain at length about issues related to data quality. Great efforts are taken to improve data “cleanliness”, without which, analysis will be flawed and confidence will be weak.</p>
+<p>One common type of data element is a multiple choice option. Typically these are predefined categories, which enforces standard formatting (yay!). However, many have a final option for <em>“Other, describe”</em>. This allows a data entry clerk to provide an open ended free text description, up to a certain word limit. A free text field, being “free”, has few (if any) rules to control formatting and standardization. As a result, it can often become a dumping ground. If someone cannot find a decent choice in the drop down provided, “Other” may be selected and slight deviations from the categories are provided. This can lead to a mess of inputs that make the “Other” field unreliable. It could include transcription errors, typos, overlaps with predefined fields, or defining unknowns in various ways (NA, Unknown, Unsure, etc).</p>
+<p>In public health data systems, free text is a common challenge. There is a whole wealth of research just to parse clinical notes and drug prescription instructions. Many medical forms have inputs with multiple choice options in addition to a “catch all” category for “Other”. For example, there may be several predefined treatment categories but an “Other” option is provided in case there is some new combination that is not listed. Ideally, the form would be improved to better organize the inputs and unknown combinations but that is not the messy data world we live in today.</p>
+</div>
+<div id="enter-large-language-models-llms" class="section level2">
+<h2>Enter, Large Language Models (LLMs)</h2>
+<p>The free text problem is not new and there has been decades of work dedicated to this issue with many options available to address the challenges. Some of these include or are combinations of rule-based solutions (with dictionary searches), fuzzy matching, extensive use of regular expressions, and natural language processing algorithms. However, we are going to see how quickly we can get up and running with a basic use of one of the latest approaches: transformer based LLMs.</p>
+<p>We want to use LLMs to perform a common activity in text analysis: <strong>Named Entity Recognition (NER)</strong>. We will provide a set of drug treatment notes and provide instructions for how to identify and extract specific information.</p>
+</div>
+<div id="objective-and-expectations" class="section level2">
+<h2>Objective and expectations</h2>
+<p>Before we dive in, let’s lay out what we want to achieve in this rather introductory example.</p>
+<p>Ultimately, we want to use a specific topic area, in this case health data, and analyze text information with minimal effort. As such, we do not anticipate an incredibly robust solution but rather a starting place for understanding. We also, given the domain of health data, want to use a local environment to reduce concerns for data exfiltration. To make it easy to implement we want the solution to be API based so that it is rather coding language agnostic, though we will use R in this worked example. As this is exploring a test case, we want an option that has minimal setup and cost.</p>
+<p>These criteria point to using <strong>Ollama</strong> and an open source LLM model such as <strong>Meta’s</strong> Llama. Although there are alternatives abound, many of which may be better suited (such as spaCy and tailored models on Hugging face), using <strong>Ollama</strong> was incredibly straight forward in R and did not require knowledge of <em>torch</em>. In addition, we are not setting out here to solve recognized challenges problems with LLMs, such as scaling, result consistency, hallucinations, or a number of other well documented concerns. To some this solution may seem overly simplistic, to others complete overkill, but given the low barrier to entry it shows how to get started with LLMs for text analysis activities, such as Named Entity Recognition.</p>
+</div>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<div id="ollama" class="section level3">
+<h3>Ollama</h3>
+<p>To begin, we need to have an installation of <em>Ollama</em>; this is a rather simple process and basic instructions for all major operating systems are provided on their website: <a href="https://ollama.com/download" class="uri">https://ollama.com/download</a></p>
+</div>
+<div id="r-packages" class="section level3">
+<h3>R packages</h3>
+<p>To use <em>Ollama</em> from R, we require a few packages, most notably {ollamar}.</p>
+<pre class="r"><code>library(ollamar)
+library(glue)
+library(httr2)
+library(data.table)
+library(purrr)</code></pre>
+</div>
+</div>
+<div id="drug-treatment-dataset" class="section level2">
+<h2>Drug treatment dataset</h2>
+<p>We will create a dataset based upon suggested drug treatments for several sexually transmitted infections. Although this may sound simple there are numerous complexities. Treatment varies by disease, site of infection, and risk groups (e.g. pregnant, MSM, etc). Furthermore, short hand may be used to describe treatment delivery and dosage such as <em>BID</em> (twice a day), <em>TID</em> (three times a day), <em>PO</em> (oral route), <em>IV</em> (intravenous), and <em>IM</em> (intramuscular). Consequently, there are many different combinations of treatment and how they are administered. This is further complicated by free text fields, allowing custom treatments to be entered, introducing new abbreviations, as well as data quality problems.</p>
+<pre class="r"><code>data_trmt &lt;- create_trmt_data()
+rmarkdown::paged_table(data_trmt[,&quot;text&quot;, drop = FALSE], options = list(rownames.print = FALSE))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["text"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"doxycycline 100 mg PO BID for 7 days (A-II)"},{"1":"azithromycin 1 g PO as a single dose (A-I; AII for eye)"},{"1":"ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII), (B-III for pharyngeal infections)"},{"1":"ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII)"},{"1":"Trmt given OOP"},{"1":"Due to resistance to azithromycin, was not provided as monothearpy, was provided in addition to gentamicin"},{"1":"Long-acting benzathine penicillin G 2.4 mu (Bicillin L-A) IM weekly for 2 doses (C-III)"},{"1":"unable to recall"},{"1":"cipro 250mg initially"},{"1":"acyclovir 400 mg PO TID initiated at 36 weeks until parturition (A-I)"},{"1":"drugs: doxycycline dose: 100.000 dose unit"},{"1":"acyclovir 400 mg PO TID for 7-10 days (A-III)"},{"1":"Due to pregnancy was not provided azithromycin* 2 g PO as a single dose, was provided cefixime 800 mg PO as a single dose plus azithromycin 1g"},{"1":"cefixime 800 mg PO as a single dose (A-I) PLUS azithromycin 1g PO as a single dose (BII)"},{"1":"azithromycin* 2 g PO as a single dose (AI) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)"},{"1":"ceftriaxone 2g IV daily for 10-14 days (B-II)"},{"1":"declined treatment"},{"1":"moxifloxacin 400 mg po daily"},{"1":"azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)"},{"1":"? ceftrix but no record documented of taking it"},{"1":"doxycycline 100 mg PO BID for 28 days (B-II; C-III for HIV-infected)"},{"1":"azithromycin* 2 g PO as a single dose (A-I) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)"},{"1":"Long-acting benzathine penicillin G 2.4 mu (Bicillin L-A) IM weekly for 3 consecutive weeks (A-II)"},{"1":"cefixime 800 mg PO as a single dose (A-l) PLUS azithromycin 1 g PO as a single dose (BII)"},{"1":"cefxime 800 mg single dose PLUS azith 1g as a single dose"},{"1":"valacyclovir 500 mg PO BID initiated at 36 weeks until parturition (B-I)"},{"1":"Was treated out of province"},{"1":"famciclovir 250 mg PO BID (A-I)"},{"1":"Doxycycline is not recommended for use during pregnancy, provided benzathine penicillin G 2.4 mu"},{"1":"treatment received"},{"1":"amoxi clave 875 mg for 7 days"},{"1":"doxycycline 100 mg PO BID for 7 days (A-I; A-II for eye)"},{"1":"azithromycin 1 g PO as a single dose (A-I)"},{"1":"ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII)"},{"1":"doxycycline 100 mg PO BID for 7 days (A-I)"},{"1":"amoxicillin 500 mg PO TID for 7 days (A-I)"},{"1":"doxycycline 100 mg PO BID for 14 days (B-II; C-III for HIV-infected)"},{"1":"azithromycin* 1 g PO as a single dose (B-I)"},{"1":"No treatment was provided"},{"1":"doxycycline 250mg + cefixime 800mg"},{"1":"azithromycin 1 g PO as a single dose (A-II)"},{"1":"levofloxacin dose unknown"},{"1":"A handfull of blue pills"},{"1":"acyclovir 400 mg PO BID (A-I)"},{"1":"ceftriaxone 2 g IV/IM as a single dose (A-II) PLUS azithromycin 1 g PO as a single dose (BII)"},{"1":"Attempted contact, but could not locate"},{"1":"famciclovir 125 mg PO BID for 5 days (B-I)"},{"1":"azithromycin* 2 g PO as a single dose (AI) PLUS gentamicin 240 mg IM in 2 separate 3 mL injections of 40 mg/mL solution (B-II)"},{"1":"valacyclovir 1 g PO QD for 3 days (B-I)"},{"1":"moxifloxacin 0.5% 1 drop os every hour x 1 day"},{"1":"cefixime 800 mg PO as a single dose (A-I for MSM, B-III for pharyngeal infections) PLUS azithromycin 1 g PO as a single dose (B-II for MSM), (B-III) for pharyngeal infections"},{"1":"Six white and two blue pills"},{"1":"valacyclovir 500 mg PO BID for 3 days (B-I)"},{"1":"azithromycin* 2 g PO as a single dose (A-I) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)"},{"1":"Lost to follow up"},{"1":"cefixime 400 mg po qd x 7 days"},{"1":"penicillin desensitization followed by crystalline penicillin G 4 mu IV q4h for 10-14 days"},{"1":"? azithromycin"},{"1":"azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)"},{"1":"refused bicillin treatment"},{"1":"cefixime 800 mg PO as a single dose (A-I) PLUS azithromycin 1g PO as a single dose (BII)"},{"1":"unknown medication provided"},{"1":"crystalline penicillin G 4 mu IV q4h for 10-14 days (A-II)"},{"1":"valacyclovir 500 mg PO BID or 1 g PO QD (AI) [for patients with > 9 recurrences per year]"},{"1":"Long-acting benzathine penicillin G 2.4 mu (Bicillin L-A) IM as a single dose (A-II;C-II for HIV-infected)"},{"1":"azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (BII)"},{"1":"valacyclovir 500 mg PO QD (A-I) [for patients with < 9 recurrences per year]"},{"1":"azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)"},{"1":"acyclovir 800 mg PO TID x 2 days"},{"1":"valacyclovir 1 g PO BID for 10 days (A-I)"},{"1":"famciclovir 250 mg PO TID for 5 days (A-I)"},{"1":"cipro 500 bid x 1 wk"},{"1":"cream given"},{"1":"See notes"},{"1":"peng 2.4 mu"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="saying-hello-to-a-lama" class="section level2">
+<h2>Saying hello to a Lama</h2>
+<p>With this dataset, we want to summarise the treatment details and extract specific information about <strong>drugs used as well as their dosage and frequency</strong>. First, we grab an open source model: <em>llama3.2:latest</em>. At time of writing this is (relatively) new model that is neither too big nor too small and in its description is suitable for instruction following and summarization.</p>
+<pre class="r"><code>pull(&#39;llama3.2&#39;)</code></pre>
+<p>Now we make sure the model is listed and we can connect to it.</p>
+<pre class="r"><code>list_models()
+test_connection()</code></pre>
+<pre><code>##              name size parameter_size quantization_level            modified
+## 1 llama3.2:latest 2 GB           3.2B             Q4_K_M 2025-06-22T16:32:59</code></pre>
+<p>One feature (or challenge) with LLMs, is they can be rather “creative”. For consistency in our results, we will tweak the model to be less creative and more deterministic.</p>
+<pre class="r"><code>search_options(&#39;temperature&#39;) </code></pre>
+<pre><code>## Matching options: temperature</code></pre>
+<pre><code>## $temperature
+## $temperature$description
+## [1] &quot;The temperature of the model. Increasing the temperature will make the model answer more creatively.&quot;
+## 
+## $temperature$default_value
+## [1] 0.8</code></pre>
+<pre class="r"><code>llm_temp &lt;- 0.2</code></pre>
+</div>
+<div id="summarise-with-ollama" class="section level2">
+<h2>Summarise with Ollama</h2>
+<p>Our first objective is to ask for a summarization of the drug treatment information column, which contains standard treatments as well as free text inputs. To achieve this, we first create a message with the desired instructions (which is easy with the help of <code>glue()</code>). This is passed to <em>llama3.2</em> and we print the results.</p>
+<pre class="r"><code>msg_summarise &lt;- create_message(
+  glue(
+    &#39;You are an expert in drug treatments in medicine, summarise the drugs used in the following clinical notes as accurately as possible in under 100 words: 
+    {paste(data_trmt$text, collapse = &quot;\n&quot;)}&#39;
+    )
+  )
+
+chat(&#39;llama3.2&#39;, message = msg_summarise, output = &#39;text&#39;, temperature = llm_temp) |&gt;
+  cat()</code></pre>
+<pre><code>## Based on the clinical notes, the following drugs were used:
+## 
+## 1. Antibiotics:
+##    - Doxycycline: 100 mg PO BID for 7 days (A-II), 100 mg PO BID for 28 days (B-II), and 250mg + cefixime 800mg
+##    - Azithromycin: 1 g PO as a single dose (A-I), 2 g PO as a single dose (A-I), 1 g PO as a single dose (B-II), 2 g PO as a single dose (AI), and 1 g PO as a single dose (B-II)
+##    - Ceftriaxone: 250 mg IM as a single dose (A-I), 250 mg IM as a single dose (A-I), 2 g IV daily for 10-14 days (B-II), and 2 g IV/IM as a single dose (A-II)
+##    - Cefixime: 800 mg PO as a single dose (A-I), 800 mg PO as a single dose (A-I), and 400 mg PO qd x 7 days
+##    - Levofloxacin: unknown dose
+##    - Moxifloxacin: 400 mg PO daily
+##    - Gentamicin: 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+##    - Penicillin G: benzathine penicillin G 2.4 mu (Bicillin L-A) IM weekly for 2 doses, and crystalline penicillin G 4 mu IV q4h for 10-14 days
+## 
+## 2. Antivirals:
+##    - Acyclovir: 400 mg PO TID for 7-10 days (A-I), 400 mg PO BID (A-I), 800 mg PO TID x 2 days, and 500 mg PO BID or 1 g PO QD
+##    - Valacyclovir: 500 mg PO BID for 3 days (B-I), 500 mg PO QD for 10 days (A-I), and 1 g PO QD for 3 days (B-I)
+##    - Famciclovir: 125 mg PO BID for 5 days (B-I)</code></pre>
+<p>This seems to do a half decent job of summarizing the content but it does vary between runs. Furthermore, if you look closely, with such a basic prompt, it may not organize items in an ideal or consistent way.</p>
+</div>
+<div id="exploratory-examples" class="section level2">
+<h2>Exploratory examples</h2>
+<p>Let’s continue with our journey and see how the LLM performs with <strong>Named Entity Recognition</strong>. We start with another basic prompt; this is often referred to as a <em>zero shot prompt</em> as no prior examples of the task are being given from the user.</p>
+<pre class="r"><code>sys_prompt &lt;- create_message(
+  &quot;You are an expert in Named Entity Recognition specializing in extracing drug information for medical treatments.&quot;,
+  role = &#39;system&#39;
+  )</code></pre>
+<p>Before we provide it our entire data set, we will try with one sample: <em>“azithromycin 10mg per day plus doxycyline”</em></p>
+<pre class="r"><code>prompt &lt;- append_message(
+  &quot;Extract the medicinal drug from the following text: &#39;azithromycin 10mg per day plus doxycyline&#39;&quot;,
+  role = &#39;user&#39;,
+  sys_prompt
+  )
+
+chat(&#39;llama3.2&#39;, prompt, output = &#39;text&#39;, temperature = llm_temp) |&gt; 
+  cat()</code></pre>
+<pre><code>## The medicinal drugs extracted from the given text are:
+## 
+## 1. Azithromycin
+## 2. Doxycycline</code></pre>
+<p>On this basic example, <em>llama3.2</em> performed both accurately and consistently. However, the results returned are not in a format that is conducive for further analysis. In other more complex examples, the results may be undesirable and verbose. You could get a response like:</p>
+<blockquote>
+<p>“Based on the provided text, it is challenging to extract specific medicinal drugs without additional context or information. However, I can suggest some possible approaches..</p>
+</blockquote>
+<p>To receive a more workable output, we need to tell the model to return information in a <strong>structured format</strong>. This is easy to achieve with the <code>format</code> parameter, which takes an object that follows a JSON style structure. Below we define a required character field for the drug name.</p>
+<pre class="r"><code>format_basic &lt;- list(
+  type = &quot;object&quot;,
+  required = list(&quot;DRUG&quot;),
+  properties = list(
+    DRUG = list(type = &quot;string&quot;) # Drug field and data type to return
+  )
+)
+
+chat(&#39;llama3.2&#39;, prompt, output = &#39;structured&#39;, format = format_basic, temperature = llm_temp)</code></pre>
+<pre><code>## $DRUG
+## [1] &quot;Azithromycin and Doxycycline&quot;</code></pre>
+<p>We can probably do better than this format. For subsequent analysis in R we probably want the returned values in an array structure to separate each drug.</p>
+<pre class="r"><code>format_array &lt;- list(
+  type = &quot;object&quot;,
+  required = list(&quot;DRUG&quot;),
+  properties = list(
+    DRUG = list(
+      type = &quot;array&quot;,
+      items = list(type = &quot;string&quot;)
+      )
+    )
+  )
+
+chat(&#39;llama3.2&#39;, prompt, output = &#39;structured&#39;, format =  format_array, temperature = llm_temp)</code></pre>
+<pre><code>## $DRUG
+## [1] &quot;Azithromycin&quot; &quot;Doxycycline&quot;</code></pre>
+<p>It is clever enough to return nothing if uncertain and if no valid drug names are provided.</p>
+<pre class="r"><code>prompt &lt;- append_message(
+  &quot;Extract the medicinal drug from the following text, return nothing if uncertain: 
+  &#39;Was given 3 pills&#39;&quot;,
+  role = &#39;user&#39;, sys_prompt
+  )
+chat(&#39;llama3.2&#39;, prompt, output = &#39;structured&#39;, format = format_array, temperature = llm_temp)</code></pre>
+<pre><code>## $DRUG
+## [1] &quot;pill&quot;</code></pre>
+<p>However, this may be inconsistent and highly dependent upon the prompt so some trial and error is needed. In some cases it will return an unwanted value instead of <code>NA</code>. For example, some prompts may return one of the two results:</p>
+<pre><code>## $DRUG
+## list()</code></pre>
+<pre><code>## $DRUG
+## [1] &quot;pills&quot;</code></pre>
+</div>
+<div id="extract-details" class="section level2">
+<h2>Extract details</h2>
+<p>Building upon our basic <strong>NER</strong> example, we will now provide more context via <em>few shot prompting</em>. In addition, we will raise the stakes by requesting extraction of more information: DOSE and FREQ.</p>
+<div id="structured-format" class="section level3">
+<h3>Structured format</h3>
+<p>To obtain a desired output from the prompt, we define a slightly more detailed format, with properties for the drug name (DRUG), dosage (DOSE) and frequency of administration (FREQ).</p>
+<pre class="r"><code>format_detailed &lt;- list(
+  type = &quot;object&quot;,
+  required = list(&#39;ENTRY&#39;),
+  properties = list(
+    ENTRY = list(
+      type = &quot;array&quot;,
+      items = list(
+        type = &#39;object&#39;,
+        required = list(&#39;DRUG&#39;, &#39;DOSE&#39;, &#39;FREQ&#39;),
+        properties = list(
+          DRUG = list(type = list(&quot;string&quot;, &quot;null&quot;)), 
+          DOSE = list(type = list(&quot;string&quot;, &quot;null&quot;)),
+          FREQ = list(type = list(&quot;string&quot;, &quot;null&quot;))
+          )
+        )
+      )
+    )
+  )</code></pre>
+</div>
+<div id="new-system-message" class="section level3">
+<h3>New system message</h3>
+<p>With <em>few shot prompting</em>, we provide additional context and examples to orientate the prompt responses. First, we tell <em>llama3.2</em> that is must perform text extraction for specific entities. Second, we provide some rules based upon known complications in the data. For example, there are many niche medical terms used which need to be understood for dosage. Lastly, we provide a few of the more difficult examples and how they should be parsed.</p>
+<pre class="r"><code>sys_prompt_fewshot &lt;-  create_message(
+  role = &quot;system&quot;,
+  &#39;You are now an expert in text extraction of medical drug treatment information from clinical notes. There are three types of entities to extract: (1) names of drugs used for medical treatment (DRUG), (2) dose of the drug (DOSE), and (3) the frequency the drug is given for that dose (FREQ).
+  
+  It is important to remember the following when extracting entities:
+  (1) There may be multiple drugs listed in the text.
+  (2) Drugs may be abbreviated or misspelled and should be corrected if there is a confident replacement. If there is no confident replacement, return [&quot;NA&quot;]
+  (3) Generic terms for drugs such as &quot;drug&quot; or &quot;pills&quot; should be replace with [&quot;NA&quot;].
+  (4) Not all drugs identified will have a DOSE or FREQ, if DOSE and FREQ are missing or unknown their values should be [&quot;NA&quot;].
+  (5) Only identify DRUG, DOSE, or FREQ information when there is a confident answer, do not guess. If there is no information (missing, uncertain, or unknown) return the value [&quot;NA&quot;] for each entity.
+  (6) The DRUG, DOSE, and FREQ should always be reported as a complete set. If a DRUG is missing, the DOSE and FREQ should also be missing as [&quot;NA&quot;]. If the drug is unknown, both DOSE and FREQ should return [&quot;NA&quot;]. 
+  (7) Do not extract abbrevations related to the route the drug is administered: such as &quot;PO&quot; for oral administration, &quot;IV&quot; for intravenous, and &quot;IM&quot; intramuscular.
+  (8) Be aware of the following abbreviations for FREQ:  &quot;qh&quot; for &quot;every hour&quot;, &quot;q4h&quot; for &quot;every four hours&quot;, &quot;QD&quot; for &quot;once daily&quot;, &quot;BID&quot; for &quot;twice daily&quot;, &quot;TID&quot; for &quot;thrice daily&quot;.
+  
+  Input Example 1: &quot;The doctor provided both clindamycin 5ug PO per day for 7 days, and amoxacillin one dosage (A-II).&quot;
+  Output 1: {
+  ENTRY: [
+    {DRUG: &quot;clindamycin&quot;, DOSE: &quot;5ug&quot;, FREQ: &quot;qd 7 days&quot;},
+    {DRUG: &quot;amoxacillin&quot;, DOSE: &quot;one&quot;, FREQ: &quot;NA&quot;}
+    ]
+  }
+  
+  Input Example 2: &quot;No treatment was provided, not even amoxacillin.&quot;
+  Output 2: {ENTRY: [{DRUG: &quot;NA&quot;, DOSE: &quot;NA&quot;, FREQ: &quot;NA&quot;}]}
+                 
+  Input Example 3: &quot;amox and pen g was given for BID for 5 days but not clindamycin.&quot;
+  Output 3: {
+  ENTRY: [
+    {DRUG: &quot;amoxacillin&quot;, DOSE: &quot;NA&quot;, FREQ: &quot;BID for 5 days&quot;},
+    {DRUG: &quot;penicillin g&quot;, DOSE: &quot;NA&quot;, FREQ: &quot;BID for 5 days&quot;}
+    ]
+  }
+                 
+  Input Example 4: &quot;Possibly given treatment but unsure, maybe it was cefixime.&quot;
+  Output 4: {ENTRY: [{DRUG: &quot;NA&quot;, DOSE: &quot;NA&quot;, FREQ: &quot;NA&quot;}]}
+  
+  Input Example 5: &quot;Refused treatment to 5 days BID cipro?&quot;
+  Output 5: {ENTRY: [{DRUG: &quot;NA&quot;, DOSE: &quot;NA&quot;, FREQ: &quot;NA&quot;}]}
+                 
+  Given the text below, extract the entities for drug (DRUG), dose (DOSE), and frequency (FREQ) and return the result in JSON format. Standardize the output to be in lower case, no special characters, trimmed white space, and spelled correctly.&#39;)</code></pre>
+</div>
+<div id="apply-to-text" class="section level3">
+<h3>Apply to text</h3>
+<p>With the context provided, we now perform the numerous requests for each of the treatment entries. With {glue}, {ollamar}, and {httr2}, this is very easy to do!</p>
+<pre class="r"><code># Basic func (lazy and leaky)
+create_chat_req &lt;- function(text) {
+  prompt &lt;- append_message(
+    role = &#39;user&#39;,
+    content = glue(&#39;Here is the text to perform the extraction: {text}&#39;),
+    sys_prompt_fewshot
+    )
+  chat(&#39;llama3.2&#39;, prompt, output = &#39;req&#39;, format = format_detailed, temperature = llm_temp)
+}
+
+reqs &lt;- lapply(data_trmt$text, create_chat_req)</code></pre>
+<p>Now send each request in parallel to speed things up and extract in the structured format.</p>
+<pre class="r"><code>resps &lt;- req_perform_parallel(reqs)
+struc_resps &lt;- lapply(resps, resp_process, &#39;structured&#39;)</code></pre>
+<p>Knowing that LLMs may return unexpected results, we add a check on returned values. In this instance, we want every entry to have 3 values (drug, dose, freq) and in situations where nothing is returned the result should have <code>NA</code>/Missing values. For example, this may be a common entry if nothing of interest is found.</p>
+<pre><code>## [[1]]
+## [[1]]$ENTRY
+## list()</code></pre>
+<p>But this is <em>actually</em> what we want returned…</p>
+<pre><code>## [[1]]
+## [[1]]$ENTRY
+##   DRUG DOSE FREQ
+## 1   NA   NA   NA</code></pre>
+<p>When a result is not in the expected format we can request a few more attempts before it errors out.</p>
+<pre class="r"><code>malform_idx &lt;- vector(&#39;numeric&#39;)
+malform_idx &lt;- which(sapply(struc_resps, \(x) length(x$ENTRY) == 0))
+if(length(malform_idx) &gt; 0 ) {
+  req_attempt &lt;- req_perform_parallel(reqs[malform_idx])
+  req_attempt_struct &lt;- lapply(req_attempt, resp_process, &#39;structured&#39;)
+  fixed_idx &lt;- which(sapply(req_attempt_struct, \(x) length(x$ENTRY) &gt; 0))
+  struc_resps[malform_idx] &lt;- req_attempt_struct[fixed_idx]
+}</code></pre>
+<p>For easier analysis we collapse the list of returned results into a <code>data.frame</code>.</p>
+<pre class="r"><code># Calculate number of entries 
+length_entry &lt;- sapply(struc_resps, \(x) length(pluck(x, &#39;ENTRY&#39;, 1)))
+
+data_trmt_processed &lt;- purrr::list_flatten(struc_resps) |&gt; 
+  purrr::list_rbind()</code></pre>
+</div>
+<div id="review-results-and-conclusions" class="section level3">
+<h3>Review results and conclusions</h3>
+<p>With the final results combined, we can now compare them to the raw text inputs. We achieve this with a <code>merge</code> on the <code>row_id</code>. Where multiple drug entries were found, the row_id is duplicated.</p>
+<pre class="r"><code>data_trmt_processed$row_id &lt;- rep(seq(1:length(struc_resps)), length_entry)
+data_trmt_processed &lt;- merge(data_trmt_processed, data_trmt, by = &#39;row_id&#39;, all.x = TRUE, all.y = FALSE)
+knitr::kable(data_trmt_processed) |&gt;
+  kableExtra::kable_styling(bootstrap_options = c(&quot;hover&quot;, &quot;condensed&quot;)) |&gt;
+  kableExtra::scroll_box(height = &quot;500px&quot;)</code></pre>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; ">
+<table class="table table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+row_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+DRUG
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+DOSE
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+FREQ
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+text
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+doxycycline
+</td>
+<td style="text-align:left;">
+100mg
+</td>
+<td style="text-align:left;">
+BID for 7 days
+</td>
+<td style="text-align:left;">
+doxycycline 100 mg PO BID for 7 days (A-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+single dose
+</td>
+<td style="text-align:left;">
+azithromycin 1 g PO as a single dose (A-I; AII for eye)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+ceftriaxone
+</td>
+<td style="text-align:left;">
+250 mg
+</td>
+<td style="text-align:left;">
+single dose
+</td>
+<td style="text-align:left;">
+ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII), (B-III for pharyngeal infections)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1 g
+</td>
+<td style="text-align:left;">
+PO as a single dose (B-III for pharyngeal infections)
+</td>
+<td style="text-align:left;">
+ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII), (B-III for pharyngeal infections)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+ceftriaxone
+</td>
+<td style="text-align:left;">
+250mg
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Trmt given OOP
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Due to resistance to azithromycin, was not provided as monothearpy, was provided in addition to gentamicin
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+gentamicin
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Due to resistance to azithromycin, was not provided as monothearpy, was provided in addition to gentamicin
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+benzathine penicillin g
+</td>
+<td style="text-align:left;">
+2.4 mu
+</td>
+<td style="text-align:left;">
+weekly
+</td>
+<td style="text-align:left;">
+Long-acting benzathine penicillin G 2.4 mu (Bicillin L-A) IM weekly for 2 doses (C-III)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+unable to recall
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+cipro
+</td>
+<td style="text-align:left;">
+250mg
+</td>
+<td style="text-align:left;">
+initially
+</td>
+<td style="text-align:left;">
+cipro 250mg initially
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+acyclovir
+</td>
+<td style="text-align:left;">
+400mg
+</td>
+<td style="text-align:left;">
+tid
+</td>
+<td style="text-align:left;">
+acyclovir 400 mg PO TID initiated at 36 weeks until parturition (A-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:left;">
+doxycycline
+</td>
+<td style="text-align:left;">
+100.000
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+drugs: doxycycline dose: 100.000 dose unit
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:left;">
+acyclovir
+</td>
+<td style="text-align:left;">
+400mg
+</td>
+<td style="text-align:left;">
+tid for 7-10 days
+</td>
+<td style="text-align:left;">
+acyclovir 400 mg PO TID for 7-10 days (A-III)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+2g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+Due to pregnancy was not provided azithromycin* 2 g PO as a single dose, was provided cefixime 800 mg PO as a single dose plus azithromycin 1g
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:left;">
+cefixime
+</td>
+<td style="text-align:left;">
+800mg
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+Due to pregnancy was not provided azithromycin* 2 g PO as a single dose, was provided cefixime 800 mg PO as a single dose plus azithromycin 1g
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:left;">
+cefixime
+</td>
+<td style="text-align:left;">
+800mg
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+cefixime 800 mg PO as a single dose (A-I) PLUS azithromycin 1g PO as a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+cefixime 800 mg PO as a single dose (A-I) PLUS azithromycin 1g PO as a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+2g
+</td>
+<td style="text-align:left;">
+single dose
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (AI) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:left;">
+gentamicin
+</td>
+<td style="text-align:left;">
+240mg
+</td>
+<td style="text-align:left;">
+separate 3-mL injections
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (AI) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:left;">
+ceftriaxone
+</td>
+<td style="text-align:left;">
+2g
+</td>
+<td style="text-align:left;">
+daily
+</td>
+<td style="text-align:left;">
+ceftriaxone 2g IV daily for 10-14 days (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+declined treatment
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:left;">
+moxifloxacin
+</td>
+<td style="text-align:left;">
+400mg
+</td>
+<td style="text-align:left;">
+daily
+</td>
+<td style="text-align:left;">
+moxifloxacin 400 mg po daily
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+2g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:left;">
+gemifloxacin
+</td>
+<td style="text-align:left;">
+320mg
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:left;">
+na
+</td>
+<td style="text-align:left;">
+na
+</td>
+<td style="text-align:left;">
+na
+</td>
+<td style="text-align:left;">
+? ceftrix but no record documented of taking it
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:left;">
+doxycycline
+</td>
+<td style="text-align:left;">
+100mg
+</td>
+<td style="text-align:left;">
+bid for 28 days
+</td>
+<td style="text-align:left;">
+doxycycline 100 mg PO BID for 28 days (B-II; C-III for HIV-infected)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+2g
+</td>
+<td style="text-align:left;">
+single dose
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (A-I) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:left;">
+gentamicin
+</td>
+<td style="text-align:left;">
+240mg
+</td>
+<td style="text-align:left;">
+separate 3-mL injections
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (A-I) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:left;">
+benzathine penicillin g
+</td>
+<td style="text-align:left;">
+2.4 mu
+</td>
+<td style="text-align:left;">
+weekly
+</td>
+<td style="text-align:left;">
+Long-acting benzathine penicillin G 2.4 mu (Bicillin L-A) IM weekly for 3 consecutive weeks (A-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:left;">
+cefixime
+</td>
+<td style="text-align:left;">
+800mg
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+cefixime 800 mg PO as a single dose (A-l) PLUS azithromycin 1 g PO as a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+cefixime 800 mg PO as a single dose (A-l) PLUS azithromycin 1 g PO as a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:left;">
+ceftriaxone
+</td>
+<td style="text-align:left;">
+800mg
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+cefxime 800 mg single dose PLUS azith 1g as a single dose
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+cefxime 800 mg single dose PLUS azith 1g as a single dose
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:left;">
+valacyclovir
+</td>
+<td style="text-align:left;">
+500mg
+</td>
+<td style="text-align:left;">
+bid
+</td>
+<td style="text-align:left;">
+valacyclovir 500 mg PO BID initiated at 36 weeks until parturition (B-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Was treated out of province
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:left;">
+famciclovir
+</td>
+<td style="text-align:left;">
+250mg
+</td>
+<td style="text-align:left;">
+bid
+</td>
+<td style="text-align:left;">
+famciclovir 250 mg PO BID (A-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:left;">
+benzathine penicillin g
+</td>
+<td style="text-align:left;">
+2.4 mu
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Doxycycline is not recommended for use during pregnancy, provided benzathine penicillin G 2.4 mu
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:left;">
+doxycycline
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Doxycycline is not recommended for use during pregnancy, provided benzathine penicillin G 2.4 mu
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+treatment received
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:left;">
+amoxicillin
+</td>
+<td style="text-align:left;">
+875mg
+</td>
+<td style="text-align:left;">
+qd 7 days
+</td>
+<td style="text-align:left;">
+amoxi clave 875 mg for 7 days
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:left;">
+doxycycline
+</td>
+<td style="text-align:left;">
+100mg
+</td>
+<td style="text-align:left;">
+BID for 7 days
+</td>
+<td style="text-align:left;">
+doxycycline 100 mg PO BID for 7 days (A-I; A-II for eye)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+azithromycin 1 g PO as a single dose (A-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:left;">
+ceftriaxone
+</td>
+<td style="text-align:left;">
+250mg
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+ceftriaxone 250 mg IM as a single dose (A-I) PLUS azithromycin 1 g PO as a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:left;">
+doxycycline
+</td>
+<td style="text-align:left;">
+100mg
+</td>
+<td style="text-align:left;">
+BID for 7 days
+</td>
+<td style="text-align:left;">
+doxycycline 100 mg PO BID for 7 days (A-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:left;">
+amoxicillin
+</td>
+<td style="text-align:left;">
+500mg
+</td>
+<td style="text-align:left;">
+tid for 7 days
+</td>
+<td style="text-align:left;">
+amoxicillin 500 mg PO TID for 7 days (A-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:left;">
+doxycycline
+</td>
+<td style="text-align:left;">
+100mg
+</td>
+<td style="text-align:left;">
+bid for 14 days
+</td>
+<td style="text-align:left;">
+doxycycline 100 mg PO BID for 14 days (B-II; C-III for HIV-infected)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+single dose
+</td>
+<td style="text-align:left;">
+azithromycin* 1 g PO as a single dose (B-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+No treatment was provided
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:left;">
+doxycycline
+</td>
+<td style="text-align:left;">
+250mg
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+doxycycline 250mg + cefixime 800mg
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:left;">
+cefixime
+</td>
+<td style="text-align:left;">
+800mg
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+doxycycline 250mg + cefixime 800mg
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+azithromycin 1 g PO as a single dose (A-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:left;">
+levofloxacin
+</td>
+<td style="text-align:left;">
+unknown
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+levofloxacin dose unknown
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:left;">
+blue pills
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+A handfull of blue pills
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:left;">
+acyclovir
+</td>
+<td style="text-align:left;">
+400mg
+</td>
+<td style="text-align:left;">
+bid
+</td>
+<td style="text-align:left;">
+acyclovir 400 mg PO BID (A-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:left;">
+ceftriaxone
+</td>
+<td style="text-align:left;">
+2g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+ceftriaxone 2 g IV/IM as a single dose (A-II) PLUS azithromycin 1 g PO as a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+ceftriaxone 2 g IV/IM as a single dose (A-II) PLUS azithromycin 1 g PO as a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Attempted contact, but could not locate
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:left;">
+famciclovir
+</td>
+<td style="text-align:left;">
+125mg
+</td>
+<td style="text-align:left;">
+bid for 5 days
+</td>
+<td style="text-align:left;">
+famciclovir 125 mg PO BID for 5 days (B-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+2g
+</td>
+<td style="text-align:left;">
+single dose
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (AI) PLUS gentamicin 240 mg IM in 2 separate 3 mL injections of 40 mg/mL solution (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:left;">
+gentamicin
+</td>
+<td style="text-align:left;">
+240mg
+</td>
+<td style="text-align:left;">
+separate injections
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (AI) PLUS gentamicin 240 mg IM in 2 separate 3 mL injections of 40 mg/mL solution (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:left;">
+valacyclovir
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+qd
+</td>
+<td style="text-align:left;">
+valacyclovir 1 g PO QD for 3 days (B-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:left;">
+moxifloxacin
+</td>
+<td style="text-align:left;">
+0.5% 1 drop
+</td>
+<td style="text-align:left;">
+qh
+</td>
+<td style="text-align:left;">
+moxifloxacin 0.5% 1 drop os every hour x 1 day
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:left;">
+cefixime
+</td>
+<td style="text-align:left;">
+800 mg
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+cefixime 800 mg PO as a single dose (A-I for MSM, B-III for pharyngeal infections) PLUS azithromycin 1 g PO as a single dose (B-II for MSM), (B-III) for pharyngeal infections
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1 g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+cefixime 800 mg PO as a single dose (A-I for MSM, B-III for pharyngeal infections) PLUS azithromycin 1 g PO as a single dose (B-II for MSM), (B-III) for pharyngeal infections
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:left;">
+white pill
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Six white and two blue pills
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:left;">
+blue pill
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Six white and two blue pills
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:left;">
+valacyclovir
+</td>
+<td style="text-align:left;">
+500mg
+</td>
+<td style="text-align:left;">
+bid for 3 days
+</td>
+<td style="text-align:left;">
+valacyclovir 500 mg PO BID for 3 days (B-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+54
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+2g
+</td>
+<td style="text-align:left;">
+single dose
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (A-I) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+54
+</td>
+<td style="text-align:left;">
+gentamicin
+</td>
+<td style="text-align:left;">
+240mg
+</td>
+<td style="text-align:left;">
+separate 3-mL injections
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (A-I) PLUS gentamicin 240 mg IM in 2 separate 3-mL injections of 40 mg/mL solution (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+55
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Lost to follow up
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+56
+</td>
+<td style="text-align:left;">
+cefixime
+</td>
+<td style="text-align:left;">
+400mg
+</td>
+<td style="text-align:left;">
+qd
+</td>
+<td style="text-align:left;">
+cefixime 400 mg po qd x 7 days
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:left;">
+penicillin
+</td>
+<td style="text-align:left;">
+crystalline penicillin g
+</td>
+<td style="text-align:left;">
+q4h
+</td>
+<td style="text-align:left;">
+penicillin desensitization followed by crystalline penicillin G 4 mu IV q4h for 10-14 days
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:left;">
+penicillin
+</td>
+<td style="text-align:left;">
+mu
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+penicillin desensitization followed by crystalline penicillin G 4 mu IV q4h for 10-14 days
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+58
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+? azithromycin
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+59
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+2g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+59
+</td>
+<td style="text-align:left;">
+gemifloxacin
+</td>
+<td style="text-align:left;">
+320mg
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:left;">
+bicillin
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+refused bicillin treatment
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+61
+</td>
+<td style="text-align:left;">
+cefixime
+</td>
+<td style="text-align:left;">
+800mg
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+cefixime 800 mg PO as a single dose (A-I) PLUS azithromycin 1g PO as a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+61
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+cefixime 800 mg PO as a single dose (A-I) PLUS azithromycin 1g PO as a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+62
+</td>
+<td style="text-align:left;">
+unknown medication
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+unknown medication provided
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+63
+</td>
+<td style="text-align:left;">
+crystalline penicillin g
+</td>
+<td style="text-align:left;">
+4 mu
+</td>
+<td style="text-align:left;">
+q4h
+</td>
+<td style="text-align:left;">
+crystalline penicillin G 4 mu IV q4h for 10-14 days (A-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+64
+</td>
+<td style="text-align:left;">
+valacyclovir
+</td>
+<td style="text-align:left;">
+500mg, 1g
+</td>
+<td style="text-align:left;">
+BID, QD
+</td>
+<td style="text-align:left;">
+valacyclovir 500 mg PO BID or 1 g PO QD (AI) [for patients with &gt; 9 recurrences per year]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+65
+</td>
+<td style="text-align:left;">
+benzathine penicillin g
+</td>
+<td style="text-align:left;">
+2.4 mu
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+Long-acting benzathine penicillin G 2.4 mu (Bicillin L-A) IM as a single dose (A-II;C-II for HIV-infected)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+66
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+2g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+66
+</td>
+<td style="text-align:left;">
+gemifloxacin
+</td>
+<td style="text-align:left;">
+320mg
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (BII)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+67
+</td>
+<td style="text-align:left;">
+valacyclovir
+</td>
+<td style="text-align:left;">
+500mg
+</td>
+<td style="text-align:left;">
+qd
+</td>
+<td style="text-align:left;">
+valacyclovir 500 mg PO QD (A-I) [for patients with &lt; 9 recurrences per year]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+68
+</td>
+<td style="text-align:left;">
+azithromycin
+</td>
+<td style="text-align:left;">
+2g
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+68
+</td>
+<td style="text-align:left;">
+gemifloxacin
+</td>
+<td style="text-align:left;">
+320mg
+</td>
+<td style="text-align:left;">
+single
+</td>
+<td style="text-align:left;">
+azithromycin* 2 g PO as a single dose (A-I) PLUS gemifloxacin 320 mg PO in a single dose (B-II)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+69
+</td>
+<td style="text-align:left;">
+acyclovir
+</td>
+<td style="text-align:left;">
+800mg
+</td>
+<td style="text-align:left;">
+tid
+</td>
+<td style="text-align:left;">
+acyclovir 800 mg PO TID x 2 days
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+70
+</td>
+<td style="text-align:left;">
+valacyclovir
+</td>
+<td style="text-align:left;">
+1g
+</td>
+<td style="text-align:left;">
+BID for 10 days
+</td>
+<td style="text-align:left;">
+valacyclovir 1 g PO BID for 10 days (A-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+71
+</td>
+<td style="text-align:left;">
+famciclovir
+</td>
+<td style="text-align:left;">
+250mg
+</td>
+<td style="text-align:left;">
+tid for 5 days
+</td>
+<td style="text-align:left;">
+famciclovir 250 mg PO TID for 5 days (A-I)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+72
+</td>
+<td style="text-align:left;">
+cipro
+</td>
+<td style="text-align:left;">
+500
+</td>
+<td style="text-align:left;">
+bid
+</td>
+<td style="text-align:left;">
+cipro 500 bid x 1 wk
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+73
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+cream given
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+74
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+See notes
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+75
+</td>
+<td style="text-align:left;">
+peng
+</td>
+<td style="text-align:left;">
+2.4 mu
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+peng 2.4 mu
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>How well did the LLM perform compared to our expectations and defined rules?</p>
+<p>First the good:</p>
+<ol style="list-style-type: decimal">
+<li>It was able to understand negation successfully</li>
+<li>It usually ignored treatments when there was uncertainty in the phrasing</li>
+<li>In most cases it could extract the multiple possibilities and assign the closest related dosage</li>
+</ol>
+<p>… now the less good:</p>
+<ol style="list-style-type: decimal">
+<li>Missing values were returned in varying formats</li>
+<li>Several different formats were used for identical drugs, often due to confusion over abbreviations</li>
+<li>Low confidence in results of FREQ data due to inconsistencies</li>
+<li>Returned missing where a valid drug should have been found :(</li>
+</ol>
+<p><strong>Overall</strong>, considering the minimal effort and model used, the results performed better than expected. With a model that is more aware of medical terms, I would expect better performance. Given that free text fields are inherently known for data quality issues, I can foresee methods such as those presented here to be of great benefit in identifying notable data quality problems in text information for human review.</p>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li><a href="https://www.promptingguide.ai/">Tutorial on prompting</a></li>
+<li><a href="https://json-schema.org/overview/what-is-jsonschema">JSON Schemas</a></li>
+<li><a href="https://joss.theoj.org/papers/10.21105/joss.07211">JOSS paper on {ollamar}</a></li>
+<li><a href="https://hauselin.github.io/ollama-r/">R package {ollamar}</a></li>
+<li><a href="https://ellmer.tidyverse.org/articles/ellmer.html">R pacakge {ellmer}</a></li>
+</ul>
+</div>
